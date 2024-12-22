@@ -4,11 +4,15 @@ import classNames from 'classnames';
 interface CardProps {
   children: React.ReactNode;
   className?: string;
+  onClick?: () => void;
 }
 
-export function Card({ children, className }: CardProps) {
+export function Card({ children, className, onClick }: CardProps) {
   return (
-    <div className={classNames('bg-white shadow-md rounded-lg overflow-hidden', className)}>
+    <div 
+      className={classNames('bg-white shadow-md rounded-lg overflow-hidden', className)} 
+      onClick={onClick}
+    >
       {children}
     </div>
   );

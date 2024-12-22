@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog } from '@components/ui/modals/dialog';
 import { Input } from '@components/ui/inputs/input';
 import { Button } from '@components/ui/buttons/button';
@@ -7,8 +7,25 @@ import { TextArea } from '@components/ui/inputs/textArea';
 import Clipboard from '@components/ui/common/clipboard';
 import Upload from '@components/ui/common/upload';
 import CommentBox from '@components/ui/common/commentBox';
+import { categoryOptions } from '@/constants/selectOptions';
+
+interface AssignedUser {
+  name?: string;
+  email?: string;
+}
+
+interface Ticket {
+  status: string;
+  ticketNumber: string;
+  contact: string;
+  category: string;
+  message: string;
+  subject: string;
+  assignedUser: AssignedUser | null;
+}
 
 interface ModalProps {
+  ticket: Ticket | null;
   isOpen: boolean;
   onClose: () => void;
   onAction: (category: string) => void;
@@ -17,7 +34,13 @@ interface ModalProps {
   hasAssignment: boolean;
 }
 
+type Option = {
+  value: string;
+  label: string;
+};
+
 export default function BasicModal({
+  ticket,
   isOpen,
   onClose,
   onAction,
@@ -25,9 +48,24 @@ export default function BasicModal({
   isCreatingTicket,
   hasAssignment,
 }: ModalProps) {
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const [message, setMessage] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<Option | null>(
+    ticket ? categoryOptions.find(option => option.value === ticket.category) ?? null : null
+  );  
+  const [message, setMessage] = useState<string>(ticket?.message || '');
+  const [subject, setSubject] = useState<string>(ticket?.subject || '');
   const [comments, setComments] = useState<{ id: string; text: string }[]>([]);
+
+  useEffect(() => {
+    if (ticket) {
+      setSelectedCategory(categoryOptions.find(option => option.value === ticket.category) || null);
+      setMessage(ticket.message);
+      setSubject(ticket.subject);
+    } else {
+      setSelectedCategory(null);
+      setMessage('');
+      setSubject('');
+    }
+  }, [ticket]);
 
   const handleAddComment = (newComment: { id: string; text: string }) => {
     setComments((prevComments) => [...prevComments, newComment]);
@@ -43,18 +81,28 @@ export default function BasicModal({
     alert('Correo electrónico copiado: ' + email);
   };
 
-  const submitButtonText = isSupport ? (isCreatingTicket ? 'Crear Ticket' : 'Guardar') : null;
+  const submitButtonText = isCreatingTicket ? 'Crear Ticket' : (isSupport ? 'Guardar' : null);
+  const ModalTitle = isCreatingTicket ? 'Creando Nuevo Ticket' : `Ticket-${ticket?.ticketNumber}`;
 
   const isSubmitDisabled = !selectedCategory || !message;
-
+  console.log("ESTADO ACÁ: ", ticket?.status)
   return (
-    <Dialog isOpen={isOpen} onClose={onClose} isSupport={isSupport} hasAssignment={hasAssignment}>
+    <Dialog 
+      title={ModalTitle} 
+      isOpen={isOpen} 
+      onClose={onClose} 
+      isSupport={isSupport} 
+      hasAssignment={hasAssignment}
+      ticketState={ticket?.status || 'nuevo'}
+    >
       <div className="p-4 bg-white rounded-[25px] shadow-lg w-full max-w-4xl mx-auto">
         <form
           className="space-y-4"
           onSubmit={(e) => {
             e.preventDefault();
-            onAction(selectedCategory);
+            if (selectedCategory) {
+              onAction(selectedCategory.value);
+            }
           }}
         >
           <Input
@@ -62,6 +110,9 @@ export default function BasicModal({
             placeholder="Asunto"
             className="w-full placeholder-gray-500"
             required
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+            readOnly={!isCreatingTicket}
           />
 
           <TextArea
@@ -70,28 +121,26 @@ export default function BasicModal({
             value={message}
             onChange={(value) => setMessage(value)}
             required
+            readOnly={!isCreatingTicket}
             className="rounded-[25px]"
           />
 
           <div className="flex items-center gap-4">
             <div className="w-1/3">
               <Select
-                options={[
-                  { value: 'soporte-inmobiliaria', label: 'Soporte con Inmobiliaria' },
-                  { value: 'soporte-botmaker', label: 'Soporte Botmaker' },
-                  { value: 'soporte-telefonico', label: 'Soporte Telefónico IP' },
-                ]}
+                options={categoryOptions}
                 placeholder="Categoría"
                 selected={selectedCategory}
                 setSelected={setSelectedCategory}
                 triggerClassName="rounded-[25px] w-full"
                 hideChevronDown={true}
                 dropdownStyle={{ borderRadius: '25px' }}
+                readOnly={!isCreatingTicket}
               />
             </div>
             {isSupport && (
               <div className="w-1/3">
-                <Clipboard className="h-[42px] w-full" text="contacto@ejemplo.com" label={null} />
+                <Clipboard className="!h-[40px] w-full" text="contacto@ejemplo.com" label={null} />
               </div>
             )}
           </div>
@@ -120,7 +169,8 @@ export default function BasicModal({
             >
               Cancelar
             </Button>
-            {isSupport && (
+
+            {submitButtonText ? (
               <Button
                 type="submit"
                 className="bg-[#0DBC2D] text-white hover:bg-[#0AA626] px-4 !py-2 rounded-full"
@@ -128,7 +178,7 @@ export default function BasicModal({
               >
                 {submitButtonText}
               </Button>
-            )}
+            ) : null}
           </div>
         </form>
       </div>

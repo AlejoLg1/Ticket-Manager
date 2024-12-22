@@ -1,3 +1,4 @@
+import '@/styles/states.css';
 import { Badge } from "@/components/ui/badges/badge";
 import { Card, CardContent } from "@/components/ui/cards/card";
 import { Button } from '@/components/ui/buttons/button';
@@ -37,14 +38,6 @@ export function TicketCard({
   onAssign,
   onClick,
 }: TicketCardProps) {
-  const statusStyles = {
-    nuevo: "bg-green-100 text-green-800 w-[125px] h-[25px]",
-    curso: "bg-blue-100 text-blue-800 w-[125px] h-[25px]",
-    desarrollo: "bg-purple-300 text-orange-800 w-[125px] h-[25px]",
-    contactado: "bg-orange-300 text-orange-800 w-[125px] h-[25px]",
-    finalizado: "bg-gray-300 text-gray-800 w-[125px] h-[25px]",
-  };
-
   const statusText = {
     nuevo: "Nuevo",
     curso: "En Curso",
@@ -79,7 +72,7 @@ export function TicketCard({
             <h2 className="text-xl font-bold text-black">{subject}</h2>
             <Badge
               variant="secondary"
-              className={`${statusStyles[status]} flex items-center justify-center !font-bold !text-base`}
+              className={`state-${status} !w-[125px] !h-[25px] flex items-center justify-center !font-bold !text-base`}
             >
               {statusText[status]}
             </Badge>

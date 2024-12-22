@@ -1,5 +1,6 @@
 'use client';
 
+import '@/styles/states.css';
 import React, { ReactNode, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/buttons/button';
@@ -15,22 +16,6 @@ interface DialogProps {
   children: ReactNode;
   ticketState?: string;
 }
-
-const stateStyles: Record<string, string> = {
-  nuevo: "bg-green-100 text-green-800 w-[140px] h-[25px]",
-  curso: "bg-blue-100 text-blue-800 w-[140px] h-[25px]",
-  desarrollo: "bg-purple-300 text-orange-800 w-[155px] h-[25px]",
-  contactado: "bg-orange-300 text-orange-800 w-[155px] h-[25px]",
-  finalizado: "bg-gray-300 text-gray-800 w-[155px] h-[25px]",
-};
-
-const textStateStyles: Record<string, string> = {
-  nuevo: "text-green-800",
-  curso: "text-blue-800",
-  desarrollo: "text-orange-800",
-  contactado: "text-orange-800",
-  finalizado: "text-gray-800",
-};
 
 export const Dialog = ({ title, isOpen, onClose, isSupport, hasAssignment, children, ticketState = 'nuevo' }: DialogProps) => {
   const [selectedState, setSelectedState] = useState<string>('nuevo');
@@ -68,17 +53,17 @@ export const Dialog = ({ title, isOpen, onClose, isSupport, hasAssignment, child
                     setSelectedState(option.value);
                   }
                 }}
-                triggerClassName={`font-bold flex items-center justify-center rounded-full ${stateStyles[selectedState] || stateStyles['nuevo']}`}
+                triggerClassName={`font-bold flex items-center justify-center rounded-full state-${selectedState} || state-nuevo`}
                 dropdownStyle={{
                   borderRadius: '25px',
-                  overflowY: 'auto', 
+                  overflowY: 'auto',
                   maxHeight: '120px', 
                 }}
                 itemClassName="hover:bg-gray-200"
                 hideXCircle={true}
                 hideSearchIcon={true}
                 hideChevronDown={false}
-                textClassName={`${textStateStyles[selectedState] || textStateStyles['nuevo']}`}
+                textClassName={`text-${selectedState} || text-nuevo`}
               />
 
               <Button

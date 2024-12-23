@@ -1,5 +1,5 @@
 import { XCircle, Search, ChevronDown } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 type Option = {
   value: string;
@@ -9,8 +9,8 @@ type Option = {
 type SelectProps = {
   options: Option[];
   placeholder: string;
-  selected: string;
-  setSelected: (value: string) => void;
+  selected: Option | null;
+  setSelected: (option: Option | null) => void;
   triggerClassName?: string;
   dropdownStyle?: React.CSSProperties;
   itemClassName?: string;
@@ -18,6 +18,7 @@ type SelectProps = {
   hideSearchIcon?: boolean;
   hideChevronDown?: boolean;
   textClassName?: string;
+  readOnly?: boolean;
 };
 
 const DropdownOption: React.FC<{ option: Option; onSelect: (option: Option) => void; itemClassName?: string }> = ({
@@ -46,29 +47,44 @@ export function Select({
   hideSearchIcon = false,
   hideChevronDown = false,
   textClassName,
+  readOnly = false,
 }: SelectProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const selectRef = useRef<HTMLDivElement>(null);
 
   const handleSelect = (option: Option) => {
-    setSelected(option.value);
-    setIsOpen(false);
+    if (!readOnly) {
+      setSelected(option);
+      setIsOpen(false);
+    }
   };
 
   const clearSelection = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setSelected('');
+    if (!readOnly) setSelected(null);
   };
 
-  const selectedOption = options.find((option) => option.value === selected);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
-    <div className="relative">
+    <div className="relative" ref={selectRef}>
       <div
-        className={`flex items-center justify-between p-2 border cursor-pointer ${triggerClassName}`}
-        onClick={() => setIsOpen(!isOpen)}
+        className={`flex items-center justify-between p-2 border cursor-pointer rounded-[25px] ${triggerClassName}`}
+        onClick={() => !readOnly && setIsOpen(!isOpen)}
       >
-        <span className={`${selectedOption ? 'text-black' : 'text-gray-400'} ${textClassName}`}>
-          {selectedOption ? selectedOption.label : placeholder}
+        <span className={`${selected ? 'text-black' : 'text-gray-400'} ${textClassName}`}>
+          {selected ? selected.label : placeholder}
         </span>
         <div className="flex items-center">
           {!hideXCircle && selected && (
@@ -81,10 +97,14 @@ export function Select({
           {!hideChevronDown && <ChevronDown className="ml-2 h-5 w-5" />}
         </div>
       </div>
-      {isOpen && (
+      {isOpen && !readOnly && (
         <div
-          className="absolute mt-1 w-full bg-white border z-10 rounded-[25px] shadow-md"
-          style={dropdownStyle}
+          className="absolute mt-1 w-full bg-white border z-10 rounded-[25px] shadow-md overflow-auto"
+          style={{
+            maxHeight: '120px',
+            overflowY: 'auto',
+            ...dropdownStyle,
+          }}
         >
           {options.map((option) => (
             <DropdownOption key={option.value} option={option} onSelect={handleSelect} itemClassName={itemClassName} />

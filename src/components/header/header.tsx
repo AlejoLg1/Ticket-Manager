@@ -19,7 +19,7 @@ const Header: React.FC<HeaderProps> = ({ companyLogo, logoutLogo, onLogout }) =>
 
       <div className="flex flex-col items-center cursor-pointer ml-[-2px]" onClick={onLogout}>
         <img
-          src={logoutLogo}
+          src="/images/logout.svg"
           alt="Logout"
           className="h-10 w-10 mb-1"
         />

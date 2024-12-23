@@ -7,8 +7,9 @@ import { TicketFilters } from "@/components/ticket/ticketFilters";
 import { TicketCard } from "@/components/ticket/ticketCard";
 import { useState } from 'react';
 import BasicModal from '@components/ticket/ticketModal';
+import Image from "next/image";
 
-const App = () => {
+const Support = () => {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState<any>(null);
@@ -16,12 +17,6 @@ const App = () => {
   const handleLogout = () => {
     console.log("Usuario cerró sesión");
     router.push('/login');
-  };
-
-  const handleNewTicketClick = () => {
-    console.log("Crear nuevo ticket");
-    setSelectedTicket(null);
-    setIsModalOpen(true);
   };
 
   const handleTicketCardClick = (ticket: any) => {
@@ -48,7 +43,6 @@ const App = () => {
       <div className="p-24 pt-16 pb-0">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-[35px] font-bold text-black">Centro de Control de Tickets</h1>
-          <NewTicketButton onClick={handleNewTicketClick} />
         </div>
       </div>
 
@@ -109,7 +103,7 @@ const App = () => {
           onAction={(category: string) => {
             console.log('Categoria seleccionada:', category);
           }}
-          isSupport={false}
+          isSupport={true}
           isCreatingTicket={!selectedTicket}
           hasAssignment={!!selectedTicket?.assignedUser}
         />
@@ -119,4 +113,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default Support;

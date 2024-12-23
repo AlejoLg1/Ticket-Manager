@@ -1,46 +1,32 @@
 'use client';
 
-import React, { ReactNode } from 'react';
+import '@/styles/states.css';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/buttons/button';
 import { Select } from '@/components/ui/selects/comboBox';
-
-type TicketState = 'nuevo' | 'curso' | 'desarrollo' | 'contactado' | 'finalizado';
+import { statesOptions } from '@/constants/selectOptions';
 
 interface DialogProps {
+  title: string;
   isOpen: boolean;
   onClose: () => void;
   isSupport: boolean;
   hasAssignment: boolean;
   children: ReactNode;
+  ticketState?: string;
 }
 
-const stateStyles: Record<TicketState, string> = {
-  nuevo: "bg-green-100 text-green-800 w-[140px] h-[25px]",
-  curso: "bg-blue-100 text-blue-800 w-[140px] h-[25px]",
-  desarrollo: "bg-purple-300 text-orange-800 w-[155px] h-[25px]",
-  contactado: "bg-orange-300 text-orange-800 w-[155px] h-[25px]",
-  finalizado: "bg-gray-300 text-gray-800 w-[155px] h-[25px]",
-};
+export const Dialog = ({ title, isOpen, onClose, isSupport, hasAssignment, children, ticketState = 'nuevo' }: DialogProps) => {
+  const [selectedState, setSelectedState] = useState<string>('nuevo');
 
-const textStateStyles: Record<TicketState, string> = {
-  nuevo: "text-green-800",
-  curso: "text-blue-800",
-  desarrollo: "text-orange-800",
-  contactado: "text-orange-800",
-  finalizado: "text-gray-800",
-};
-
-export const Dialog = ({ isOpen, onClose, isSupport, hasAssignment, children }: DialogProps) => {
-  const [selectedState, setSelectedState] = React.useState<TicketState>('nuevo');
-
-  const options = [
-    { value: 'nuevo', label: 'Nuevo' },
-    { value: 'curso', label: 'En Curso' },
-    { value: 'desarrollo', label: 'En Desarrollo' },
-    { value: 'contactado', label: 'Contactado' },
-    { value: 'finalizado', label: 'Finalizado' },
-  ];
+  useEffect(() => {
+    if (ticketState && statesOptions.some(option => option.value === ticketState)) {
+      setSelectedState(ticketState);
+    } else {
+      setSelectedState('nuevo');
+    }
+  }, [ticketState]);
 
   if (!isOpen) return null;
 
@@ -54,22 +40,30 @@ export const Dialog = ({ isOpen, onClose, isSupport, hasAssignment, children }: 
         onClick={(e) => e.stopPropagation()}
       >
         <div className="bg-white p-4 shadow-lg rounded-t-md w-full flex justify-between items-center">
-          <h1 className="text-black text-2xl font-semibold">Titulo del Modal</h1>
+          <h1 className="text-black text-2xl font-semibold">{title}</h1>
 
           {isSupport && (
             <div className="flex items-center space-x-4">
               <Select
-                options={options}
+                options={statesOptions}
                 placeholder="Estado"
-                selected={selectedState}
-                setSelected={(value) => setSelectedState(value as TicketState)}
-                triggerClassName={`font-bold flex items-center justify-center rounded-full ${stateStyles[selectedState]}`}
-                dropdownStyle={{ borderRadius: '25px', overflow: 'hidden' }}
+                selected={statesOptions.find(option => option.value === selectedState) || null}
+                setSelected={(option) => {
+                  if (option) {
+                    setSelectedState(option.value);
+                  }
+                }}
+                triggerClassName={`font-bold flex items-center justify-center rounded-full state-${selectedState} || state-nuevo`}
+                dropdownStyle={{
+                  borderRadius: '25px',
+                  overflowY: 'auto',
+                  maxHeight: '120px', 
+                }}
                 itemClassName="hover:bg-gray-200"
                 hideXCircle={true}
                 hideSearchIcon={true}
                 hideChevronDown={false}
-                textClassName={`${textStateStyles[selectedState]}`}
+                textClassName={`text-${selectedState} || text-nuevo`}
               />
 
               <Button

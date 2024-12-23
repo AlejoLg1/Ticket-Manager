@@ -12,9 +12,14 @@ interface EyeToggleProps {
 const EyeToggle: React.FC<EyeToggleProps> = ({ fill = "black", size = 60 }) => {
   const [isOpen, setIsOpen] = useState(true);
 
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsOpen(!isOpen);
+  };
+
   return (
     <div
-      onClick={() => setIsOpen(!isOpen)}
+      onClick={handleClick}
       style={{ cursor: "pointer", display: "inline-block" }}
     >
       {isOpen ? (

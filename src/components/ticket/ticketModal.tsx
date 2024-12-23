@@ -48,21 +48,12 @@ export default function BasicModal({
   isCreatingTicket,
   hasAssignment,
 }: ModalProps) {
-  console.log("!isCreatingTicket: ", !isCreatingTicket)
-  console.log("!hasAssignment: ", !hasAssignment)
-  console.log("!isSupport: ", isSupport)
-  console.log("")
-  console.log("RESULTADO: ", !isCreatingTicket && !hasAssignment && isSupport)
-  console.log("")
-  console.log("")
-  console.log("")
   const [selectedCategory, setSelectedCategory] = useState<Option | null>(
     ticket ? categoryOptions.find(option => option.value === ticket.category) ?? null : null
   );  
   const [message, setMessage] = useState<string>(ticket?.message || '');
   const [subject, setSubject] = useState<string>(ticket?.subject || '');
   const [comments, setComments] = useState<{ id: string; text: string }[]>([]);
-
   const isReadOnly = !isCreatingTicket && hasAssignment;
   const isEditable = !isCreatingTicket && !hasAssignment && !isSupport;
 

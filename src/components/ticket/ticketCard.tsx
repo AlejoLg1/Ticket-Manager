@@ -65,8 +65,8 @@ export function TicketCard({
   };
 
   return (
-    <Card className="mb-4 w-[1500px] !rounded-[40px] relative cursor-pointer hover:border-2 hover:border-[#CF230F]" onClick={() => onClick({ status, ticketNumber, contact, category, message, subject, role, assignedUser, onAssign })}>
-      <CardContent className="p-4">
+    <Card className="mb-4 w-[1500px] !rounded-[25px] relative cursor-pointer hover:border-2 hover:border-[#CF230F]" onClick={() => onClick({ status, ticketNumber, contact, category, message, subject, role, assignedUser, onAssign })}>
+      <CardContent className="pt-5">
         <div className="flex flex-col h-full">
           <div className="flex justify-between items-start mb-4">
             <h2 className="text-xl font-bold text-black">{subject}</h2>

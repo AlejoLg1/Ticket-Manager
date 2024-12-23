@@ -57,8 +57,8 @@ const App = () => {
       </div>
 
       <div className="flex justify-center mt-6">
-        <div className="bg-[#EBEBEB] w-[72%] h-[600px] flex flex-col justify-start rounded-[25px] shadow-md overflow-y-auto custom-scrollbar">
-          <div className="pl-10 p-6 pb-0">
+        <div className="bg-[#EBEBEB] w-[90%] h-[800px] flex flex-col items-center justify-start rounded-[25px] shadow-md overflow-y-auto custom-scrollbar">
+          <div className="w-[90%] p-6 pb-0">
             <TicketCard
               status="nuevo"
               ticketNumber="12345"
@@ -72,7 +72,7 @@ const App = () => {
               onClick={(ticketData) => handleTicketCardClick(ticketData)}
             />
           </div>
-          <div className="pl-10 p-6 pb-0">
+          <div className="w-[90%] p-6 pb-0">
             <TicketCard
               status="curso"
               ticketNumber="55421"
@@ -86,7 +86,7 @@ const App = () => {
               onClick={(ticketData) => handleTicketCardClick(ticketData)}
             />
           </div>
-          <div className="pl-10 p-6 pb-0">
+          <div className="w-[90%] p-6 pb-0">
             <TicketCard
               status="contactado"
               ticketNumber="99921"
@@ -113,7 +113,6 @@ const App = () => {
           isCreatingTicket={!selectedTicket}
           hasAssignment={!!selectedTicket?.assignedUser}
         />
-
       </div>
     </div>
   );

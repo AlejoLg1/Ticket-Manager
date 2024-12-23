@@ -48,12 +48,23 @@ export default function BasicModal({
   isCreatingTicket,
   hasAssignment,
 }: ModalProps) {
+  console.log("!isCreatingTicket: ", !isCreatingTicket)
+  console.log("!hasAssignment: ", !hasAssignment)
+  console.log("!isSupport: ", isSupport)
+  console.log("")
+  console.log("RESULTADO: ", !isCreatingTicket && !hasAssignment && isSupport)
+  console.log("")
+  console.log("")
+  console.log("")
   const [selectedCategory, setSelectedCategory] = useState<Option | null>(
     ticket ? categoryOptions.find(option => option.value === ticket.category) ?? null : null
   );  
   const [message, setMessage] = useState<string>(ticket?.message || '');
   const [subject, setSubject] = useState<string>(ticket?.subject || '');
   const [comments, setComments] = useState<{ id: string; text: string }[]>([]);
+
+  const isReadOnly = !isCreatingTicket && hasAssignment;
+  const isEditable = !isCreatingTicket && !hasAssignment && !isSupport;
 
   useEffect(() => {
     if (ticket) {
@@ -112,7 +123,7 @@ export default function BasicModal({
             required
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
-            readOnly={!isCreatingTicket}
+            readOnly={isReadOnly || !isEditable}
           />
 
           <TextArea
@@ -121,7 +132,7 @@ export default function BasicModal({
             value={message}
             onChange={(value) => setMessage(value)}
             required
-            readOnly={!isCreatingTicket}
+            readOnly={isReadOnly || !isEditable}
             className="rounded-[25px]"
           />
 
@@ -135,7 +146,7 @@ export default function BasicModal({
                 triggerClassName="rounded-[25px] w-full"
                 hideChevronDown={true}
                 dropdownStyle={{ borderRadius: '25px' }}
-                readOnly={!isCreatingTicket}
+                readOnly={isReadOnly || !isEditable}
               />
             </div>
             {isSupport && (

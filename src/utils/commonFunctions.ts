@@ -1,14 +1,11 @@
 export const copyToClipboard = async (text: string) => {
   try {
     await navigator.clipboard.writeText(text);
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(`Error copying text to clipboard: ${error.message}`);
-    } else {
-      throw new Error('Error copying text to clipboard: unknown error');
-    }
+  } catch {
+    throw ('Error copying text to clipboard');
   }
 };
+
 
 
 export const getCurrentDateTime = (): string => {

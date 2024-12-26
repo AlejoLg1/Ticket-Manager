@@ -8,6 +8,7 @@ import Clipboard from '@components/ui/common/clipboard';
 import Upload from '@components/ui/common/upload';
 import CommentBox from '@components/ui/common/commentBox';
 import { categoryOptions } from '@/constants/selectOptions';
+import EyeToggle from "@components/eye/eyeToggle";
 
 interface AssignedUser {
   name?: string;
@@ -50,10 +51,12 @@ export default function BasicModal({
 }: ModalProps) {
   const [selectedCategory, setSelectedCategory] = useState<Option | null>(
     ticket ? categoryOptions.find(option => option.value === ticket.category) ?? null : null
-  );  
+  );
   const [message, setMessage] = useState<string>(ticket?.message || '');
   const [subject, setSubject] = useState<string>(ticket?.subject || '');
   const [comments, setComments] = useState<{ id: string; text: string }[]>([]);
+  const isReadOnly = !isCreatingTicket && hasAssignment;
+  const isEditable = !isCreatingTicket && !hasAssignment && !isSupport;
 
   useEffect(() => {
     if (ticket) {
@@ -87,11 +90,11 @@ export default function BasicModal({
   const isSubmitDisabled = !selectedCategory || !message;
   console.log("ESTADO ACÁ: ", ticket?.status)
   return (
-    <Dialog 
-      title={ModalTitle} 
-      isOpen={isOpen} 
-      onClose={onClose} 
-      isSupport={isSupport} 
+    <Dialog
+      title={ModalTitle}
+      isOpen={isOpen}
+      onClose={onClose}
+      isSupport={isSupport}
       hasAssignment={hasAssignment}
       ticketState={ticket?.status || 'nuevo'}
     >
@@ -112,7 +115,7 @@ export default function BasicModal({
             required
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
-            readOnly={!isCreatingTicket}
+            readOnly={isReadOnly || !isEditable}
           />
 
           <TextArea
@@ -121,7 +124,7 @@ export default function BasicModal({
             value={message}
             onChange={(value) => setMessage(value)}
             required
-            readOnly={!isCreatingTicket}
+            readOnly={isReadOnly || !isEditable}
             className="rounded-[25px]"
           />
 
@@ -135,7 +138,7 @@ export default function BasicModal({
                 triggerClassName="rounded-[25px] w-full"
                 hideChevronDown={true}
                 dropdownStyle={{ borderRadius: '25px' }}
-                readOnly={!isCreatingTicket}
+                readOnly={isReadOnly || !isEditable}
               />
             </div>
             {isSupport && (
@@ -143,6 +146,13 @@ export default function BasicModal({
                 <Clipboard className="!h-[40px] w-full" text="contacto@ejemplo.com" label={null} />
               </div>
             )}
+
+            {!isCreatingTicket ? (
+              <div className="ml-auto">
+                <EyeToggle fill="red" size={40} />
+              </div>
+            ) : (null)}
+
           </div>
 
           {isCreatingTicket ? (

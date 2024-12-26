@@ -20,7 +20,11 @@ const EyeToggle: React.FC<EyeToggleProps> = ({ fill = "black", size = 60 }) => {
   return (
     <div
       onClick={handleClick}
-      style={{ cursor: "pointer", display: "inline-block" }}
+      style={{
+        cursor: "pointer",
+        display: "inline-block",
+        padding: "10px",
+      }}
     >
       {isOpen ? (
         <EyeOpen fill={fill} size={size} />

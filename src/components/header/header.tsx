@@ -2,11 +2,10 @@ import React from "react";
 
 interface HeaderProps {
   companyLogo: string;
-  logoutLogo: string;
   onLogout: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ companyLogo, logoutLogo, onLogout }) => {
+const Header: React.FC<HeaderProps> = ({ companyLogo, onLogout }) => {
   return (
     <header className="flex items-center justify-between p-4 bg-white shadow-md h-28">
       <div className="flex items-center h-64 w-64">

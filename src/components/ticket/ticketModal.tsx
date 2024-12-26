@@ -69,11 +69,6 @@ export default function BasicModal({
     setComments((prevComments) => prevComments.filter((comment) => comment.id !== id));
   };
 
-  const copyToClipboard = () => {
-    const email = 'support@example.com';
-    navigator.clipboard.writeText(email);
-    alert('Correo electrónico copiado: ' + email);
-  };
 
   const submitButtonText = isCreatingTicket ? 'Crear Ticket' : (isSupport ? 'Guardar' : null);
   const ModalTitle = isCreatingTicket ? 'Creando Nuevo Ticket' : `Ticket-${ticket?.ticketNumber}`;

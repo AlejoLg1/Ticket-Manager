@@ -4,19 +4,8 @@ import { Card, CardContent } from "@/components/ui/cards/card";
 import { Button } from '@/components/ui/buttons/button';
 import EyeToggle from "@/components/eye/eyeToggle";
 import { TextArea } from "@ui/inputs/textArea";
+import { TicketCardProps } from '@/models/ticket/ticketCardProps';
 
-interface TicketCardProps {
-  status: "nuevo" | "curso" | "desarrollo" | "contactado" | "finalizado";
-  ticketNumber: string;
-  contact: string;
-  category: string;
-  message: string;
-  subject: string;
-  role: "user" | "support";
-  assignedUser: { name?: string; email?: string } | null;
-  onAssign: () => void;
-  onClick: (ticketData: Omit<TicketCardProps, 'onClick'>) => void;
-}
 
 const AssignedLabel = ({ assignedUser }: { assignedUser: { name?: string; email?: string } | null }) => (
   <div className="text-sm font-bold text-black absolute right-10">

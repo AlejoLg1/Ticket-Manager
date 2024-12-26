@@ -9,20 +9,11 @@ import Upload from '@components/ui/common/upload';
 import CommentBox from '@components/ui/common/commentBox';
 import { categoryOptions } from '@/constants/selectOptions';
 import EyeToggle from "@components/eye/eyeToggle";
+import { Ticket } from '@/models/ticket/ticket'
 
 interface AssignedUser {
   name?: string;
   email?: string;
-}
-
-interface Ticket {
-  status: string;
-  ticketNumber: string;
-  contact: string;
-  category: string;
-  message: string;
-  subject: string;
-  assignedUser: AssignedUser | null;
 }
 
 interface ModalProps {

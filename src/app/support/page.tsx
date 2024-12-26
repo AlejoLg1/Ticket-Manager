@@ -2,24 +2,23 @@
 
 import { useRouter } from 'next/navigation';
 import Header from "@components/header/header";
-import { NewTicketButton } from "@components/ticket/newTicketButton";
 import { TicketFilters } from "@/components/ticket/ticketFilters";
 import { TicketCard } from "@/components/ticket/ticketCard";
 import { useState } from 'react';
 import BasicModal from '@components/ticket/ticketModal';
-import Image from "next/image";
+import { Ticket } from '@/models/ticket/ticket'
 
 const Support = () => {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedTicket, setSelectedTicket] = useState<any>(null);
+  const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
 
   const handleLogout = () => {
     console.log("Usuario cerró sesión");
     router.push('/login');
   };
 
-  const handleTicketCardClick = (ticket: any) => {
+  const handleTicketCardClick = (ticket: Ticket) => {
     setSelectedTicket(ticket);
     setIsModalOpen(true);
   };

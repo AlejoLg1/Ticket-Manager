@@ -1,7 +1,8 @@
 'use client'
 
-import { Button } from '@/components/ui/buttons/button'
 import React, { useRef, useState } from 'react'
+import Image from 'next/image';
+import { Button } from '@/components/ui/buttons/button'
 
 export default function Upload() {
   const [files, setFiles] = useState<File[]>([])
@@ -33,10 +34,12 @@ export default function Upload() {
           onClick={handleButtonClick}
         >
           Adjuntar Archivos
-          <img
+          <Image
             src="/images/upload.svg"
             alt="upload-logo"
-            className="ml-1 w-10 h-10 stroke-white stroke-1"
+            width={40} // Especifica el ancho en píxeles
+            height={40} // Especifica la altura en píxeles
+            className="ml-1 stroke-white stroke-1"
           />
         </Button>
         <input
@@ -60,10 +63,12 @@ export default function Upload() {
                   className="ml-4 text-red-500 hover:text-red-700"
                   onClick={() => handleRemoveFile(file.name)}
                 >
-                  <img
+                  <Image
                     src="/images/trash-can.svg"
                     alt="upload-logo"
-                    className="ml-1 w-8 h-5 stroke-white stroke-1"
+                    width={28}
+                    height={16}
+                    className="ml-1 stroke-white stroke-1"
                   />
                 </button>
               </li>

@@ -42,7 +42,6 @@ const App = () => {
     <div className="min-h-screen bg-[#F2F2F2]">
       <Header
         companyLogo="/images/finaer-logo-short.svg"
-        logoutLogo="/images/logout.svg"
         onLogout={handleLogout}
       />
 

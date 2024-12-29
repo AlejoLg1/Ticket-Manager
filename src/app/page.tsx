@@ -7,11 +7,12 @@ import { TicketFilters } from "@/components/ticket/ticketFilters";
 import { TicketCard } from "@/components/ticket/ticketCard";
 import { useState } from 'react';
 import BasicModal from '@components/ticket/ticketModal';
+import { Ticket } from '@/models/ticket/ticket'
 
 const App = () => {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedTicket, setSelectedTicket] = useState<any>(null);
+  const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
 
   const handleLogout = () => {
     console.log("Usuario cerró sesión");
@@ -24,10 +25,10 @@ const App = () => {
     setIsModalOpen(true);
   };
 
-  const handleTicketCardClick = (ticket: any) => {
+  const handleTicketCardClick = (ticket: Ticket) => {
     setSelectedTicket(ticket);
     setIsModalOpen(true);
-  };
+  };  
 
   const onAssign = () => {
     console.log("Asignado a ticket.");
@@ -41,7 +42,6 @@ const App = () => {
     <div className="min-h-screen bg-[#F2F2F2]">
       <Header
         companyLogo="/images/finaer-logo-short.svg"
-        logoutLogo="/images/logout.svg"
         onLogout={handleLogout}
       />
 

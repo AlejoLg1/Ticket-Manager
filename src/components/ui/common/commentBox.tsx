@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { getCurrentDateTime } from '@utils/commonFunctions';
 
 interface CommentBoxProps {
@@ -41,7 +42,7 @@ export default function CommentBox({ isSupport, messages, onAddMessage, onDelete
             <div key={id} className="bg-gray-100 p-2 rounded-lg mb-2 flex justify-between items-center">
               <p className="text-gray-700">{text}</p>
               {isSupport && (
-                <img
+                <Image
                   src="/images/trash-can.svg"
                   height={30}
                   width={30}

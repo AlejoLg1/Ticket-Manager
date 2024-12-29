@@ -9,21 +9,7 @@ import Upload from '@components/ui/common/upload';
 import CommentBox from '@components/ui/common/commentBox';
 import { categoryOptions } from '@/constants/selectOptions';
 import EyeToggle from "@components/eye/eyeToggle";
-
-interface AssignedUser {
-  name?: string;
-  email?: string;
-}
-
-interface Ticket {
-  status: string;
-  ticketNumber: string;
-  contact: string;
-  category: string;
-  message: string;
-  subject: string;
-  assignedUser: AssignedUser | null;
-}
+import { Ticket } from '@/models/ticket/ticket'
 
 interface ModalProps {
   ticket: Ticket | null;
@@ -78,11 +64,6 @@ export default function BasicModal({
     setComments((prevComments) => prevComments.filter((comment) => comment.id !== id));
   };
 
-  const copyToClipboard = () => {
-    const email = 'support@example.com';
-    navigator.clipboard.writeText(email);
-    alert('Correo electrónico copiado: ' + email);
-  };
 
   const submitButtonText = isCreatingTicket ? 'Crear Ticket' : (isSupport ? 'Guardar' : null);
   const ModalTitle = isCreatingTicket ? 'Creando Nuevo Ticket' : `Ticket-${ticket?.ticketNumber}`;

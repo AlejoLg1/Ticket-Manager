@@ -35,7 +35,7 @@ const Login = () => {
       } else {
         router.push('/');
       }
-    } catch (err) {
+    } catch {
       setError('Ocurrió un error inesperado. Por favor, intenta nuevamente.');
     } finally {
       setLoading(false);

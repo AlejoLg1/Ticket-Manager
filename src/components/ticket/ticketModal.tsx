@@ -42,7 +42,7 @@ export default function BasicModal({
   const [subject, setSubject] = useState<string>(ticket?.subject || '');
   const [comments, setComments] = useState<{ id: string; text: string }[]>([]);
   const isReadOnly = !isCreatingTicket && hasAssignment;
-  const isEditable = !isCreatingTicket && !hasAssignment && !isSupport;
+  const isEditable = isCreatingTicket || (!isCreatingTicket && !hasAssignment && !isSupport);
 
   useEffect(() => {
     if (ticket) {
@@ -69,7 +69,6 @@ export default function BasicModal({
   const ModalTitle = isCreatingTicket ? 'Creando Nuevo Ticket' : `Ticket-${ticket?.ticketNumber}`;
 
   const isSubmitDisabled = !selectedCategory || !message;
-  console.log("ESTADO ACÁ: ", ticket?.status)
   return (
     <Dialog
       title={ModalTitle}

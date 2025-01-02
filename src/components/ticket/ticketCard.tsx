@@ -6,7 +6,6 @@ import EyeToggle from "@/components/eye/eyeToggle";
 import { TextArea } from "@ui/inputs/textArea";
 import { TicketCardProps } from '@/models/ticket/ticketCardProps';
 
-
 const AssignedLabel = ({ assignedUser }: { assignedUser: { name?: string; email?: string } | null }) => (
   <div className="text-sm font-bold text-black absolute right-10">
     {assignedUser?.name || assignedUser?.email || "No asignado"}
@@ -43,7 +42,7 @@ export function TicketCard({
         <AssignedLabel assignedUser={assignedUser} />
       ) : (
         <Button
-          className="bg-[#0DBC2D] hover:bg-[#0B9E26] text-white font-bold p-2 border rounded-[50px] absolute right-4 w-[125px] h-[25px] flex items-center justify-center"
+          className="bg-[#0DBC2D] hover:bg-[#0B9E26] text-white font-bold p-2 border rounded-[50px] absolute right-4 w-full sm:w-[125px] h-[25px] flex items-center justify-center"
           onClick={onAssign}
         >
           Asignarme
@@ -54,7 +53,7 @@ export function TicketCard({
   };
 
   return (
-    <Card className="mb-4 w-[1500px] !rounded-[25px] relative cursor-pointer hover:border-2 hover:border-[#CF230F]" onClick={() => onClick({ status, ticketNumber, contact, category, message, subject, role, assignedUser, onAssign })}>
+    <Card className="mb-4 w-full max-w-[1500px] !rounded-[25px] relative cursor-pointer hover:border-2 hover:border-[#CF230F]" onClick={() => onClick({ status, ticketNumber, contact, category, message, subject, role, assignedUser, onAssign })}>
       <CardContent className="pt-5">
         <div className="flex flex-col h-full">
           <div className="flex justify-between items-start mb-4">
@@ -71,8 +70,8 @@ export function TicketCard({
             {renderAssignedSection()}
           </div>
 
-          <div className="flex mb-4 mt-4">
-            <div className="w-1/4 space-y-6 mr-8">
+          <div className="flex flex-wrap mb-4 mt-4">
+            <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 space-y-6 mr-8">
               <ul className="list-disc ml-4 space-y-2">
                 <li className="flex items-center">
                   <p className="text-sm font-bold text-black">Número de Ticket:</p>
@@ -93,17 +92,16 @@ export function TicketCard({
               </ul>
             </div>
 
-            <div className="flex ml-4">
+            <div className="w-full sm:w-1/2 md:w-2/3 flex ml-4">
               <TextArea
                 name="message"
                 placeholder="Escribe un mensaje..."
                 value={message}
                 onChange={() => {}}
                 readOnly={true}
-                className="border-gray-300 rounded-[15px] p-2 text-sm !h-[120px] !w-[700px]"
+                className="border-gray-300 rounded-[15px] p-2 text-sm !h-[120px] w-full max-w-[700px]"
               />
             </div>
-
           </div>
 
           <div className="absolute bottom-6 right-14 flex flex-col items-start space-y-4" role="button" aria-label="Toggle eye visibility">

@@ -57,7 +57,7 @@ export default function BasicModal({
       setMessage('');
       setSubject('');
     }
-  }, [isOpen, ticket]);  
+  }, [isOpen, ticket]);
 
   useEffect(() => {
     if (isOpen) {
@@ -117,8 +117,13 @@ export default function BasicModal({
     }
   };
 
-  const submitButtonText = isCreatingTicket ? 'Crear Ticket' : ( (isSupport || (!hasAssignment && ticket?.status == 'nuevo'))? 'Guardar' : null);
-  const ModalTitle = isCreatingTicket ? 'Creando Nuevo Ticket' : `Ticket-${ticket?.ticketNumber}`;
+  const submitButtonText = isCreatingTicket
+    ? 'Crear Ticket'
+    : (isSupport || (!hasAssignment && ticket?.status === 'nuevo')) ? 'Guardar' : null;
+
+  const ModalTitle = isCreatingTicket
+    ? 'Creando Nuevo Ticket'
+    : `Ticket-${ticket?.ticketNumber}`;
 
   const isSubmitDisabled = !selectedCategory || !message;
 

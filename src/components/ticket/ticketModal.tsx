@@ -107,6 +107,7 @@ export default function BasicModal({
         setTimeout(() => setNotification(null), 3000);
         onAction(selectedCategory.value);
         onClose();
+        window.location.reload();
       } else {
         throw new Error('Error en la respuesta del servidor.');
       }

@@ -1,5 +1,5 @@
 import pool from '@/lib/db';
-import { Ticket } from '@/models/ticket/ticket'
+import { Ticket, TicketPayload } from '@/models/ticket/ticket'
 
 export const getTickets = async (): Promise<Ticket[]> => {
   const res = await pool.query(`
@@ -32,4 +32,69 @@ export const getTickets = async (): Promise<Ticket[]> => {
       ? { id: row.assignedtoid.toString(), email: row.assignedtoemail }
       : null,
   }));
+};
+
+
+export const createOrUpdateTicket = async (data: TicketPayload) => {
+  const {
+    ticketNumber,
+    subject,
+    message,
+    category,
+    assignedUser,
+    creatorId,
+  } = data;
+
+  if (!subject || !message || !category || !creatorId) {
+    throw new Error('Missing required fields');
+  }
+  console.log("CATEGORY", category)
+  const client = await pool.connect();
+  try {
+    if (ticketNumber) {
+      const query = `
+        UPDATE tickets
+        SET 
+          subject = $1,
+          message = $2,
+          categoryid = (SELECT id FROM categories WHERE name = $3),
+          assignedtoid = $4,
+          assignedtoemail = $5,
+          updatedat = NOW()
+        WHERE id = $6
+        RETURNING *;
+      `;
+      const values = [
+        subject,
+        message,
+        category,
+        assignedUser?.id || null,
+        assignedUser?.email || null,
+        ticketNumber,
+      ];
+
+      const res = await client.query(query, values);
+      if (res.rowCount === 0) {
+        throw new Error('Ticket not found');
+      }
+      return res.rows[0];
+    } else {
+      const query = `
+        INSERT INTO tickets (
+          subject, message, categoryid, creatorid, createdat, updatedat
+        )
+        VALUES (
+          $1, $2, (SELECT id FROM categories WHERE name = $3), $4, NOW(), NOW()
+        )
+        RETURNING *;
+      `;
+      const values = [subject, message, category, creatorId];
+      const res = await client.query(query, values);
+      return res.rows[0];
+    }
+  } catch (error) {
+    throw error;
+  } finally {
+    client.release();
+  }
 };

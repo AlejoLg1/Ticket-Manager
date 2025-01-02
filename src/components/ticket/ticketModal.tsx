@@ -86,7 +86,7 @@ export default function BasicModal({
       subject,
       message,
       category: selectedCategory.value,
-      creatorId: '2', // Luego cambiar por id usuario
+      creatorId: '2', // TODO Cambiar por el id del usuario creador
       ticketNumber: ticket?.ticketNumber,
     };
 

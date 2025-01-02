@@ -48,7 +48,6 @@ export const createOrUpdateTicket = async (data: TicketPayload) => {
   if (!subject || !message || !category || !creatorId) {
     throw new Error('Missing required fields');
   }
-  console.log("CATEGORY", category)
   const client = await pool.connect();
   try {
     if (ticketNumber) {

@@ -1,19 +1,41 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { getCurrentDateTime } from '@utils/commonFunctions';
 
-interface CommentBoxProps {
-  isSupport: boolean;
-  messages: { id: string; text: string }[];
-  onAddMessage: (newMessage: { id: string; text: string }) => void;
-  onDeleteMessage: (id: string) => void;
-}
 
-export default function CommentBox({ isSupport, messages, onAddMessage, onDeleteMessage }: CommentBoxProps) {
+export default function CommentBox({ isSupport, ticketId, onAddMessage, onDeleteMessage }: CommentBoxProps) {
   const [newMessage, setNewMessage] = useState('');
+  const [messages, setMessages] = useState<{ id: string; text: string }[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const response = await fetch(`/api/services/comment?ticketid=${ticketId}`);
+        if (!response.ok) {
+          throw new Error('Error al cargar los comentarios');
+        }
+  
+        const comments = await response.json();
+        setMessages(
+          comments.map((comment: { id: number; comment: string }) => ({
+            id: comment.id.toString(),
+            text: comment.comment,
+          }))
+        );
+      } catch (error) {
+        console.error(error);
+        alert('Hubo un error al cargar los comentarios.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+    fetchComments();
+  }, [ticketId]);  
 
   const handleMessageChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setNewMessage(event.target.value);
@@ -34,8 +56,8 @@ export default function CommentBox({ isSupport, messages, onAddMessage, onDelete
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ticketId: 3, // Reemplazar con el ID real
-          supportId: 2, // Reemplazar con el ID support real
+          ticketId,
+          supportId: 2, // TODO cambiar por Id real del Support
           message: messageWithDate,
         }),
       });
@@ -46,10 +68,12 @@ export default function CommentBox({ isSupport, messages, onAddMessage, onDelete
 
       const createdComment = await response.json();
 
-      onAddMessage({
+      const newComment = {
         id: createdComment.id.toString(),
-        text: createdComment.message,
-      });
+        text: createdComment.comment,
+      };
+      setMessages((prevMessages) => [...prevMessages, newComment]);
+      onAddMessage(newComment);
 
       setNewMessage('');
     } catch (error) {
@@ -67,7 +91,9 @@ export default function CommentBox({ isSupport, messages, onAddMessage, onDelete
       </div>
 
       <div className="flex-grow mb-4 max-h-40 overflow-y-auto">
-        {messages.length === 0 ? (
+        {isLoading ? (
+          <p className="text-gray-500">Cargando comentarios...</p>
+        ) : messages.length === 0 ? (
           <p className="text-gray-500">No hay comentarios aún.</p>
         ) : (
           messages.map(({ id, text }) => (

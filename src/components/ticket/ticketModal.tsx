@@ -200,7 +200,7 @@ export default function BasicModal({
             <div className="mt-4">
               <CommentBox
                 isSupport={isSupport}
-                messages={comments}
+                ticketId={Number(ticket?.ticketNumber)}
                 onAddMessage={handleAddComment}
                 onDeleteMessage={handleDeleteComment}
               />

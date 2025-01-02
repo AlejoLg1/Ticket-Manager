@@ -177,7 +177,29 @@ export default function BasicModal({
                 <Clipboard className="!h-[40px] w-full" text="contacto@ejemplo.com" label={null} />
               </div>
             )}
+
+            {!isCreatingTicket ? (
+              <div className="ml-auto">
+                <EyeToggle fill="red" size={40} />
+              </div>
+            ) : null}
           </div>
+
+          {isCreatingTicket ? (
+            <>
+              <h3 className="pt-6 text-black text-xl font-bold mb-2">Documentos</h3>
+              <Upload />
+            </>
+          ) : (
+            <div className="mt-4">
+              <CommentBox
+                isSupport={isSupport}
+                messages={comments}
+                onAddMessage={handleAddComment}
+                onDeleteMessage={handleDeleteComment}
+              />
+            </div>
+          )}
 
           {notification && (
             <div className="p-4 bg-green-100 text-green-700 rounded-md text-center">

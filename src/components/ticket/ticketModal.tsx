@@ -35,7 +35,9 @@ export default function BasicModal({
   isCreatingTicket,
   hasAssignment,
 }: ModalProps) {
-  const [selectedCategory, setSelectedCategory] = useState<Option | null>(ticket ? categoryOptions.find(option => option.value === ticket.category) ?? null : null);
+  const [selectedCategory, setSelectedCategory] = useState<Option | null>(
+    ticket ? categoryOptions.find(option => option.value === ticket.category) ?? null : null
+  );
   const [message, setMessage] = useState<string>(ticket?.message || '');
   const [subject, setSubject] = useState<string>(ticket?.subject || '');
   const [notification, setNotification] = useState<string | null>(null);
@@ -44,16 +46,30 @@ export default function BasicModal({
   const isEditable = isCreatingTicket || (!isCreatingTicket && !hasAssignment && !isSupport);
 
   useEffect(() => {
-    if (isOpen && ticket) {
-      setSelectedCategory(categoryOptions.find(option => option.value === ticket.category) || null);
-      setMessage(ticket.message);
-      setSubject(ticket.subject);
-    } else if (!isOpen) {
+    if (isOpen) {
+      setSelectedCategory(
+        categoryOptions.find(option => option.value === ticket?.category) || null
+      );
+      setMessage(ticket?.message || '');
+      setSubject(ticket?.subject || '');
+    } else {
       setSelectedCategory(null);
       setMessage('');
       setSubject('');
     }
   }, [isOpen, ticket]);  
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
 
   const handleAddComment = (newComment: { id: string; text: string }) => {
     setComments((prevComments) => [...prevComments, newComment]);

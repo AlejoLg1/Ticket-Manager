@@ -9,7 +9,7 @@ import Upload from '@components/ui/common/upload';
 import CommentBox from '@components/ui/common/commentBox';
 import { categoryOptions } from '@/constants/selectOptions';
 import EyeToggle from "@components/eye/eyeToggle";
-import { Ticket } from '@/models/ticket/ticket'
+import { Ticket } from '@/models/ticket/ticket';
 
 interface ModalProps {
   ticket: Ticket | null;

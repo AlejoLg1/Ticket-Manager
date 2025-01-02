@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { getCurrentDateTime } from '@utils/commonFunctions';
 
-
 export default function CommentBox({ isSupport, ticketId, onAddMessage, onDeleteMessage }: CommentBoxProps) {
   const [newMessage, setNewMessage] = useState('');
   const [messages, setMessages] = useState<{ id: string; text: string }[]>([]);
@@ -18,7 +17,7 @@ export default function CommentBox({ isSupport, ticketId, onAddMessage, onDelete
         if (!response.ok) {
           throw new Error('Error al cargar los comentarios');
         }
-  
+
         const comments = await response.json();
         setMessages(
           comments.map((comment: { id: number; comment: string }) => ({
@@ -33,9 +32,9 @@ export default function CommentBox({ isSupport, ticketId, onAddMessage, onDelete
         setIsLoading(false);
       }
     };
-  
+
     fetchComments();
-  }, [ticketId]);  
+  }, [ticketId]);
 
   const handleMessageChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setNewMessage(event.target.value);
@@ -84,6 +83,26 @@ export default function CommentBox({ isSupport, ticketId, onAddMessage, onDelete
     }
   };
 
+  const handleDeleteMessage = async (commentId: string) => {
+    if (window.confirm('¿Estás seguro de que deseas eliminar este comentario?')) {
+      try {
+        const response = await fetch(`/api/services/comment?commentid=${commentId}`, {
+          method: 'DELETE',
+        });
+
+        if (!response.ok) {
+          throw new Error('Error al eliminar el comentario');
+        }
+
+        setMessages((prevMessages) => prevMessages.filter((message) => message.id !== commentId));
+        onDeleteMessage(commentId);
+      } catch (error) {
+        console.error('Error al eliminar el comentario:', error);
+        alert('Hubo un error al eliminar el comentario. Inténtalo nuevamente.');
+      }
+    }
+  };
+
   return (
     <div className="bg-white p-4 rounded-lg shadow-md max-w-4xl mx-auto flex flex-col h-full">
       <div className="mb-4">
@@ -106,7 +125,7 @@ export default function CommentBox({ isSupport, ticketId, onAddMessage, onDelete
                   width={30}
                   alt="Eliminar comentario"
                   className="cursor-pointer ml-4"
-                  onClick={() => onDeleteMessage(id)}
+                  onClick={() => handleDeleteMessage(id)}
                 />
               )}
             </div>

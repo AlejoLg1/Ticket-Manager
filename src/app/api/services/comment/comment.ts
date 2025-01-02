@@ -56,3 +56,25 @@ export const createComment = async (data: CommentPayload) => {
     client.release();
   }
 };
+
+
+export const deleteCommentById = async (commentId: number) => {
+    if (!commentId) {
+      throw new Error('Missing commentId');
+    }
+  
+    const client = await pool.connect();
+    try {
+      const query = `
+        DELETE FROM comments WHERE id = $1;
+      `;
+      const values = [commentId];
+      await client.query(query, values);
+    } catch (error) {
+      console.error('Error al eliminar el comentario:', error);
+      throw error;
+    } finally {
+      client.release();
+    }
+  };
+  

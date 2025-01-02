@@ -13,18 +13,50 @@ interface CommentBoxProps {
 
 export default function CommentBox({ isSupport, messages, onAddMessage, onDeleteMessage }: CommentBoxProps) {
   const [newMessage, setNewMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleMessageChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setNewMessage(event.target.value);
   };
 
-  const handleAddMessage = (event: React.MouseEvent) => {
+  const handleAddMessage = async (event: React.MouseEvent) => {
     event.preventDefault();
-    if (newMessage.trim() !== '') {
-      const messageId = `${Date.now()}`;
-      const messageWithDate = `[${getCurrentDateTime()}] ${newMessage}`;
-      onAddMessage({ id: messageId, text: messageWithDate });
+    if (newMessage.trim() === '') return;
+
+    const messageWithDate = `[${getCurrentDateTime()}] ${newMessage}`;
+
+    try {
+      setIsSubmitting(true);
+
+      const response = await fetch('/api/services/comment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ticketId: 3, // Reemplazar con el ID real
+          supportId: 2, // Reemplazar con el ID support real
+          message: messageWithDate,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al agregar el comentario');
+      }
+
+      const createdComment = await response.json();
+
+      onAddMessage({
+        id: createdComment.id.toString(),
+        text: createdComment.message,
+      });
+
       setNewMessage('');
+    } catch (error) {
+      console.error(error);
+      alert('Hubo un error al agregar el comentario. Inténtalo nuevamente.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -64,12 +96,16 @@ export default function CommentBox({ isSupport, messages, onAddMessage, onDelete
             value={newMessage}
             onChange={handleMessageChange}
             rows={1}
+            disabled={isSubmitting}
           />
           <button
-            className="mt-2 bg-[#CF230F] hover:bg-[#B01E0D] text-white px-4 py-2 rounded-full"
+            className={`mt-2 bg-[#CF230F] hover:bg-[#B01E0D] text-white px-4 py-2 rounded-full ${
+              isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
             onClick={handleAddMessage}
+            disabled={isSubmitting}
           >
-            Agregar Comentario
+            {isSubmitting ? 'Enviando...' : 'Agregar Comentario'}
           </button>
         </div>
       )}

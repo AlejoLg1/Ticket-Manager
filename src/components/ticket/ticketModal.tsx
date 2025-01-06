@@ -41,7 +41,7 @@ export default function BasicModal({
   const [message, setMessage] = useState<string>(ticket?.message || '');
   const [subject, setSubject] = useState<string>(ticket?.subject || '');
   const [notification, setNotification] = useState<string | null>(null);
-  const [_, setComments] = useState<{ id: string; text: string }[]>([]);
+  const setComments = useState<{ id: string; text: string }[]>([])[1];
   const isReadOnly = !isCreatingTicket && hasAssignment;
   const isEditable = isCreatingTicket || (!isCreatingTicket && !hasAssignment && !isSupport);
 

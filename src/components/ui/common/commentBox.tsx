@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { getCurrentDateTime } from '@utils/commonFunctions';
+import { CommentBoxProps } from '@/models/comment/comment';
 
 export default function CommentBox({ isSupport, ticketId, onAddMessage, onDeleteMessage }: CommentBoxProps) {
   const [newMessage, setNewMessage] = useState('');

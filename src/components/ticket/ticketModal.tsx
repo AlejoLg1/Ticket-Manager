@@ -180,7 +180,7 @@ export default function BasicModal({
             </div>
             {isSupport && (
               <div className="w-1/3">
-                <Clipboard className="!h-[40px] w-full" text="contacto@ejemplo.com" label={null} />
+                <Clipboard className="!h-[40px] w-full" text={String(ticket?.contact)} label={null} />
               </div>
             )}
 

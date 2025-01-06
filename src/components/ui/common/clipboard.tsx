@@ -11,12 +11,17 @@ interface Props {
 }
 
 function Clipboard({ text, classes, label, className }: Props) {
-  const handleCopy = () => {
+  const handleCopy = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
     copyToClipboard(text);
   };
 
   return (
-    <div className={`col gap-2 w-full h-[76px] ${className || ''}`}>
+    <div
+      className={`col gap-2 w-full h-[76px] ${className || ''}`}
+      onClick={(e) => e.stopPropagation()}
+    >
       {label && <p className="text-body-m">{label}</p>}
       <Button
         className={`w-full p-2 border rounded-full text-black flex items-center justify-between bg-gray-200 hover:bg-gray-300 ${classes || ''}`}

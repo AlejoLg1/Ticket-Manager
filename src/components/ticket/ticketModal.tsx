@@ -7,7 +7,7 @@ import { TextArea } from '@components/ui/inputs/textArea';
 import Clipboard from '@components/ui/common/clipboard';
 import Upload from '@components/ui/common/upload';
 import CommentBox from '@components/ui/common/commentBox';
-import { categoryOptions, statesOptions  } from '@/constants/selectOptions';
+import { categoryOptions, statesOptions } from '@/constants/selectOptions';
 import EyeToggle from "@components/eye/eyeToggle";
 import { ModalProps } from '@/models/modal/modal';
 
@@ -77,13 +77,13 @@ export default function BasicModal({
   };
 
   const handleSubmit = async () => {
-    if (!selectedCategory || !selectedState) return;
+    if (!selectedCategory) return;
   
     const payload = {
       subject,
       message,
       category: selectedCategory.value,
-      status: selectedState.value,
+      status: selectedState?.value || 'nuevo',
       creatorId: '2',
       ticketNumber: ticket?.ticketNumber,
     };

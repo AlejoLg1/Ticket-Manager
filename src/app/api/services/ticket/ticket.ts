@@ -17,7 +17,7 @@ export const getTickets = async (): Promise<Ticket[]> => {
     FROM tickets t
     INNER JOIN statuses s ON t.statusid = s.id
     INNER JOIN categories c ON t.categoryid = c.id
-    INNER JOIN supportwhitelist sw ON t.assignedtoid = sw.id
+    LEFT JOIN supportwhitelist sw ON t.assignedtoid = sw.id
     INNER JOIN users u ON t.creatorid = u.id
   `);
 

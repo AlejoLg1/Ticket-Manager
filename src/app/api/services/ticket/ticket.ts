@@ -11,12 +11,13 @@ export const getTickets = async (): Promise<Ticket[]> => {
       c.name AS category_name,
       u.email AS creator_email,
       t.assignedtoid,
-      t.assignedtoemail,
+      sw.email as assigned_email,
       t.createdat,
       t.updatedat
     FROM tickets t
     INNER JOIN statuses s ON t.statusid = s.id
     INNER JOIN categories c ON t.categoryid = c.id
+    INNER JOIN supportwhitelist sw ON t.assignedtoid = sw.id
     INNER JOIN users u ON t.creatorid = u.id
   `);
 
@@ -29,7 +30,7 @@ export const getTickets = async (): Promise<Ticket[]> => {
     subject: row.subject,
     role: 'user', // Pensar como hacerlo dinámico para reutilizar el endpoint
     assignedUser: row.assignedtoid 
-      ? { id: row.assignedtoid.toString(), email: row.assignedtoemail }
+      ? { id: row.assignedtoid.toString(), email: row.assigned_email }
       : null,
   }));
 };
@@ -62,7 +63,6 @@ export const createOrUpdateTicket = async (data: TicketPayload) => {
           categoryid = (SELECT id FROM categories WHERE name = $3),
           statusid = (SELECT id FROM statuses WHERE name = $4),
           assignedtoid = $5,
-          assignedtoemail = $6,
           updatedat = NOW()
         WHERE id = $7
         RETURNING *;

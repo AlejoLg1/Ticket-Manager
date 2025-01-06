@@ -9,17 +9,7 @@ import Upload from '@components/ui/common/upload';
 import CommentBox from '@components/ui/common/commentBox';
 import { categoryOptions } from '@/constants/selectOptions';
 import EyeToggle from "@components/eye/eyeToggle";
-import { Ticket } from '@/models/ticket/ticket';
-
-interface ModalProps {
-  ticket: Ticket | null;
-  isOpen: boolean;
-  onClose: () => void;
-  onAction: (category: string) => void;
-  isSupport: boolean;
-  isCreatingTicket: boolean;
-  hasAssignment: boolean;
-}
+import { ModalProps } from '@/models/modal/modal';
 
 type Option = {
   value: string;

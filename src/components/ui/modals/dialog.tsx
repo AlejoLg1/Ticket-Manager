@@ -15,19 +15,20 @@ interface DialogProps {
   hasAssignment: boolean;
   children: ReactNode;
   ticketState?: string;
+  selectedState: string;
+  onStateChange: (newState: string) => void; 
 }
 
-export const Dialog = ({ title, isOpen, onClose, isSupport, hasAssignment, children, ticketState = 'nuevo' }: DialogProps) => {
-  const [selectedState, setSelectedState] = useState<string>('nuevo');
-
-  useEffect(() => {
-    if (ticketState && statesOptions.some(option => option.value === ticketState)) {
-      setSelectedState(ticketState);
-    } else {
-      setSelectedState('nuevo');
-    }
-  }, [ticketState]);
-
+export const Dialog = ({
+  title,
+  isOpen,
+  onClose,
+  isSupport,
+  hasAssignment,
+  children,
+  selectedState,
+  onStateChange,
+}: DialogProps) => {
   if (!isOpen) return null;
 
   return createPortal(
@@ -50,14 +51,14 @@ export const Dialog = ({ title, isOpen, onClose, isSupport, hasAssignment, child
                 selected={statesOptions.find(option => option.value === selectedState) || null}
                 setSelected={(option) => {
                   if (option) {
-                    setSelectedState(option.value);
+                    onStateChange(option.value);
                   }
                 }}
                 triggerClassName={`font-bold flex items-center justify-center rounded-full state-${selectedState} || state-nuevo`}
                 dropdownStyle={{
                   borderRadius: '25px',
                   overflowY: 'auto',
-                  maxHeight: '120px', 
+                  maxHeight: '120px',
                 }}
                 itemClassName="hover:bg-gray-200"
                 hideXCircle={true}
@@ -68,9 +69,9 @@ export const Dialog = ({ title, isOpen, onClose, isSupport, hasAssignment, child
 
               <Button
                 className={`font-bold p-2 border rounded-[50px] w-[125px] h-[25px] flex items-center justify-center ${hasAssignment
-                    ? 'bg-[#504D4F] hover:bg-[#3D3B3C] text-white'
-                    : 'bg-[#0DBC2D] hover:bg-[#0B9E26] text-white'
-                  }`}
+                  ? 'bg-[#504D4F] hover:bg-[#3D3B3C] text-white'
+                  : 'bg-[#0DBC2D] hover:bg-[#0B9E26] text-white'
+                }`}
                 onClick={() => {
                   console.log(hasAssignment ? 'Desasignar' : 'Asignarme');
                 }}

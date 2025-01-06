@@ -43,13 +43,16 @@ export const createOrUpdateTicket = async (data: TicketPayload) => {
     category,
     assignedUser,
     creatorId,
+    status,
   } = data;
 
-  if (!subject || !message || !category || !creatorId) {
+  if (!subject || !message || !category || !creatorId || !status) {
     throw new Error('Missing required fields');
   }
+
   const client = await pool.connect();
   try {
+    console.log("STATUS: ", status)
     if (ticketNumber) {
       const query = `
         UPDATE tickets
@@ -57,16 +60,18 @@ export const createOrUpdateTicket = async (data: TicketPayload) => {
           subject = $1,
           message = $2,
           categoryid = (SELECT id FROM categories WHERE name = $3),
-          assignedtoid = $4,
-          assignedtoemail = $5,
+          statusid = (SELECT id FROM statuses WHERE name = $4),
+          assignedtoid = $5,
+          assignedtoemail = $6,
           updatedat = NOW()
-        WHERE id = $6
+        WHERE id = $7
         RETURNING *;
       `;
       const values = [
         subject,
         message,
         category,
+        status,
         assignedUser?.id || null,
         assignedUser?.email || null,
         ticketNumber,
@@ -80,14 +85,14 @@ export const createOrUpdateTicket = async (data: TicketPayload) => {
     } else {
       const query = `
         INSERT INTO tickets (
-          subject, message, categoryid, creatorid, createdat, updatedat
+          subject, message, categoryid, statusid, creatorid, createdat, updatedat
         )
         VALUES (
-          $1, $2, (SELECT id FROM categories WHERE name = $3), $4, NOW(), NOW()
+          $1, $2, (SELECT id FROM categories WHERE name = $3), (SELECT id FROM statuses WHERE name = $4), $5, NOW(), NOW()
         )
         RETURNING *;
       `;
-      const values = [subject, message, category, creatorId];
+      const values = [subject, message, category, status, creatorId];
       const res = await client.query(query, values);
       return res.rows[0];
     }

@@ -7,7 +7,7 @@ import { TextArea } from '@components/ui/inputs/textArea';
 import Clipboard from '@components/ui/common/clipboard';
 import Upload from '@components/ui/common/upload';
 import CommentBox from '@components/ui/common/commentBox';
-import { categoryOptions } from '@/constants/selectOptions';
+import { categoryOptions, statesOptions  } from '@/constants/selectOptions';
 import EyeToggle from "@components/eye/eyeToggle";
 import { ModalProps } from '@/models/modal/modal';
 
@@ -28,6 +28,9 @@ export default function BasicModal({
   const [selectedCategory, setSelectedCategory] = useState<Option | null>(
     ticket ? categoryOptions.find(option => option.value === ticket.category) ?? null : null
   );
+  const [selectedState, setSelectedState] = useState<Option | null>(
+    ticket ? statesOptions.find(option => option.value === ticket.status) ?? null : null
+  );
   const [message, setMessage] = useState<string>(ticket?.message || '');
   const [subject, setSubject] = useState<string>(ticket?.subject || '');
   const [notification, setNotification] = useState<string | null>(null);
@@ -40,10 +43,14 @@ export default function BasicModal({
       setSelectedCategory(
         categoryOptions.find(option => option.value === ticket?.category) || null
       );
+      setSelectedState(
+        statesOptions.find(option => option.value === ticket?.status) || null
+      );
       setMessage(ticket?.message || '');
       setSubject(ticket?.subject || '');
     } else {
       setSelectedCategory(null);
+      setSelectedState(null);
       setMessage('');
       setSubject('');
     }
@@ -70,13 +77,14 @@ export default function BasicModal({
   };
 
   const handleSubmit = async () => {
-    if (!selectedCategory) return;
-
+    if (!selectedCategory || !selectedState) return;
+  
     const payload = {
       subject,
       message,
       category: selectedCategory.value,
-      creatorId: '2', // TODO Cambiar por el id del usuario creador
+      status: selectedState.value,
+      creatorId: '2',
       ticketNumber: ticket?.ticketNumber,
     };
 
@@ -122,10 +130,13 @@ export default function BasicModal({
     <Dialog
       title={ModalTitle}
       isOpen={isOpen}
-      onClose={() => {}}
+      onClose={onClose}
       isSupport={isSupport}
       hasAssignment={hasAssignment}
-      ticketState={ticket?.status || 'nuevo'}
+      selectedState={selectedState?.value || 'nuevo'}
+      onStateChange={(newState) => {
+        setSelectedState(statesOptions.find(option => option.value === newState) || null);
+      }}
     >
       <div className="p-4 bg-white rounded-[25px] shadow-lg w-full max-w-4xl mx-auto">
         <form

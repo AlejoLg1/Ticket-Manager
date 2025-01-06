@@ -14,6 +14,7 @@ export interface TicketPayload {
   subject: string;
   message: string;
   category: string;
+  status: string;
   assignedUser?: { id: string; email: string } | null;
   creatorId: string;
 }

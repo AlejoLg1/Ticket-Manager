@@ -9,7 +9,7 @@ import Upload from '@components/ui/common/upload';
 import CommentBox from '@components/ui/common/commentBox';
 import { categoryOptions } from '@/constants/selectOptions';
 import EyeToggle from "@components/eye/eyeToggle";
-import { Ticket } from '@/models/ticket/ticket'
+import { Ticket } from '@/models/ticket/ticket';
 
 interface ModalProps {
   ticket: Ticket | null;
@@ -40,21 +40,36 @@ export default function BasicModal({
   );
   const [message, setMessage] = useState<string>(ticket?.message || '');
   const [subject, setSubject] = useState<string>(ticket?.subject || '');
+  const [notification, setNotification] = useState<string | null>(null);
   const [comments, setComments] = useState<{ id: string; text: string }[]>([]);
   const isReadOnly = !isCreatingTicket && hasAssignment;
   const isEditable = isCreatingTicket || (!isCreatingTicket && !hasAssignment && !isSupport);
 
   useEffect(() => {
-    if (ticket) {
-      setSelectedCategory(categoryOptions.find(option => option.value === ticket.category) || null);
-      setMessage(ticket.message);
-      setSubject(ticket.subject);
+    if (isOpen) {
+      setSelectedCategory(
+        categoryOptions.find(option => option.value === ticket?.category) || null
+      );
+      setMessage(ticket?.message || '');
+      setSubject(ticket?.subject || '');
     } else {
       setSelectedCategory(null);
       setMessage('');
       setSubject('');
     }
-  }, [ticket]);
+  }, [isOpen, ticket]);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
 
   const handleAddComment = (newComment: { id: string; text: string }) => {
     setComments((prevComments) => [...prevComments, newComment]);
@@ -64,16 +79,60 @@ export default function BasicModal({
     setComments((prevComments) => prevComments.filter((comment) => comment.id !== id));
   };
 
+  const handleSubmit = async () => {
+    if (!selectedCategory) return;
 
-  const submitButtonText = isCreatingTicket ? 'Crear Ticket' : (isSupport ? 'Guardar' : null);
-  const ModalTitle = isCreatingTicket ? 'Creando Nuevo Ticket' : `Ticket-${ticket?.ticketNumber}`;
+    const payload = {
+      subject,
+      message,
+      category: selectedCategory.value,
+      creatorId: '2', // TODO Cambiar por el id del usuario creador
+      ticketNumber: ticket?.ticketNumber,
+    };
+
+    try {
+      const endpoint = ticket
+        ? `/api/services/ticket?ticketNumber=${ticket.ticketNumber}`
+        : '/api/services/ticket';
+
+      const method = ticket ? 'PUT' : 'POST';
+      const response = await fetch(endpoint, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        setNotification(ticket ? 'Ticket modificado correctamente.' : 'Ticket creado correctamente.');
+        setTimeout(() => setNotification(null), 3000);
+        onAction(selectedCategory.value);
+        onClose();
+        window.location.reload();
+      } else {
+        throw new Error('Error en la respuesta del servidor.');
+      }
+    } catch (error) {
+      console.error(error);
+      setNotification('Hubo un problema al procesar la solicitud.');
+      setTimeout(() => setNotification(null), 3000);
+    }
+  };
+
+  const submitButtonText = isCreatingTicket
+    ? 'Crear Ticket'
+    : (isSupport || (!hasAssignment && ticket?.status === 'nuevo')) ? 'Guardar' : null;
+
+  const ModalTitle = isCreatingTicket
+    ? 'Creando Nuevo Ticket'
+    : `Ticket-${ticket?.ticketNumber}`;
 
   const isSubmitDisabled = !selectedCategory || !message;
+
   return (
     <Dialog
       title={ModalTitle}
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={() => {}}
       isSupport={isSupport}
       hasAssignment={hasAssignment}
       ticketState={ticket?.status || 'nuevo'}
@@ -83,9 +142,7 @@ export default function BasicModal({
           className="space-y-4"
           onSubmit={(e) => {
             e.preventDefault();
-            if (selectedCategory) {
-              onAction(selectedCategory.value);
-            }
+            handleSubmit();
           }}
         >
           <Input
@@ -131,8 +188,7 @@ export default function BasicModal({
               <div className="ml-auto">
                 <EyeToggle fill="red" size={40} />
               </div>
-            ) : (null)}
-
+            ) : null}
           </div>
 
           {isCreatingTicket ? (
@@ -148,6 +204,12 @@ export default function BasicModal({
                 onAddMessage={handleAddComment}
                 onDeleteMessage={handleDeleteComment}
               />
+            </div>
+          )}
+
+          {notification && (
+            <div className="p-4 bg-green-100 text-green-700 rounded-md text-center">
+              {notification}
             </div>
           )}
 

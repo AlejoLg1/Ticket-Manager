@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/cards/card";
 import { Button } from '@/components/ui/buttons/button';
 import EyeToggle from "@/components/eye/eyeToggle";
 import { TextArea } from "@ui/inputs/textArea";
-import { TicketCardProps } from '@/models/ticket/ticketCardProps';
+import { TicketCardProps } from '@/models/ticket/ticket';
 
 const AssignedLabel = ({ assignedUser }: { assignedUser: { name?: string; email?: string } | null }) => (
   <div className="text-sm font-bold text-black absolute right-10">

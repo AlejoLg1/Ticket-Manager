@@ -15,5 +15,18 @@ export interface TicketPayload {
   message: string;
   category: string;
   assignedUser?: { id: string; email: string } | null;
-  creatorId: string; // ID del usuario que crea o actualiza el ticket
+  creatorId: string;
+}
+
+export interface TicketCardProps {
+  status: "nuevo" | "curso" | "desarrollo" | "contactado" | "finalizado";
+  ticketNumber: string;
+  contact: string;
+  category: string;
+  message: string;
+  subject: string;
+  role: "user" | "support";
+  assignedUser: { name?: string; email?: string } | null;
+  onAssign: () => void;
+  onClick: (ticketData: Omit<TicketCardProps, 'onClick'>) => void;
 }

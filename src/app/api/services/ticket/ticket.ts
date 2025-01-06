@@ -28,7 +28,7 @@ export const getTickets = async (): Promise<Ticket[]> => {
     category: row.category_name,
     message: row.message,
     subject: row.subject,
-    role: 'user', // Pensar como hacerlo dinámico para reutilizar el endpoint
+    role: 'user', // Pensar como hacerlo dinámico para reutilizar el endpoint -> Si es support aparece el botón de asignarme
     assignedUser: row.assignedtoid 
       ? { id: row.assignedtoid.toString(), email: row.assigned_email }
       : null,

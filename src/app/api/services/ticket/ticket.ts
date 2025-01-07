@@ -11,13 +11,13 @@ export const getTickets = async (): Promise<Ticket[]> => {
       c.name AS category_name,
       u.email AS creator_email,
       t.assignedtoid,
-      sw.email as assigned_email,
+      us.email as assigned_email,
       t.createdat,
       t.updatedat
     FROM tickets t
     INNER JOIN statuses s ON t.statusid = s.id
     INNER JOIN categories c ON t.categoryid = c.id
-    LEFT JOIN supportwhitelist sw ON t.assignedtoid = sw.id
+    LEFT JOIN users us ON t.assignedtoid = us.id
     INNER JOIN users u ON t.creatorid = u.id
     ORDER BY t.updatedat DESC;
   `);

@@ -1,7 +1,7 @@
 'use client';
 
 import '@/styles/states.css';
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/buttons/button';
 import { Select } from '@/components/ui/selects/comboBox';
@@ -14,9 +14,9 @@ interface DialogProps {
   isSupport: boolean;
   hasAssignment: boolean;
   children: ReactNode;
-  ticketState?: string;
   selectedState: string;
-  onStateChange: (newState: string) => void; 
+  onStateChange: (newState: string) => void;
+  ticketNumber: string;
 }
 
 export const Dialog = ({
@@ -28,7 +28,51 @@ export const Dialog = ({
   children,
   selectedState,
   onStateChange,
+  ticketNumber,
 }: DialogProps) => {
+  const [assignedToId, setAssignedToId] = useState<number | null>(null);
+
+  const handleAssign = async () => {
+    const assignedId = 2; // TODO: Cambiar por id real del usuario support
+    try {
+      const response = await fetch(`/api/services/assigned?ticketNumber=${ticketNumber}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ assignedtoid: assignedId }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al asignar el ticket');
+      }
+
+      setAssignedToId(assignedId);
+    } catch (error) {
+      console.error('Error al asignar el ticket', error);
+    }
+  };
+
+  const handleUnassign = async () => {
+    try {
+      const response = await fetch(`/api/services/assigned?ticketNumber=${ticketNumber}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ assignedtoid: null }), 
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al desasignar el ticket');
+      }
+
+      setAssignedToId(null);
+    } catch (error) {
+      console.error('Error al desasignar el ticket', error);
+    }
+  };
+
   if (!isOpen) return null;
 
   return createPortal(
@@ -73,7 +117,11 @@ export const Dialog = ({
                   : 'bg-[#0DBC2D] hover:bg-[#0B9E26] text-white'
                 }`}
                 onClick={() => {
-                  console.log(hasAssignment ? 'Desasignar' : 'Asignarme');
+                  if (hasAssignment) {
+                    handleUnassign();
+                  } else {
+                    handleAssign();
+                  }
                 }}
               >
                 {hasAssignment ? 'Desasignar' : 'Asignarme'}

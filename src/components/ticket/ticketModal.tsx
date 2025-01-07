@@ -137,6 +137,7 @@ export default function BasicModal({
       onStateChange={(newState) => {
         setSelectedState(statesOptions.find(option => option.value === newState) || null);
       }}
+      ticketNumber={ticket?.ticketNumber || ''}
     >
       <div className="p-4 bg-white rounded-[25px] shadow-lg w-full max-w-4xl mx-auto">
         <form

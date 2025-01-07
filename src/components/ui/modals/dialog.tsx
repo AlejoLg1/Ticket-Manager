@@ -48,6 +48,7 @@ export const Dialog = ({
       }
 
       setAssignedToId(assignedId);
+      window.location.reload();
     } catch (error) {
       console.error('Error al asignar el ticket', error);
     }
@@ -68,6 +69,7 @@ export const Dialog = ({
       }
 
       setAssignedToId(null);
+      window.location.reload();
     } catch (error) {
       console.error('Error al desasignar el ticket', error);
     }

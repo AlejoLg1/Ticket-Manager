@@ -19,6 +19,7 @@ export const getTickets = async (): Promise<Ticket[]> => {
     INNER JOIN categories c ON t.categoryid = c.id
     LEFT JOIN supportwhitelist sw ON t.assignedtoid = sw.id
     INNER JOIN users u ON t.creatorid = u.id
+    ORDER BY t.updatedat DESC;
   `);
 
   return res.rows.map(row => ({

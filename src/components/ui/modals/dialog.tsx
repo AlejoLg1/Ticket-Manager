@@ -1,7 +1,7 @@
 'use client';
 
 import '@/styles/states.css';
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/buttons/button';
 import { Select } from '@/components/ui/selects/comboBox';
@@ -30,8 +30,6 @@ export const Dialog = ({
   onStateChange,
   ticketNumber,
 }: DialogProps) => {
-  const [assignedToId, setAssignedToId] = useState<number | null>(null);
-
   const handleAssign = async () => {
     const assignedId = 2; // TODO: Cambiar por id real del usuario support
     try {
@@ -47,7 +45,6 @@ export const Dialog = ({
         throw new Error('Error al asignar el ticket');
       }
 
-      setAssignedToId(assignedId);
       window.location.reload();
     } catch (error) {
       console.error('Error al asignar el ticket', error);
@@ -61,14 +58,13 @@ export const Dialog = ({
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ assignedtoid: null }), 
+        body: JSON.stringify({ assignedtoid: null }),
       });
 
       if (!response.ok) {
         throw new Error('Error al desasignar el ticket');
       }
 
-      setAssignedToId(null);
       window.location.reload();
     } catch (error) {
       console.error('Error al desasignar el ticket', error);

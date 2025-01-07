@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Button } from '@ui/buttons/button';
@@ -10,9 +10,26 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [whitelistedEmails, setWhitelistedEmails] = useState<string[]>([]);
   const router = useRouter();
 
-  const whitelistedEmails = ['admin@finaersa.com.ar', 'soporte@finaersa.com.ar', 'usuario@finaersa.com.ar'];
+  useEffect(() => {
+    const fetchWhitelistedEmails = async () => {
+      try {
+        const res = await fetch('/api/services/support');
+        if (!res.ok) {
+          throw new Error('Failed to fetch whitelisted emails');
+        }
+        const emails: string[] = await res.json();
+        setWhitelistedEmails(emails);
+      } catch (err) {
+        console.error('Error fetching whitelisted emails:', err);
+        setError('Error cargando correos permitidos. Por favor, intenta nuevamente.');
+      }
+    };
+
+    fetchWhitelistedEmails();
+  }, []);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -31,7 +48,7 @@ const Login = () => {
 
     try {
       if (whitelistedEmails.includes(email)) {
-        router.push('/support'); 
+        router.push('/support');
       } else {
         router.push('/');
       }

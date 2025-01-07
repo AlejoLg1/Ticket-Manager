@@ -1,7 +1,7 @@
 'use client';
 
 import '@/styles/states.css';
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/buttons/button';
 import { Select } from '@/components/ui/selects/comboBox';
@@ -14,19 +14,62 @@ interface DialogProps {
   isSupport: boolean;
   hasAssignment: boolean;
   children: ReactNode;
-  ticketState?: string;
+  selectedState: string;
+  onStateChange: (newState: string) => void;
+  ticketNumber: string;
 }
 
-export const Dialog = ({ title, isOpen, onClose, isSupport, hasAssignment, children, ticketState = 'nuevo' }: DialogProps) => {
-  const [selectedState, setSelectedState] = useState<string>('nuevo');
+export const Dialog = ({
+  title,
+  isOpen,
+  onClose,
+  isSupport,
+  hasAssignment,
+  children,
+  selectedState,
+  onStateChange,
+  ticketNumber,
+}: DialogProps) => {
+  const handleAssign = async () => {
+    const assignedId = 2; // TODO: Cambiar por id real del usuario support
+    try {
+      const response = await fetch(`/api/services/assigned?ticketNumber=${ticketNumber}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ assignedtoid: assignedId }),
+      });
 
-  useEffect(() => {
-    if (ticketState && statesOptions.some(option => option.value === ticketState)) {
-      setSelectedState(ticketState);
-    } else {
-      setSelectedState('nuevo');
+      if (!response.ok) {
+        throw new Error('Error al asignar el ticket');
+      }
+
+      window.location.reload();
+    } catch (error) {
+      console.error('Error al asignar el ticket', error);
     }
-  }, [ticketState]);
+  };
+
+  const handleUnassign = async () => {
+    try {
+      const response = await fetch(`/api/services/assigned?ticketNumber=${ticketNumber}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ assignedtoid: null }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al desasignar el ticket');
+      }
+
+      window.location.reload();
+    } catch (error) {
+      console.error('Error al desasignar el ticket', error);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -50,14 +93,14 @@ export const Dialog = ({ title, isOpen, onClose, isSupport, hasAssignment, child
                 selected={statesOptions.find(option => option.value === selectedState) || null}
                 setSelected={(option) => {
                   if (option) {
-                    setSelectedState(option.value);
+                    onStateChange(option.value);
                   }
                 }}
                 triggerClassName={`font-bold flex items-center justify-center rounded-full state-${selectedState} || state-nuevo`}
                 dropdownStyle={{
                   borderRadius: '25px',
                   overflowY: 'auto',
-                  maxHeight: '120px', 
+                  maxHeight: '120px',
                 }}
                 itemClassName="hover:bg-gray-200"
                 hideXCircle={true}
@@ -68,11 +111,15 @@ export const Dialog = ({ title, isOpen, onClose, isSupport, hasAssignment, child
 
               <Button
                 className={`font-bold p-2 border rounded-[50px] w-[125px] h-[25px] flex items-center justify-center ${hasAssignment
-                    ? 'bg-[#504D4F] hover:bg-[#3D3B3C] text-white'
-                    : 'bg-[#0DBC2D] hover:bg-[#0B9E26] text-white'
-                  }`}
+                  ? 'bg-[#504D4F] hover:bg-[#3D3B3C] text-white'
+                  : 'bg-[#0DBC2D] hover:bg-[#0B9E26] text-white'
+                }`}
                 onClick={() => {
-                  console.log(hasAssignment ? 'Desasignar' : 'Asignarme');
+                  if (hasAssignment) {
+                    handleUnassign();
+                  } else {
+                    handleAssign();
+                  }
                 }}
               >
                 {hasAssignment ? 'Desasignar' : 'Asignarme'}

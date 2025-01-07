@@ -11,13 +11,15 @@ export const getTickets = async (): Promise<Ticket[]> => {
       c.name AS category_name,
       u.email AS creator_email,
       t.assignedtoid,
-      t.assignedtoemail,
+      sw.email as assigned_email,
       t.createdat,
       t.updatedat
     FROM tickets t
     INNER JOIN statuses s ON t.statusid = s.id
     INNER JOIN categories c ON t.categoryid = c.id
+    LEFT JOIN supportwhitelist sw ON t.assignedtoid = sw.id
     INNER JOIN users u ON t.creatorid = u.id
+    ORDER BY t.updatedat DESC;
   `);
 
   return res.rows.map(row => ({
@@ -27,9 +29,9 @@ export const getTickets = async (): Promise<Ticket[]> => {
     category: row.category_name,
     message: row.message,
     subject: row.subject,
-    role: 'user', // Pensar como hacerlo dinámico para reutilizar el endpoint
+    role: 'support', // Pensar como hacerlo dinámico para reutilizar el endpoint -> Si es support aparece el botón de asignarme
     assignedUser: row.assignedtoid 
-      ? { id: row.assignedtoid.toString(), email: row.assignedtoemail }
+      ? { id: row.assignedtoid.toString(), email: row.assigned_email }
       : null,
   }));
 };
@@ -43,13 +45,16 @@ export const createOrUpdateTicket = async (data: TicketPayload) => {
     category,
     assignedUser,
     creatorId,
+    status,
   } = data;
 
-  if (!subject || !message || !category || !creatorId) {
+  if (!subject || !message || !category || !creatorId || !status) {
     throw new Error('Missing required fields');
   }
+
   const client = await pool.connect();
   try {
+    console.log("STATUS: ", status)
     if (ticketNumber) {
       const query = `
         UPDATE tickets
@@ -57,8 +62,8 @@ export const createOrUpdateTicket = async (data: TicketPayload) => {
           subject = $1,
           message = $2,
           categoryid = (SELECT id FROM categories WHERE name = $3),
-          assignedtoid = $4,
-          assignedtoemail = $5,
+          statusid = (SELECT id FROM statuses WHERE name = $4),
+          assignedtoid = $5,
           updatedat = NOW()
         WHERE id = $6
         RETURNING *;
@@ -67,8 +72,8 @@ export const createOrUpdateTicket = async (data: TicketPayload) => {
         subject,
         message,
         category,
+        status,
         assignedUser?.id || null,
-        assignedUser?.email || null,
         ticketNumber,
       ];
 
@@ -80,14 +85,14 @@ export const createOrUpdateTicket = async (data: TicketPayload) => {
     } else {
       const query = `
         INSERT INTO tickets (
-          subject, message, categoryid, creatorid, createdat, updatedat
+          subject, message, categoryid, statusid, creatorid, createdat, updatedat
         )
         VALUES (
-          $1, $2, (SELECT id FROM categories WHERE name = $3), $4, NOW(), NOW()
+          $1, $2, (SELECT id FROM categories WHERE name = $3), (SELECT id FROM statuses WHERE name = $4), $5, NOW(), NOW()
         )
         RETURNING *;
       `;
-      const values = [subject, message, category, creatorId];
+      const values = [subject, message, category, status, creatorId];
       const res = await client.query(query, values);
       return res.rows[0];
     }

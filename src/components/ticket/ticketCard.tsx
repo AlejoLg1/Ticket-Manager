@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/cards/card";
 import { Button } from '@/components/ui/buttons/button';
 import EyeToggle from "@/components/eye/eyeToggle";
 import { TextArea } from "@ui/inputs/textArea";
-import { TicketCardProps } from '@/models/ticket/ticketCardProps';
+import { TicketCardProps } from '@/models/ticket/ticket';
 
 const AssignedLabel = ({ assignedUser }: { assignedUser: { name?: string; email?: string } | null }) => (
   <div className="text-sm font-bold text-black absolute right-10">
@@ -36,6 +36,31 @@ export function TicketCard({
 
   const categoryLabel = categoryOptions.find(option => option.value === category)?.label || category;
 
+  const handleAssign = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+  
+    try {
+      const assignedId = 2; // TODO: Cambiar por el id real del usuario support
+      const response = await fetch(`/api/services/assigned?ticketNumber=${ticketNumber}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ assignedtoid: assignedId }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Error al asignar el ticket');
+      }
+  
+      onAssign();
+      window.location.reload();
+    } catch (error) {
+      console.error('Error al asignar el ticket', error);
+    }
+  };
+  
+
   const renderAssignedSection = () => {
     if (role === 'support') {
       return assignedUser ? (
@@ -43,7 +68,7 @@ export function TicketCard({
       ) : (
         <Button
           className="bg-[#0DBC2D] hover:bg-[#0B9E26] text-white font-bold p-2 border rounded-[50px] absolute right-4 w-full sm:w-[125px] h-[25px] flex items-center justify-center"
-          onClick={onAssign}
+          onClick={handleAssign}
         >
           Asignarme
         </Button>
@@ -105,10 +130,7 @@ export function TicketCard({
           </div>
 
           <div className="absolute bottom-6 right-14 flex flex-col items-start space-y-4" role="button" aria-label="Toggle eye visibility">
-            <EyeToggle 
-              fill="red" 
-              size={40}
-            />
+            <EyeToggle fill="red" size={40} />
           </div>
         </div>
       </CardContent>

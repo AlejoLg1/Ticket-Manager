@@ -7,19 +7,9 @@ import { TextArea } from '@components/ui/inputs/textArea';
 import Clipboard from '@components/ui/common/clipboard';
 import Upload from '@components/ui/common/upload';
 import CommentBox from '@components/ui/common/commentBox';
-import { categoryOptions } from '@/constants/selectOptions';
+import { categoryOptions, statesOptions } from '@/constants/selectOptions';
 import EyeToggle from "@components/eye/eyeToggle";
-import { Ticket } from '@/models/ticket/ticket';
-
-interface ModalProps {
-  ticket: Ticket | null;
-  isOpen: boolean;
-  onClose: () => void;
-  onAction: (category: string) => void;
-  isSupport: boolean;
-  isCreatingTicket: boolean;
-  hasAssignment: boolean;
-}
+import { ModalProps } from '@/models/modal/modal';
 
 type Option = {
   value: string;
@@ -38,9 +28,11 @@ export default function BasicModal({
   const [selectedCategory, setSelectedCategory] = useState<Option | null>(
     ticket ? categoryOptions.find(option => option.value === ticket.category) ?? null : null
   );
+  const [selectedState, setSelectedState] = useState<Option | null>(
+    ticket ? statesOptions.find(option => option.value === ticket.status) ?? null : null
+  );
   const [message, setMessage] = useState<string>(ticket?.message || '');
   const [subject, setSubject] = useState<string>(ticket?.subject || '');
-  const [notification, setNotification] = useState<string | null>(null);
   const setComments = useState<{ id: string; text: string }[]>([])[1];
   const isReadOnly = !isCreatingTicket && hasAssignment;
   const isEditable = isCreatingTicket || (!isCreatingTicket && !hasAssignment && !isSupport);
@@ -50,10 +42,14 @@ export default function BasicModal({
       setSelectedCategory(
         categoryOptions.find(option => option.value === ticket?.category) || null
       );
+      setSelectedState(
+        statesOptions.find(option => option.value === ticket?.status) || null
+      );
       setMessage(ticket?.message || '');
       setSubject(ticket?.subject || '');
     } else {
       setSelectedCategory(null);
+      setSelectedState(null);
       setMessage('');
       setSubject('');
     }
@@ -81,16 +77,18 @@ export default function BasicModal({
 
   const handleSubmit = async () => {
     if (!selectedCategory) return;
-
+  
     const payload = {
       subject,
       message,
       category: selectedCategory.value,
-      creatorId: '2', // TODO Cambiar por el id del usuario creador
+      status: selectedState?.value || 'nuevo',
+      creatorId: '2',
       ticketNumber: ticket?.ticketNumber,
     };
 
     try {
+      
       const endpoint = ticket
         ? `/api/services/ticket?ticketNumber=${ticket.ticketNumber}`
         : '/api/services/ticket';
@@ -103,8 +101,6 @@ export default function BasicModal({
       });
 
       if (response.ok) {
-        setNotification(ticket ? 'Ticket modificado correctamente.' : 'Ticket creado correctamente.');
-        setTimeout(() => setNotification(null), 3000);
         onAction(selectedCategory.value);
         onClose();
         window.location.reload();
@@ -113,8 +109,7 @@ export default function BasicModal({
       }
     } catch (error) {
       console.error(error);
-      setNotification('Hubo un problema al procesar la solicitud.');
-      setTimeout(() => setNotification(null), 3000);
+      onClose();
     }
   };
 
@@ -132,10 +127,14 @@ export default function BasicModal({
     <Dialog
       title={ModalTitle}
       isOpen={isOpen}
-      onClose={() => {}}
+      onClose={onClose}
       isSupport={isSupport}
       hasAssignment={hasAssignment}
-      ticketState={ticket?.status || 'nuevo'}
+      selectedState={selectedState?.value || 'nuevo'}
+      onStateChange={(newState) => {
+        setSelectedState(statesOptions.find(option => option.value === newState) || null);
+      }}
+      ticketNumber={ticket?.ticketNumber || ''}
     >
       <div className="p-4 bg-white rounded-[25px] shadow-lg w-full max-w-4xl mx-auto">
         <form
@@ -180,7 +179,7 @@ export default function BasicModal({
             </div>
             {isSupport && (
               <div className="w-1/3">
-                <Clipboard className="!h-[40px] w-full" text="contacto@ejemplo.com" label={null} />
+                <Clipboard className="!h-[40px] w-full" text={String(ticket?.contact)} label={null} />
               </div>
             )}
 
@@ -204,12 +203,6 @@ export default function BasicModal({
                 onAddMessage={handleAddComment}
                 onDeleteMessage={handleDeleteComment}
               />
-            </div>
-          )}
-
-          {notification && (
-            <div className="p-4 bg-green-100 text-green-700 rounded-md text-center">
-              {notification}
             </div>
           )}
 

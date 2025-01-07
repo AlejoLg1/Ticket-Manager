@@ -33,7 +33,6 @@ export default function BasicModal({
   );
   const [message, setMessage] = useState<string>(ticket?.message || '');
   const [subject, setSubject] = useState<string>(ticket?.subject || '');
-  const [notification, setNotification] = useState<string | null>(null);
   const setComments = useState<{ id: string; text: string }[]>([])[1];
   const isReadOnly = !isCreatingTicket && hasAssignment;
   const isEditable = isCreatingTicket || (!isCreatingTicket && !hasAssignment && !isSupport);
@@ -89,6 +88,7 @@ export default function BasicModal({
     };
 
     try {
+      
       const endpoint = ticket
         ? `/api/services/ticket?ticketNumber=${ticket.ticketNumber}`
         : '/api/services/ticket';
@@ -101,8 +101,6 @@ export default function BasicModal({
       });
 
       if (response.ok) {
-        setNotification(ticket ? 'Ticket modificado correctamente.' : 'Ticket creado correctamente.');
-        setTimeout(() => setNotification(null), 3000);
         onAction(selectedCategory.value);
         onClose();
         window.location.reload();
@@ -111,8 +109,7 @@ export default function BasicModal({
       }
     } catch (error) {
       console.error(error);
-      setNotification('Hubo un problema al procesar la solicitud.');
-      setTimeout(() => setNotification(null), 3000);
+      onClose();
     }
   };
 
@@ -206,12 +203,6 @@ export default function BasicModal({
                 onAddMessage={handleAddComment}
                 onDeleteMessage={handleDeleteComment}
               />
-            </div>
-          )}
-
-          {notification && (
-            <div className="p-4 bg-green-100 text-green-700 rounded-md text-center">
-              {notification}
             </div>
           )}
 

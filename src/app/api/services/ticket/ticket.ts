@@ -64,7 +64,7 @@ export const createOrUpdateTicket = async (data: TicketPayload) => {
           statusid = (SELECT id FROM statuses WHERE name = $4),
           assignedtoid = $5,
           updatedat = NOW()
-        WHERE id = $7
+        WHERE id = $6
         RETURNING *;
       `;
       const values = [
@@ -73,7 +73,6 @@ export const createOrUpdateTicket = async (data: TicketPayload) => {
         category,
         status,
         assignedUser?.id || null,
-        assignedUser?.email || null,
         ticketNumber,
       ];
 

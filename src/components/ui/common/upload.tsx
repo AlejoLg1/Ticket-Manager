@@ -37,8 +37,8 @@ export default function Upload() {
           <Image
             src="/images/upload.svg"
             alt="upload-logo"
-            width={40} // Especifica el ancho en píxeles
-            height={40} // Especifica la altura en píxeles
+            width={40} 
+            height={40}
             className="ml-1 stroke-white stroke-1"
           />
         </Button>

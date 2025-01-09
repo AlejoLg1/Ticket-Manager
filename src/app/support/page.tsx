@@ -7,12 +7,20 @@ import { TicketFilters } from "@/components/ticket/ticketFilters";
 import { TicketCard } from "@/components/ticket/ticketCard";
 import BasicModal from '@components/ticket/ticketModal';
 import { Ticket } from '@/models/ticket/ticket';
+import useAuth from '@/hooks/useAuth';
 
 const Support = () => {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [tickets, setTickets] = useState<Ticket[]>([]);
+  const { session } = useAuth();
+  
+  useEffect(() => {
+    if (!session || session.user.role !== 'support') {
+      router.push('/login');
+    }
+  }, [session, router]);
 
   useEffect(() => {
     const fetchTickets = async () => {

@@ -6,6 +6,8 @@ import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/buttons/button';
 import { Select } from '@/components/ui/selects/comboBox';
 import { statesOptions } from '@/constants/selectOptions';
+import useAuth from '@/hooks/useAuth';
+
 
 interface DialogProps {
   title: string;
@@ -30,8 +32,9 @@ export const Dialog = ({
   onStateChange,
   ticketNumber,
 }: DialogProps) => {
+  const { session } = useAuth();
   const handleAssign = async () => {
-    const assignedId = 2; // TODO: Cambiar por id real del usuario support
+    const assignedId = Number(session?.user?.id);
     try {
       const response = await fetch(`/api/services/assigned?ticketNumber=${ticketNumber}`, {
         method: 'PUT',

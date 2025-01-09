@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/buttons/button';
 import EyeToggle from "@/components/eye/eyeToggle";
 import { TextArea } from "@ui/inputs/textArea";
 import { TicketCardProps } from '@/models/ticket/ticket';
+import useAuth from '@/hooks/useAuth';
 
 const AssignedLabel = ({ assignedUser }: { assignedUser: { name?: string; email?: string } | null }) => (
   <div className="text-sm font-bold text-black absolute right-10">
@@ -35,12 +36,12 @@ export function TicketCard({
   };
 
   const categoryLabel = categoryOptions.find(option => option.value === category)?.label || category;
-
+  const { session } = useAuth();
   const handleAssign = async (e: React.MouseEvent) => {
     e.stopPropagation();
-  
+    
     try {
-      const assignedId = 2; // TODO: Cambiar por el id real del usuario support
+      const assignedId = Number(session?.user?.id);
       const response = await fetch(`/api/services/assigned?ticketNumber=${ticketNumber}`, {
         method: 'PUT',
         headers: {

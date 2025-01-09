@@ -18,7 +18,7 @@ const App = () => {
   const { session } = useAuth();
   
   useEffect(() => {
-    if (!session || session.user.role !== 'user') {
+    if (session && session.user.role !== 'user') {
       router.push('/login');
     }
   }, [session, router]);

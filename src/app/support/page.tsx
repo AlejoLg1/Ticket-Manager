@@ -17,7 +17,7 @@ const Support = () => {
   const { session } = useAuth();
   
   useEffect(() => {
-    if (!session || session.user.role !== 'support') {
+    if (session && session.user?.role !== 'support') {
       router.push('/login');
     }
   }, [session, router]);

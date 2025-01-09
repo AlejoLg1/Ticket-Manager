@@ -82,7 +82,6 @@ const Login = () => {
 
       if (res?.ok) {
         const session = await fetch('/api/auth/session').then((res) => res.json());
-        // const userRole = session?.role;
         redirectByRole(session, router, setError, whitelistedEmails);
       }
 

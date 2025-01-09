@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useState, useEffect } from 'react';
 import { Dialog } from '@components/ui/modals/dialog';
 import { Input } from '@components/ui/inputs/input';
@@ -10,6 +12,7 @@ import CommentBox from '@components/ui/common/commentBox';
 import { categoryOptions, statesOptions } from '@/constants/selectOptions';
 import EyeToggle from "@components/eye/eyeToggle";
 import { ModalProps } from '@/models/modal/modal';
+import useAuth from '@/hooks/useAuth';
 
 type Option = {
   value: string;
@@ -25,6 +28,7 @@ export default function BasicModal({
   isCreatingTicket,
   hasAssignment,
 }: ModalProps) {
+  const { session } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState<Option | null>(
     ticket ? categoryOptions.find(option => option.value === ticket.category) ?? null : null
   );
@@ -36,7 +40,7 @@ export default function BasicModal({
   const setComments = useState<{ id: string; text: string }[]>([])[1];
   const isReadOnly = !isCreatingTicket && hasAssignment;
   const isEditable = isCreatingTicket || (!isCreatingTicket && !hasAssignment && !isSupport);
-
+  
   useEffect(() => {
     if (isOpen) {
       setSelectedCategory(
@@ -77,13 +81,13 @@ export default function BasicModal({
 
   const handleSubmit = async () => {
     if (!selectedCategory) return;
-  
+    
     const payload = {
       subject,
       message,
       category: selectedCategory.value,
       status: selectedState?.value || 'nuevo',
-      creatorId: '2',
+      creatorId: Number(session?.user?.id),
       ticketNumber: ticket?.ticketNumber,
     };
 

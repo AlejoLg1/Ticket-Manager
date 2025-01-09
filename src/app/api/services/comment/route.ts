@@ -43,7 +43,6 @@ export async function DELETE(request: Request) {
         return NextResponse.json({ error: 'Missing commentId' }, { status: 400 });
       }
   
-      // Llamamos a la función para borrar el comentario
       await deleteCommentById(commentId);
       return NextResponse.json({ message: 'Comentario eliminado' }, { status: 200 });
     } catch (e) {

@@ -5,7 +5,7 @@ export interface Ticket {
     category: string;
     message: string;
     subject: string;
-    role: "user" | "support";
+    role: string;
     assignedUser: { name?: string; email?: string } | null;
   }
  
@@ -26,7 +26,7 @@ export interface TicketCardProps {
   category: string;
   message: string;
   subject: string;
-  role: "user" | "support";
+  role: string;
   assignedUser: { name?: string; email?: string } | null;
   onAssign: () => void;
   onClick: (ticketData: Omit<TicketCardProps, 'onClick'>) => void;

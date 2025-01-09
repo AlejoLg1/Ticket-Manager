@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getTickets, createOrUpdateTicket } from '@api/services/ticket/ticket';
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    const tickets = await getTickets();
+    const tickets = await getTickets(req);
     return NextResponse.json(tickets);
   } catch (e) {
     return NextResponse.json({ error: 'Error fetching tickets', msg: e }, { status: 500 });

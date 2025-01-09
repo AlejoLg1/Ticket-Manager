@@ -1,7 +1,14 @@
-import pool from '@/lib/db';
-import { Ticket, TicketPayload } from '@/models/ticket/ticket'
+'use server'
 
-export const getTickets = async (): Promise<Ticket[]> => {
+import { NextRequest } from 'next/server';
+import pool from '@/lib/db';
+import { Ticket, TicketPayload } from '@/models/ticket/ticket';
+import { getToken } from 'next-auth/jwt';
+
+export const getTickets = async (req: NextRequest): Promise<Ticket[]> => {
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  const role = String(token?.role || 'user');
+
   const res = await pool.query(`
     SELECT 
       t.id AS ticket_id,
@@ -11,13 +18,13 @@ export const getTickets = async (): Promise<Ticket[]> => {
       c.name AS category_name,
       u.email AS creator_email,
       t.assignedtoid,
-      sw.email as assigned_email,
+      us.email as assigned_email,
       t.createdat,
       t.updatedat
     FROM tickets t
     INNER JOIN statuses s ON t.statusid = s.id
     INNER JOIN categories c ON t.categoryid = c.id
-    LEFT JOIN supportwhitelist sw ON t.assignedtoid = sw.id
+    LEFT JOIN users us ON t.assignedtoid = us.id
     INNER JOIN users u ON t.creatorid = u.id
     ORDER BY t.updatedat DESC;
   `);
@@ -29,8 +36,8 @@ export const getTickets = async (): Promise<Ticket[]> => {
     category: row.category_name,
     message: row.message,
     subject: row.subject,
-    role: 'support', // Pensar como hacerlo dinámico para reutilizar el endpoint -> Si es support aparece el botón de asignarme
-    assignedUser: row.assignedtoid 
+    role: role,
+    assignedUser: row.assignedtoid
       ? { id: row.assignedtoid.toString(), email: row.assigned_email }
       : null,
   }));
@@ -43,7 +50,6 @@ export const createOrUpdateTicket = async (data: TicketPayload) => {
     subject,
     message,
     category,
-    assignedUser,
     creatorId,
     status,
   } = data;
@@ -54,7 +60,6 @@ export const createOrUpdateTicket = async (data: TicketPayload) => {
 
   const client = await pool.connect();
   try {
-    console.log("STATUS: ", status)
     if (ticketNumber) {
       const query = `
         UPDATE tickets
@@ -63,9 +68,8 @@ export const createOrUpdateTicket = async (data: TicketPayload) => {
           message = $2,
           categoryid = (SELECT id FROM categories WHERE name = $3),
           statusid = (SELECT id FROM statuses WHERE name = $4),
-          assignedtoid = $5,
           updatedat = NOW()
-        WHERE id = $6
+        WHERE id = $5
         RETURNING *;
       `;
       const values = [
@@ -73,7 +77,6 @@ export const createOrUpdateTicket = async (data: TicketPayload) => {
         message,
         category,
         status,
-        assignedUser?.id || null,
         ticketNumber,
       ];
 

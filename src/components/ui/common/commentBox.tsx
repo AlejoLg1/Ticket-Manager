@@ -4,12 +4,14 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { getCurrentDateTime } from '@utils/commonFunctions';
 import { CommentBoxProps } from '@/models/comment/comment';
+import useAuth from '@/hooks/useAuth';
 
 export default function CommentBox({ isSupport, ticketId, onAddMessage, onDeleteMessage }: CommentBoxProps) {
   const [newMessage, setNewMessage] = useState('');
   const [messages, setMessages] = useState<{ id: string; text: string }[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const { session } = useAuth();
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -57,7 +59,7 @@ export default function CommentBox({ isSupport, ticketId, onAddMessage, onDelete
         },
         body: JSON.stringify({
           ticketId,
-          supportId: 2, // TODO cambiar por Id real del Support
+          supportId: Number(session?.user?.id),
           message: messageWithDate,
         }),
       });

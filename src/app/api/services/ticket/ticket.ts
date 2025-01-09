@@ -56,7 +56,6 @@ export const createOrUpdateTicket = async (data: TicketPayload) => {
     subject,
     message,
     category,
-    assignedUser,
     creatorId,
     status,
   } = data;

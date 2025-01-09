@@ -1,16 +1,14 @@
 'use server'
 
+import { NextRequest } from 'next/server';
 import pool from '@/lib/db';
-import { NextApiRequest } from 'next';
-import { Ticket, TicketPayload } from '@/models/ticket/ticket'
+import { Ticket, TicketPayload } from '@/models/ticket/ticket';
 import { getToken } from 'next-auth/jwt';
 
-export const getTickets = async (req: NextApiRequest): Promise<Ticket[]> => {
-
+export const getTickets = async (req: NextRequest): Promise<Ticket[]> => {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-  const role = String(token?.role || "user")
+  const role = String(token?.role || 'user');
 
-  
   const res = await pool.query(`
     SELECT 
       t.id AS ticket_id,
@@ -39,7 +37,7 @@ export const getTickets = async (req: NextApiRequest): Promise<Ticket[]> => {
     message: row.message,
     subject: row.subject,
     role: role,
-    assignedUser: row.assignedtoid 
+    assignedUser: row.assignedtoid
       ? { id: row.assignedtoid.toString(), email: row.assigned_email }
       : null,
   }));

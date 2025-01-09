@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { NextApiRequest } from 'next';
+import { NextRequest } from 'next/server';
 import { getTickets, createOrUpdateTicket } from '@api/services/ticket/ticket';
 
-export async function GET(req: NextApiRequest) {
+export async function GET(req: NextRequest) {
   try {
     const tickets = await getTickets(req);
     return NextResponse.json(tickets);

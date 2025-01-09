@@ -1,17 +1,14 @@
 'use server'
 
 import pool from '@/lib/db';
-// import { getServerSession } from 'next-auth';
-// import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { NextApiRequest } from 'next';
 import { Ticket, TicketPayload } from '@/models/ticket/ticket'
 import { getToken } from 'next-auth/jwt';
 
-export const getTickets = async (req): Promise<Ticket[]> => {
-
-  // const session = await getServerSession({ req, ...authOptions });
-  // console.log("🚀 ~ getTickets ~ session:", session)
+export const getTickets = async (req: NextApiRequest): Promise<Ticket[]> => {
 
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  const role = String(token?.role || "user")
   console.log("🚀 ~ getTickets ~ token:", token);
 
   if (!token) {
@@ -45,7 +42,7 @@ export const getTickets = async (req): Promise<Ticket[]> => {
     category: row.category_name,
     message: row.message,
     subject: row.subject,
-    role: 'user', // Pensar como hacerlo dinámico para reutilizar el endpoint -> Si es support aparece el botón de asignarme
+    role: role,
     assignedUser: row.assignedtoid 
       ? { id: row.assignedtoid.toString(), email: row.assigned_email }
       : null,

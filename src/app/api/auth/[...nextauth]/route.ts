@@ -1,4 +1,3 @@
-// route.ts
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
@@ -50,15 +49,7 @@ export const authOptions = NextAuth({
       console.log("TOKEN DESDE ROUTE: ", token)
       return token;
     },
-    // async session({ session, token }) {
-    //   if (session && token) {
-    //     session.id = typeof token.id === 'string' ? token.id : '';
-    //     session.email = typeof token.email === 'string' ? token.email : '';
-    //     session.role = typeof token.role === 'string' ? token.role : 'user';
-    //   }
-    //   console.log("SESSION DESDE ROUTE: ", token)
-    //   return session;
-    // },
+
     async session({ session, token }) {
       if (token) {
         session.user = {

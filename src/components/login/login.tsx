@@ -65,7 +65,7 @@ const Login = () => {
     setLoginAttempted(true);
 
     try {
-      if (session && email !== session.user.email) {
+      if (session && email !== session?.user?.email) {
         await signOut({ redirect: false });
         setPassword('');
         setLoading(false);

@@ -82,8 +82,9 @@ const Login = () => {
       if (res?.ok) {
         const session = await fetch('/api/auth/session').then((res) => res.json());
         redirectByRole(session, router, setError, whitelistedEmails);
+      } else {
+        setError('Verifique sus credenciales e intente nuevamente.');
       }
-
     } catch (error) {
       console.error('Error durante el login:', error);
       setError('Ocurrió un error inesperado. Por favor, intenta nuevamente.');

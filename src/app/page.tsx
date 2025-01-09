@@ -1,6 +1,5 @@
 'use client';
 
-import useAuth from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Header from "@components/header/header";
@@ -12,7 +11,6 @@ import { Ticket } from '@/models/ticket/ticket';
 
 const App = () => {
   const router = useRouter();
-  const { session, status } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [tickets, setTickets] = useState<Ticket[]>([]);

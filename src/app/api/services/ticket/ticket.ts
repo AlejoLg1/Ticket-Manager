@@ -10,9 +10,6 @@ export const getTickets = async (req: NextApiRequest): Promise<Ticket[]> => {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   const role = String(token?.role || "user")
 
-  if (!token) {
-    throw new Error('No token found');
-  }
   
   const res = await pool.query(`
     SELECT 

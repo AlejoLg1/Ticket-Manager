@@ -1,7 +1,8 @@
+// route.ts
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
-export const auth = NextAuth({
+export const authOptions = NextAuth({
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -22,7 +23,6 @@ export const auth = NextAuth({
             }),
           });
 
-
           if (res.ok) {
             const user = await res.json();
             return { id: user.id, email: user.email, role: user.role };
@@ -36,6 +36,7 @@ export const auth = NextAuth({
       },
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'jwt',
   },
@@ -46,6 +47,7 @@ export const auth = NextAuth({
         token.email = user.email;
         token.role = user.role;
       }
+      console.log("TOKEN DESDE ROUTE: ", token)
       return token;
     },
     async session({ session, token }) {
@@ -54,6 +56,7 @@ export const auth = NextAuth({
         session.email = typeof token.email === 'string' ? token.email : '';
         session.role = typeof token.role === 'string' ? token.role : 'user';
       }
+      console.log("SESSION DESDE ROUTE: ", token)
       return session;
     },
   },
@@ -64,6 +67,6 @@ export const auth = NextAuth({
 });
 
 
-export const GET = auth;
-export const POST = auth;
+export const GET = authOptions;
+export const POST = authOptions;
 

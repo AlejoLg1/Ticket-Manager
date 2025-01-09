@@ -83,7 +83,7 @@ export default function BasicModal({
       message,
       category: selectedCategory.value,
       status: selectedState?.value || 'nuevo',
-      creatorId: '2',
+      creatorId: '6', // Aca
       ticketNumber: ticket?.ticketNumber,
     };
 

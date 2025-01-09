@@ -1,7 +1,24 @@
+'use server'
+
 import pool from '@/lib/db';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { Ticket, TicketPayload } from '@/models/ticket/ticket'
 
 export const getTickets = async (): Promise<Ticket[]> => {
+
+  const session = await getServerSession(authOptions);
+
+  console.log(" "); 
+  console.log(" "); 
+  console.log(" "); 
+  console.log("session: ", session)
+  console.log("AUTH: ", authOptions); 
+  // console.log("SESSION: ", session); 
+  console.log(" "); 
+  console.log(" "); 
+  console.log(" "); 
+
   const res = await pool.query(`
     SELECT 
       t.id AS ticket_id,
@@ -29,7 +46,7 @@ export const getTickets = async (): Promise<Ticket[]> => {
     category: row.category_name,
     message: row.message,
     subject: row.subject,
-    role: 'support', // Pensar como hacerlo dinámico para reutilizar el endpoint -> Si es support aparece el botón de asignarme
+    role: 'user', // Pensar como hacerlo dinámico para reutilizar el endpoint -> Si es support aparece el botón de asignarme
     assignedUser: row.assignedtoid 
       ? { id: row.assignedtoid.toString(), email: row.assigned_email }
       : null,

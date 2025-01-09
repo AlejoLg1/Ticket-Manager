@@ -30,7 +30,6 @@ export const getCommentsByTicketId = async (ticketId: number) => {
 
 
 export const createComment = async (data: CommentPayload) => {
-    console.log("ESTOY ACÁ")
   const { ticketId, supportId, message } = data;
 
   if (!ticketId || !supportId || !message) {

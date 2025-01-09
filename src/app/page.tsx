@@ -33,12 +33,10 @@ const App = () => {
   }, []);
 
   const handleLogout = () => {
-    console.log("Usuario cerró sesión");
     router.push('/login');
   };
 
   const handleNewTicketClick = () => {
-    console.log("Crear nuevo ticket");
     setSelectedTicket(null);
     setIsModalOpen(true);
   };

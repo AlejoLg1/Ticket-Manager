@@ -46,7 +46,6 @@ export const authOptions = NextAuth({
         token.email = user.email;
         token.role = user.role;
       }
-      console.log("TOKEN DESDE ROUTE: ", token)
       return token;
     },
 
@@ -62,7 +61,6 @@ export const authOptions = NextAuth({
         session.exp = token.exp as number;
         session.jti = token.jti as string;
       }
-      console.log("SESSION DESDE ROUTE: ", session);
       return session;
     },
   },

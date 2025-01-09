@@ -32,7 +32,6 @@ const Support = () => {
   }, []);
 
   const handleLogout = () => {
-    console.log("Usuario cerró sesión");
     router.push('/login');
   };
 

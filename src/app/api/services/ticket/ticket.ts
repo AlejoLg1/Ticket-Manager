@@ -1,24 +1,23 @@
 'use server'
 
 import pool from '@/lib/db';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+// import { getServerSession } from 'next-auth';
+// import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { Ticket, TicketPayload } from '@/models/ticket/ticket'
+import { getToken } from 'next-auth/jwt';
 
-export const getTickets = async (): Promise<Ticket[]> => {
+export const getTickets = async (req): Promise<Ticket[]> => {
 
-  const session = await getServerSession(authOptions);
+  // const session = await getServerSession({ req, ...authOptions });
+  // console.log("🚀 ~ getTickets ~ session:", session)
 
-  console.log(" "); 
-  console.log(" "); 
-  console.log(" "); 
-  console.log("session: ", session)
-  console.log("AUTH: ", authOptions); 
-  // console.log("SESSION: ", session); 
-  console.log(" "); 
-  console.log(" "); 
-  console.log(" "); 
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  console.log("🚀 ~ getTickets ~ token:", token);
 
+  if (!token) {
+    throw new Error('No token found');
+  }
+  
   const res = await pool.query(`
     SELECT 
       t.id AS ticket_id,

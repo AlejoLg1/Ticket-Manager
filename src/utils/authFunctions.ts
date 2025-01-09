@@ -1,22 +1,23 @@
 import { useRouter } from 'next/navigation';
 import { Dispatch, SetStateAction } from 'react';
+import { Session } from 'next-auth';
 
 export const redirectByRole = (
-  userRole: string | undefined,
-  email: string,
+  session: Session | null,
   router: ReturnType<typeof useRouter>,
   setError: Dispatch<SetStateAction<string>>,
   whitelistedEmails: string[]
 ) => {
-
-  if (!userRole) {
+  if (!session || !session.user) {
     setError('No tienes permisos para acceder a esta aplicación.');
     return;
   }
 
-  if (whitelistedEmails.includes(email) && userRole === 'support') {
+  const { role, email } = session.user;
+
+  if (whitelistedEmails.includes(email) && role === 'support') {
     router.push('/support');
-  } else if (userRole === 'user' && !whitelistedEmails.includes(email)) {
+  } else if (role === 'user' && !whitelistedEmails.includes(email)) {
     router.push('/');
   } else {
     setError('No tienes permisos para acceder a esta aplicación.');

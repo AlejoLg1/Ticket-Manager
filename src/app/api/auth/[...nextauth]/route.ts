@@ -50,13 +50,28 @@ export const authOptions = NextAuth({
       console.log("TOKEN DESDE ROUTE: ", token)
       return token;
     },
+    // async session({ session, token }) {
+    //   if (session && token) {
+    //     session.id = typeof token.id === 'string' ? token.id : '';
+    //     session.email = typeof token.email === 'string' ? token.email : '';
+    //     session.role = typeof token.role === 'string' ? token.role : 'user';
+    //   }
+    //   console.log("SESSION DESDE ROUTE: ", token)
+    //   return session;
+    // },
     async session({ session, token }) {
-      if (session && token) {
-        session.id = typeof token.id === 'string' ? token.id : '';
-        session.email = typeof token.email === 'string' ? token.email : '';
-        session.role = typeof token.role === 'string' ? token.role : 'user';
+      if (token) {
+        session.user = {
+          id: token.id as string,
+          email: token.email as string,
+          role: token.role as string,
+        };
+        session.sub = token.sub as string;
+        session.iat = token.iat as number;
+        session.exp = token.exp as number;
+        session.jti = token.jti as string;
       }
-      console.log("SESSION DESDE ROUTE: ", token)
+      console.log("SESSION DESDE ROUTE: ", session);
       return session;
     },
   },

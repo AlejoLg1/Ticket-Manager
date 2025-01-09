@@ -10,7 +10,8 @@ import { signIn, signOut } from 'next-auth/react';
 import { redirectByRole } from '@utils/authFunctions';
 
 const Login = () => {
-  const { session, status } = useAuth();
+  const { session } = useAuth();
+  console.log("🚀 ~ Login ~ session:", session)
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -39,7 +40,7 @@ const Login = () => {
 
   useEffect(() => {
     if (loginAttempted && session) {
-      redirectByRole(session.role, email, router, setError, whitelistedEmails);
+      redirectByRole(session, router, setError, whitelistedEmails);
     }
   }, [session, loginAttempted, router, whitelistedEmails]);
 
@@ -65,7 +66,7 @@ const Login = () => {
     setLoginAttempted(true);
 
     try {
-      if (session && email !== session.email) {
+      if (session && email !== session.user.email) {
         await signOut({ redirect: false });
         setPassword('');
         setLoading(false);
@@ -81,8 +82,8 @@ const Login = () => {
 
       if (res?.ok) {
         const session = await fetch('/api/auth/session').then((res) => res.json());
-        const userRole = session?.role;
-        redirectByRole(userRole, email, router, setError, whitelistedEmails);
+        // const userRole = session?.role;
+        redirectByRole(session, router, setError, whitelistedEmails);
       }
 
     } catch (error) {

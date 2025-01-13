@@ -56,7 +56,6 @@ const Login = () => {
         return;
       }
   
-      // Si no hay un token válido, enviar el Magic Link
       const res = await signIn('email', {
         redirect: false,
         email,

@@ -99,7 +99,7 @@ export function Select({
       </div>
       {isOpen && !readOnly && (
         <div
-          className="absolute mt-1 w-full bg-white border z-10 rounded-[25px] shadow-md overflow-auto"
+          className="custom-scrollbar absolute mt-1 w-full bg-white border z-10 rounded-[25px] shadow-md overflow-auto "
           style={{
             maxHeight: '120px',
             overflowY: 'auto',

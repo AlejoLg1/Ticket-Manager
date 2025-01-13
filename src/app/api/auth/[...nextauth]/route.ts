@@ -1,40 +1,47 @@
 // src/app/api/auth/[...nextauth]/route.ts
 import NextAuth from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
+import EmailProvider from 'next-auth/providers/email';
+import { CustomAdapter } from '@/lib/custom-adapter';
 import { AuthOptions } from 'next-auth';
+import { createMagicLinkEmail } from './email-template';
+
 
 const authOptions: AuthOptions = {
+  adapter: CustomAdapter,
   providers: [
-    CredentialsProvider({
-      name: 'Credentials', 
-      credentials: {
-        email: { label: 'Email', type: 'text' },
-        password: { label: 'Password', type: 'password' },
+    EmailProvider({
+      server: {
+        host: process.env.EMAIL_SERVER_HOST,
+        port: parseInt(process.env.EMAIL_SERVER_PORT as string, 10),
+        auth: {
+          user: process.env.EMAIL_SERVER_USER,
+          pass: process.env.EMAIL_SERVER_PASSWORD,
+        },
+        secure: true,
+        tls: {
+          rejectUnauthorized: false,
+        },
       },
-      async authorize(credentials) {
-        try {
-          const res = await fetch(`${process.env.NEXTAUTH_URL}/api/services/user`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              email: credentials?.email,
-              password: credentials?.password,
-            }),
-          });
-
-          if (res.ok) {
-            const user = await res.json();
-            return { id: user.id, email: user.email, role: user.role };
-          }
-
-          return null;
-        } catch (error) {
-          console.error('Error en authorize:', error);
-          return null;
-        }
-      },
+      from: process.env.EMAIL_FROM,
+      sendVerificationRequest: async ({ identifier, url, provider }) => {
+        const { host } = new URL(url);
+      
+        const userRole = identifier.endsWith('@finaersa.com.ar') ? 'support' : 'user';
+      
+        const modifiedUrl = `${url}&role=${userRole}`;
+      
+        const emailTemplate = createMagicLinkEmail({ url: modifiedUrl, host });
+      
+        const nodemailer = require('nodemailer');
+        const transport = nodemailer.createTransport(provider.server);
+      
+        await transport.sendMail({
+          to: identifier,
+          from: provider.from,
+          subject: `Tu enlace de inicio de sesión para ${host}`,
+          html: emailTemplate,
+        });
+      },      
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
@@ -64,6 +71,20 @@ const authOptions: AuthOptions = {
         session.jti = token.jti as string;
       }
       return session;
+    },
+
+    async redirect({ url, baseUrl }) {
+      if (url.startsWith(baseUrl)) {
+        const parsedUrl = new URL(url);
+        const role = parsedUrl.searchParams.get('role');
+  
+        if (role === 'support') {
+          return `${baseUrl}/support`; 
+        }
+        return `${baseUrl}/`; 
+      }
+  
+      return baseUrl;
     },
   },
   pages: {

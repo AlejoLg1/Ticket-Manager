@@ -27,6 +27,7 @@ export function TicketFilters() {
       <Input
         type="text"
         placeholder="Número de Ticket"
+        className="text-sm h-8.5"
         style={{ borderRadius: '25px', color: 'black' }}
       />
 

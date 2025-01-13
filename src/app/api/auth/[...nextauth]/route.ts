@@ -1,10 +1,8 @@
-// src/app/api/auth/[...nextauth]/route.ts
 import NextAuth from 'next-auth';
 import EmailProvider from 'next-auth/providers/email';
 import { CustomAdapter } from '@/lib/custom-adapter';
 import { AuthOptions } from 'next-auth';
 import { createMagicLinkEmail } from './email-template';
-
 
 const authOptions: AuthOptions = {
   adapter: CustomAdapter,

@@ -37,10 +37,6 @@ const Support = () => {
     fetchTickets();
   }, []);
 
-  const handleLogout = () => {
-    router.push('/login');
-  };
-
   const handleTicketCardClick = (ticket: Ticket) => {
     setSelectedTicket(ticket);
     setIsModalOpen(true);

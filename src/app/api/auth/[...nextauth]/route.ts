@@ -3,6 +3,7 @@ import EmailProvider from 'next-auth/providers/email';
 import { CustomAdapter } from '@/lib/custom-adapter';
 import { AuthOptions } from 'next-auth';
 import { createMagicLinkEmail } from './email-template';
+import nodemailer from 'nodemailer';
 
 const authOptions: AuthOptions = {
   adapter: CustomAdapter,
@@ -30,7 +31,6 @@ const authOptions: AuthOptions = {
       
         const emailTemplate = createMagicLinkEmail({ url: modifiedUrl, host });
       
-        const nodemailer = require('nodemailer');
         const transport = nodemailer.createTransport(provider.server);
       
         await transport.sendMail({

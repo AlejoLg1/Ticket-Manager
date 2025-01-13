@@ -70,7 +70,7 @@ const Login = () => {
         setError('No se pudo enviar el correo de autenticación. Inténtalo nuevamente.');
       }
     } catch (error) {
-      setError('Ocurrió un error inesperado. Por favor, intenta nuevamente.');
+      setError('Ocurrió un error inesperado. Por favor, intenta nuevamente. ' + error);
     } finally {
       setLoading(false);
     }

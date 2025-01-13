@@ -38,10 +38,6 @@ const App = () => {
     fetchTickets();
   }, []);
 
-  const handleLogout = () => {
-    router.push('/login');
-  };
-
   const handleNewTicketClick = () => {
     setSelectedTicket(null);
     setIsModalOpen(true);

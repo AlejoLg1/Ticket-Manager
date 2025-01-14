@@ -37,10 +37,6 @@ const Support = () => {
     fetchTickets();
   }, []);
 
-  const handleLogout = () => {
-    router.push('/login');
-  };
-
   const handleTicketCardClick = (ticket: Ticket) => {
     setSelectedTicket(ticket);
     setIsModalOpen(true);
@@ -58,7 +54,6 @@ const Support = () => {
     <div className="min-h-screen bg-[#F2F2F2]">
       <Header
         companyLogo="/images/finaer-logo-short.svg"
-        onLogout={handleLogout}
       />
 
       <div className="p-24 pt-16 pb-0">

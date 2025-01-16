@@ -13,8 +13,8 @@ export function NewTicketButton({ onClick }: NewTicketButtonProps) {
       type="button"
       aria-label="Crear nuevo ticket"
     >
-      <PlusCircle className="mr-2 h-5 w-5" />
-      <span className="text-xl">Nuevo Ticket</span>
+      <PlusCircle className="mr-2 h-5 w-5" strokeWidth={3}/>
+      <span className="text-xl font-bold">Nuevo Ticket</span>
     </Button>
   );
 }

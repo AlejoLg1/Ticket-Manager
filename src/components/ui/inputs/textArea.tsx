@@ -27,9 +27,9 @@ export const TextArea = ({
       onChange={(e) => onChange(e.target.value)}
       required={required}
       readOnly={readOnly}
-      className={`w-full h-[150px] placeholder-gray-500 resize-none p-2 border rounded-[15px] focus:outline-none focus:border-gray-300 text-black ${className} custom-scrollbar`}
+      className={`w-full h-[150px] placeholder-gray-500 resize-none p-2 border rounded-[15px] focus:outline-none text-black 
+        ${readOnly ? 'bg-gray-100 text-gray-500 border-gray-300 cursor-not-allowed' : 'focus:border-gray-300'} 
+        ${className} custom-scrollbar`}
     />
   );
 };
-
-

@@ -131,7 +131,7 @@ export function TicketCard({
           </div>
 
           <div className="absolute bottom-6 right-14 flex flex-col items-start space-y-4" role="button" aria-label="Toggle eye visibility">
-            <EyeToggle fill="red" size={40} />
+            <EyeToggle ticketId={ticketNumber} fill="red" size={40} />
           </div>
         </div>
       </CardContent>

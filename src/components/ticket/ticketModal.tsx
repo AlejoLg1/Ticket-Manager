@@ -37,6 +37,7 @@ export default function BasicModal({
   );
   const [message, setMessage] = useState<string>(ticket?.message || '');
   const [subject, setSubject] = useState<string>(ticket?.subject || '');
+  const [files, setFiles] = useState<File[]>([]);
   const setComments = useState<{ id: string; text: string }[]>([])[1];
   const isReadOnly = !isCreatingTicket && hasAssignment;
   const isEditable = isCreatingTicket || (!isCreatingTicket && !hasAssignment && !isSupport);
@@ -96,21 +97,44 @@ export default function BasicModal({
       const endpoint = ticket
         ? `/api/services/ticket?ticketNumber=${ticket.ticketNumber}`
         : '/api/services/ticket';
-
+  
       const method = ticket ? 'PUT' : 'POST';
-      const response = await fetch(endpoint, {
+
+      const ticketResponse = await fetch(endpoint, {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-
-      if (response.ok) {
-        onAction(selectedCategory.value);
-        onClose();
-        window.location.reload();
-      } else {
-        throw new Error('Error en la respuesta del servidor.');
+      
+      if (!ticketResponse.ok) {
+        throw new Error('Error al crear el ticket.');
       }
+
+      const createdTicket = await ticketResponse.json();
+  
+      const uploadedFiles = [];
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append('fileName', file.name);
+        formData.append('fileContent', file);
+        formData.append('ticketNumber', String(createdTicket.id));
+  
+        const fileResponse = await fetch('/api/services/upload', {
+          method: 'POST',
+          body: formData,
+        });
+  
+        const data = await fileResponse.json();
+        if (!data.success) {
+          throw new Error(`Error al subir el archivo: ${file.name}`);
+        }
+  
+        uploadedFiles.push({ name: file.name, url: data.url });
+      }
+  
+      onAction(selectedCategory.value);
+      onClose();
+      window.location.reload();
     } catch (error) {
       console.error(error);
       onClose();
@@ -189,7 +213,7 @@ export default function BasicModal({
 
             {!isCreatingTicket ? (
               <div className="ml-auto">
-                <EyeToggle fill="red" size={40} />
+                <EyeToggle ticketId={String(ticket?.ticketNumber)} fill="red" size={40} />
               </div>
             ) : null}
           </div>
@@ -197,7 +221,7 @@ export default function BasicModal({
           {isCreatingTicket ? (
             <>
               <h3 className="pt-6 text-black text-xl font-bold mb-2">Documentos</h3>
-              <Upload />
+              <Upload onFilesSelected={setFiles} />
             </>
           ) : (
             <div className="mt-4">

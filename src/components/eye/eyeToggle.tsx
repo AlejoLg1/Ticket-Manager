@@ -73,7 +73,7 @@ const EyeToggle: React.FC<EyeToggleProps> = ({ ticketId, fill = "black", size = 
           setIsOpen(true);
         }}
       >
-        {isOpen ? <EyeOpen fill={fill} size={size} /> : <EyeClose fill={fill} size={size} /> }
+        {isOpen ? <EyeOpen fill={fill} size={size} /> : <EyeClose fill={fill} size={size} fileCount={files.length}/> }
       </div>
 
       {isOpen && (

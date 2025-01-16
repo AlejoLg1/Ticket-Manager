@@ -43,19 +43,21 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const sessionRes = await fetch('/api/auth/session');
-      const session = await sessionRes.json();
-      if (session?.user) {
-        const role  = session.user.role;
+      const createUserResponse = await fetch('/api/services/user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
 
-        if (role === 'support') {
-          router.push('/support');
-        } else {
-          router.push('/');
-        }
+      const createUserData = await createUserResponse.json();
+
+      if (!createUserData.success) {
+        setError('No se pudo verificar o crear el usuario. Inténtalo nuevamente.');
         return;
       }
-  
+
       const res = await signIn('email', {
         redirect: false,
         email,
@@ -70,7 +72,8 @@ const Login = () => {
         setError('No se pudo enviar el correo de autenticación. Inténtalo nuevamente.');
       }
     } catch (error) {
-      setError('Ocurrió un error inesperado. Por favor, intenta nuevamente. ' + error);
+      setError('Ocurrió un error inesperado. Por favor, intenta nuevamente.');
+      console.error('Error en el proceso de login:', error);
     } finally {
       setLoading(false);
     }

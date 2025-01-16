@@ -98,7 +98,12 @@ const EyeToggle: React.FC<EyeToggleProps> = ({ ticketId, fill = "black", size = 
               position: "relative",
               maxWidth: "90%",
               maxHeight: "90%",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",    
+              justifyContent: "center", 
               textAlign: "center",
+              gap: "1rem",             
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -111,6 +116,7 @@ const EyeToggle: React.FC<EyeToggleProps> = ({ ticketId, fill = "black", size = 
                   maxWidth: "100%",
                   maxHeight: "80vh",
                   borderRadius: "10px",
+                  objectFit: "contain",
                 }}
               />
             ) : (
@@ -129,10 +135,11 @@ const EyeToggle: React.FC<EyeToggleProps> = ({ ticketId, fill = "black", size = 
               </div>
             )}
 
-            <p>{files[currentFileIndex].name}</p>
+            <p style={{ margin: 0 }}>{files[currentFileIndex].name}</p>
+
             <Button
               type="button"
-              className="ml-10 flex items-center bg-gradient-to-r from-[rgb(159,4,13)] to-[rgb(227,6,19)] hover:from-[#B01E0D] hover:to-[#B01E0D] text-white px-5 py-1 rounded-full"
+              className="flex items-center bg-gradient-to-r from-[rgb(159,4,13)] to-[rgb(227,6,19)] hover:from-[#B01E0D] hover:to-[#B01E0D] text-white px-5 py-1 rounded-full"
               onClick={() => window.open(files[currentFileIndex].downloadUrl, "_blank", "noopener noreferrer")}
             >
               Descargar Archivo
@@ -146,7 +153,6 @@ const EyeToggle: React.FC<EyeToggleProps> = ({ ticketId, fill = "black", size = 
             </Button>
           </div>
 
-          {/* Botones de navegación */}
           <button
             type="button"
             onClick={handlePrevious}

@@ -27,6 +27,7 @@ export default function BasicModal({
   isSupport,
   isCreatingTicket,
   hasAssignment,
+  status
 }: ModalProps) {
   const { session } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState<Option | null>(
@@ -40,7 +41,8 @@ export default function BasicModal({
   const [files, setFiles] = useState<File[]>([]);
   const setComments = useState<{ id: string; text: string }[]>([])[1];
   const isReadOnly = !isCreatingTicket && hasAssignment;
-  const isEditable = isCreatingTicket || (!isCreatingTicket && !hasAssignment && !isSupport);
+  console.log("STATUS: ", status)
+  const isEditable = isCreatingTicket || (!isCreatingTicket && !hasAssignment && !isSupport && status === 'nuevo');
   
   useEffect(() => {
     if (isOpen) {
@@ -217,13 +219,15 @@ export default function BasicModal({
               </div>
             ) : null}
           </div>
-
-          {isCreatingTicket ? (
+          
+          {isEditable ? (
             <>
-              <h3 className="pt-6 text-black text-xl font-bold mb-2">Documentos</h3>
-              <Upload onFilesSelected={setFiles} />
-            </>
-          ) : (
+            <h3 className="pt-6 text-black text-xl font-bold mb-2">Documentos</h3>
+            <Upload onFilesSelected={setFiles} />
+          </>
+          ) : null}
+          
+          {!isCreatingTicket ? (
             <div className="mt-4">
               <CommentBox
                 isSupport={isSupport}
@@ -232,7 +236,7 @@ export default function BasicModal({
                 onDeleteMessage={handleDeleteComment}
               />
             </div>
-          )}
+          ): null}
 
           <div className="flex justify-between pt-6">
             <Button

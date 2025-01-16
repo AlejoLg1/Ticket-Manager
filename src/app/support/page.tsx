@@ -100,6 +100,7 @@ const Support = () => {
           isSupport={true}
           isCreatingTicket={!selectedTicket}
           hasAssignment={!!selectedTicket?.assignedUser}
+          status={String(selectedTicket?.status)}
         />
       </div>
     </div>

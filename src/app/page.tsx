@@ -103,6 +103,7 @@ const App = () => {
           isSupport={false}
           isCreatingTicket={!selectedTicket}
           hasAssignment={!!selectedTicket?.assignedUser}
+          status={String(selectedTicket?.status)}
         />
       </div>
     </div>

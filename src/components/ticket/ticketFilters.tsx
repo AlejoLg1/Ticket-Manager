@@ -20,14 +20,14 @@ export function TicketFilters() {
         placeholder="Estado"
         selected={selectedEstado}
         setSelected={setSelectedEstado}
-        triggerClassName="border text-sm text-gray-500 hover:bg-gray-100"
+        triggerClassName="border text-base text-gray-500 hover:bg-gray-100"
         textClassName="text-gray-800"
       />
 
       <Input
         type="text"
         placeholder="Número de Ticket"
-        className="text-sm h-8.5"
+        className="text-base h-8.5"
         style={{ borderRadius: '25px', color: 'black' }}
       />
 
@@ -40,7 +40,7 @@ export function TicketFilters() {
         placeholder="Persona Asignada"
         selected={selectedPersona}
         setSelected={setSelectedPersona}
-        triggerClassName="border text-sm text-gray-500 hover:bg-gray-100"
+        triggerClassName="border text-base text-gray-500 hover:bg-gray-100"
         textClassName="text-gray-800"
       />
 
@@ -49,7 +49,7 @@ export function TicketFilters() {
         placeholder="Categoría"
         selected={selectedCategoria}
         setSelected={setSelectedCategoria}
-        triggerClassName="border text-sm text-gray-500 hover:bg-gray-100"
+        triggerClassName="border text-base text-gray-500 hover:bg-gray-100"
         textClassName="text-gray-800"
       />
     </div>

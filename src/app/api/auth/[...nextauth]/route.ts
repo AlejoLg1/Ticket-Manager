@@ -29,7 +29,7 @@ const authOptions: AuthOptions = {
       
         const modifiedUrl = `${url}&role=${userRole}`;
       
-        const emailTemplate = createMagicLinkEmail({ url: modifiedUrl, host });
+        const emailTemplate = createMagicLinkEmail({ url: modifiedUrl });
       
         const transport = nodemailer.createTransport(provider.server);
       

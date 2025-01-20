@@ -23,7 +23,6 @@ export default function BasicModal({
   ticket,
   isOpen,
   onClose,
-  onAction,
   isSupport,
   isCreatingTicket,
   hasAssignment,
@@ -41,9 +40,8 @@ export default function BasicModal({
   const [files, setFiles] = useState<File[]>([]);
   const setComments = useState<{ id: string; text: string }[]>([])[1];
   const isReadOnly = !isCreatingTicket && hasAssignment;
-  console.log("STATUS: ", status)
   const isEditable = isCreatingTicket || (!isCreatingTicket && !hasAssignment && !isSupport && status === 'nuevo');
-  
+    
   useEffect(() => {
     if (isOpen) {
       setSelectedCategory(
@@ -65,12 +63,15 @@ export default function BasicModal({
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      document.body.classList.add('no-scroll');
     } else {
       document.body.style.overflow = '';
+      document.body.classList.remove('no-scroll');
     }
 
     return () => {
       document.body.style.overflow = '';
+      document.body.classList.remove('no-scroll');
     };
   }, [isOpen]);
 
@@ -134,7 +135,6 @@ export default function BasicModal({
         uploadedFiles.push({ name: file.name, url: data.url });
       }
   
-      onAction(selectedCategory.value);
       onClose();
       window.location.reload();
     } catch (error) {

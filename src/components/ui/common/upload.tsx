@@ -67,7 +67,7 @@ export default function Upload({ onFilesSelected }: { onFilesSelected: (files: F
       {error && <p className="text-red-500 mb-4">{error}</p>}
 
       {files.length > 0 && (
-        <div className="max-h-40 overflow-y-auto">
+        <div className="max-h-40 overflow-y-auto custom-scrollbar-left-spacing">
           <ul className="space-y-2">
             {files.map((file, index) => (
               <li

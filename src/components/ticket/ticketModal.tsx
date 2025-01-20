@@ -41,7 +41,7 @@ export default function BasicModal({
   const setComments = useState<{ id: string; text: string }[]>([])[1];
   const isReadOnly = !isCreatingTicket && hasAssignment;
   const isEditable = isCreatingTicket || (!isCreatingTicket && !hasAssignment && !isSupport && status === 'nuevo');
-    
+
   useEffect(() => {
     if (isOpen) {
       setSelectedCategory(
@@ -85,7 +85,7 @@ export default function BasicModal({
 
   const handleSubmit = async () => {
     if (!selectedCategory) return;
-    
+
     const payload = {
       subject,
       message,
@@ -96,11 +96,10 @@ export default function BasicModal({
     };
 
     try {
-      
       const endpoint = ticket
         ? `/api/services/ticket?ticketNumber=${ticket.ticketNumber}`
         : '/api/services/ticket';
-  
+
       const method = ticket ? 'PUT' : 'POST';
 
       const ticketResponse = await fetch(endpoint, {
@@ -108,33 +107,33 @@ export default function BasicModal({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      
+
       if (!ticketResponse.ok) {
         throw new Error('Error al crear el ticket.');
       }
 
       const createdTicket = await ticketResponse.json();
-  
+
       const uploadedFiles = [];
       for (const file of files) {
         const formData = new FormData();
         formData.append('fileName', file.name);
         formData.append('fileContent', file);
         formData.append('ticketNumber', String(createdTicket.id));
-  
+
         const fileResponse = await fetch('/api/services/upload', {
           method: 'POST',
           body: formData,
         });
-  
+
         const data = await fileResponse.json();
         if (!data.success) {
           throw new Error(`Error al subir el archivo: ${file.name}`);
         }
-  
+
         uploadedFiles.push({ name: file.name, url: data.url });
       }
-  
+
       onClose();
       window.location.reload();
     } catch (error) {
@@ -166,98 +165,111 @@ export default function BasicModal({
       }}
       ticketNumber={ticket?.ticketNumber || ''}
     >
-      <div className="p-4 bg-white rounded-[25px] shadow-lg w-full max-w-4xl mx-auto">
-        <form
-          className="space-y-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSubmit();
+      <div
+        className="p-4 bg-white rounded-[25px] shadow-lg w-full max-w-4xl mx-auto"
+        style={{
+          maxHeight: '90vh',
+          overflow: 'hidden',
+        }}
+      >
+        <div
+          className="custom-scrollbar-modal"
+          style={{
+            maxHeight: 'calc(90vh - 64px)',
           }}
         >
-          <Input
-            name="subject"
-            placeholder="Asunto"
-            className="w-full placeholder-gray-500"
-            required
-            value={subject}
-            onChange={(e) => setSubject(e.target.value)}
-            readOnly={isReadOnly || !isEditable}
-          />
+          <form
+            className="space-y-4"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
+          >
+            <Input
+              name="subject"
+              placeholder="Asunto"
+              className="w-full placeholder-gray-500"
+              required
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+              readOnly={isReadOnly || !isEditable}
+            />
 
-          <TextArea
-            name="message"
-            placeholder="Ingrese su consulta o mensaje"
-            value={message}
-            onChange={(value) => setMessage(value)}
-            required
-            readOnly={isReadOnly || !isEditable}
-            className="rounded-[25px]"
-          />
+            <TextArea
+              name="message"
+              placeholder="Ingrese su consulta o mensaje"
+              value={message}
+              onChange={(value) => setMessage(value)}
+              required
+              readOnly={isReadOnly || !isEditable}
+              className="rounded-[25px]"
+            />
 
-          <div className="flex items-center gap-4">
-            <div className="w-1/3">
-              <Select
-                options={categoryOptions}
-                placeholder="Categoría"
-                selected={selectedCategory}
-                setSelected={setSelectedCategory}
-                triggerClassName="rounded-[25px] w-full"
-                hideChevronDown={true}
-                dropdownStyle={{ borderRadius: '25px' }}
-                readOnly={isReadOnly || !isEditable}
-              />
-            </div>
-            {isSupport && (
+            <div className="flex items-center gap-4">
               <div className="w-1/3">
-                <Clipboard className="!h-[40px] w-full" text={String(ticket?.contact)} label={null} />
+                <Select
+                  options={categoryOptions}
+                  placeholder="Categoría"
+                  selected={selectedCategory}
+                  setSelected={setSelectedCategory}
+                  triggerClassName="rounded-[25px] w-full"
+                  hideChevronDown={true}
+                  dropdownStyle={{ borderRadius: '25px' }}
+                  readOnly={isReadOnly || !isEditable}
+                />
               </div>
-            )}
+              {isSupport && (
+                <div className="w-1/3">
+                  <Clipboard className="!h-[40px] w-full" text={String(ticket?.contact)} label={null} />
+                </div>
+              )}
+
+              {!isCreatingTicket ? (
+                <div className="ml-auto">
+                  <EyeToggle ticketId={String(ticket?.ticketNumber)} fill="red" size={40} />
+                </div>
+              ) : null}
+            </div>
+
+            {isEditable ? (
+              <>
+                <h3 className="pt-6 text-black text-xl font-bold mb-2">Documentos</h3>
+                <Upload onFilesSelected={setFiles} />
+              </>
+            ) : null}
 
             {!isCreatingTicket ? (
-              <div className="ml-auto">
-                <EyeToggle ticketId={String(ticket?.ticketNumber)} fill="red" size={40} />
+              <div className="mt-4">
+                <CommentBox
+                  isSupport={isSupport}
+                  ticketId={Number(ticket?.ticketNumber)}
+                  onAddMessage={handleAddComment}
+                  onDeleteMessage={handleDeleteComment}
+                />
               </div>
             ) : null}
-          </div>
-          
-          {isEditable ? (
-            <>
-            <h3 className="pt-6 text-black text-xl font-bold mb-2">Documentos</h3>
-            <Upload onFilesSelected={setFiles} />
-          </>
-          ) : null}
-          
-          {!isCreatingTicket ? (
-            <div className="mt-4">
-              <CommentBox
-                isSupport={isSupport}
-                ticketId={Number(ticket?.ticketNumber)}
-                onAddMessage={handleAddComment}
-                onDeleteMessage={handleDeleteComment}
-              />
-            </div>
-          ): null}
 
-          <div className="flex justify-between pt-6">
-            <Button
-              type="button"
-              className="bg-[#504D4F] text-white hover:bg-[#3D3B3C] px-4 !py-2 rounded-full"
-              onClick={onClose}
-            >
-              Cancelar
-            </Button>
-
-            {submitButtonText ? (
+            <div className="flex justify-between pt-6">
               <Button
-                type="submit"
-                className="bg-[#0DBC2D] text-white hover:bg-[#0AA626] px-4 !py-2 rounded-full"
-                disabled={isSubmitDisabled}
+                type="button"
+                className="bg-[#504D4F] text-white hover:bg-[#3D3B3C] px-4 !py-2 rounded-full"
+                onClick={onClose}
               >
-                {submitButtonText}
+                Cancelar
               </Button>
-            ) : null}
-          </div>
-        </form>
+
+              {submitButtonText ? (
+                <Button
+                  type="submit"
+                  className="bg-[#0DBC2D] text-white hover:bg-[#0AA626] px-4 !py-2 rounded-full"
+                  disabled={isSubmitDisabled}
+                >
+                  {submitButtonText}
+                </Button>
+              ) : null}
+            </div>
+          </form>
+        </div>
       </div>
     </Dialog>
   );

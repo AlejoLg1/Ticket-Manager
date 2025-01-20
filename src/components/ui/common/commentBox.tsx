@@ -112,7 +112,7 @@ export default function CommentBox({ isSupport, ticketId, onAddMessage, onDelete
         <h3 className="text-xl font-semibold text-gray-800">Comentarios</h3>
       </div>
 
-      <div className="flex-grow mb-4 max-h-40 overflow-y-auto custom-scrollbar">
+      <div className="flex-grow mb-4 max-h-40 overflow-y-auto custom-scrollbar-left-spacing">
         {isLoading ? (
           <p className="text-gray-500">Cargando comentarios...</p>
         ) : messages.length === 0 ? (

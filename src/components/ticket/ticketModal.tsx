@@ -14,6 +14,7 @@ import { categoryOptions, statesOptions } from '@/constants/selectOptions';
 import EyeToggle from "@components/eye/eyeToggle";
 import { ModalProps } from '@/models/modal/modal';
 import useAuth from '@/hooks/useAuth';
+import { useToast } from '@/hooks/useToast';
 
 type Option = {
   value: string;
@@ -30,6 +31,7 @@ export default function BasicModal({
   status
 }: ModalProps) {
   const { session } = useAuth();
+  const { addToast } = useToast();
   const [selectedCategory, setSelectedCategory] = useState<Option | null>(
     ticket ? categoryOptions.find(option => option.value === ticket.category) ?? null : null
   );
@@ -138,10 +140,12 @@ export default function BasicModal({
         uploadedFiles.push({ name: file.name, url: data.url });
       }
 
+      addToast(ticket ? 'Ticket guardado correctamente.' : 'Ticket creado correctamente.', 'success');
       onClose();
       window.location.reload();
     } catch (error) {
       console.error(error);
+      addToast('Ocurrió un error al guardar el ticket.', 'error');
       onClose();
     }
   };
@@ -162,7 +166,6 @@ export default function BasicModal({
       onClose();
     }
   };
-  
 
   const submitButtonText = isCreatingTicket
     ? 'Crear Ticket'

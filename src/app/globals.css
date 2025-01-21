@@ -107,8 +107,29 @@ body {
   margin-bottom: 50px;
 }
 
-
-
 .no-scroll {
   overflow: hidden !important;
 }
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.toast-enter {
+  animation: slideUp 0.3s ease-in-out forwards;
+}
+
+.toast-container {
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+

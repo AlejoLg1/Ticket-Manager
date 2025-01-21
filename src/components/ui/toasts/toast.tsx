@@ -16,7 +16,7 @@ const Toast: React.FC<ToastProps> = ({ message, type = 'info', duration = 3000, 
 
   useEffect(() => {
     const fadeOutTimer = setTimeout(() => {
-      setIsFading(true); 
+      setIsFading(true);
     }, duration - 300);
 
     const hideTimer = setTimeout(() => {
@@ -39,9 +39,9 @@ const Toast: React.FC<ToastProps> = ({ message, type = 'info', duration = 3000, 
   };
 
   const containerClass = `
-    fixed top-4 right-4 p-4 rounded-lg shadow-lg bg-white border flex items-center gap-2 z-50 
-    transition-opacity duration-300
-    ${isFading ? 'opacity-0' : 'opacity-100'}
+    relative w-full max-w-[300px] p-4 rounded-lg shadow-lg bg-white border flex items-center gap-2 z-50
+    transition-all duration-300 ease-in-out
+    ${isFading ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'}
   `;
 
   return (

@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/buttons/button';
 import { copyToClipboard } from '@utils/commonFunctions';
-import Toast from '@/components/ui/toasts/toast';
+import { useToast } from '@/hooks/useToast';
 
 interface Props {
   text: string;
@@ -14,14 +14,13 @@ interface Props {
 }
 
 function Clipboard({ text, classes, label, className }: Props) {
-  const [showToast, setShowToast] = useState(false);
+  const { addToast } = useToast();
 
   const handleCopy = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     event.stopPropagation();
     copyToClipboard(text);
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 3000);
+    addToast('¡Correo copiado con éxito!', 'success');
   };
 
   return (
@@ -46,7 +45,6 @@ function Clipboard({ text, classes, label, className }: Props) {
           />
         </div>
       </Button>
-      {showToast && <Toast message="¡Correo copiado con éxito!" type="success" />}
     </div>
   );
 }

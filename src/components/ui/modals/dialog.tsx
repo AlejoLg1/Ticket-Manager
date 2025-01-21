@@ -2,12 +2,12 @@
 
 import '@/styles/states.css';
 import React, { useState } from 'react';
-import Toast from '@/components/ui/toasts/toast'; // Asegúrate de que esta ruta sea correcta
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/buttons/button';
 import { Select } from '@/components/ui/selects/comboBox';
 import { statesOptions } from '@/constants/selectOptions';
 import ConfirmModal from '@/components/ui/modals/confirmModal';
+import { useToast } from '@/hooks/useToast';
 import useAuth from '@/hooks/useAuth';
 
 interface DialogProps {
@@ -34,9 +34,9 @@ export const Dialog = ({
   ticketNumber,
 }: DialogProps) => {
   const { session } = useAuth();
+  const { addToast } = useToast();
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [action, setAction] = useState<'assign' | 'unassign' | null>(null);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const handleAssign = async () => {
     const assignedId = Number(session?.user?.id);
@@ -53,9 +53,11 @@ export const Dialog = ({
         throw new Error('Error al asignar el ticket');
       }
 
+      addToast('¡Ticket asignado con éxito!', 'success');
       window.location.reload();
     } catch (error) {
       console.error('Error al asignar el ticket', error);
+      addToast('Hubo un error al asignar el ticket.', 'error');
     }
   };
 
@@ -73,9 +75,11 @@ export const Dialog = ({
         throw new Error('Error al desasignar el ticket');
       }
 
+      addToast('¡Ticket desasignado con éxito!', 'success');
       window.location.reload();
     } catch (error) {
       console.error('Error al desasignar el ticket', error);
+      addToast('Hubo un error al desasignar el ticket.', 'error');
     }
   };
 
@@ -122,7 +126,7 @@ export const Dialog = ({
                   setSelected={(option) => {
                     if (option) {
                       onStateChange(option.value);
-                      setToastMessage(`El estado ha sido cambiado a "${option.label}".`);
+                      addToast(`El estado ha sido cambiado a "${option.label}".`, 'info');
                     }
                   }}
                   triggerClassName={`font-bold flex items-center justify-center rounded-full state-${selectedState} || state-nuevo`}
@@ -137,15 +141,6 @@ export const Dialog = ({
                   hideChevronDown={false}
                   textClassName={`text-${selectedState} || text-nuevo`}
                 />
-
-                {toastMessage && (
-                  <Toast
-                    message={toastMessage}
-                    type="info"
-                    duration={3000}
-                    onClose={() => setToastMessage(null)}
-                  />
-                )}
 
                 <Button
                   className={`font-bold p-2 border rounded-[50px] w-[125px] h-[25px] flex items-center justify-center ${
@@ -177,7 +172,7 @@ export const Dialog = ({
               ? '¿Estás seguro de que deseas asignarte este ticket?'
               : '¿Estás seguro de que deseas desasignar este ticket?'
           }
-          confirmLabel= {action === 'assign'? 'Asignar' : 'Desasignar'}
+          confirmLabel={action === 'assign' ? 'Asignar' : 'Desasignar'}
           cancelLabel="Cancelar"
         />
       )}

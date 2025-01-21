@@ -142,7 +142,9 @@ export default function BasicModal({
 
       addToast(ticket ? 'Ticket guardado correctamente.' : 'Ticket creado correctamente.', 'success');
       onClose();
-      window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
     } catch (error) {
       console.error(error);
       addToast('Ocurrió un error al guardar el ticket.', 'error');

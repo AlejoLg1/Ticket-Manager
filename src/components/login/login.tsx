@@ -15,6 +15,7 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [resending, setResending] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -41,8 +42,21 @@ const Login = () => {
     // }
 
     if (loading) return;
-    setLoading(true);
 
+    setLoading(true);
+    await sendEmail();
+    setLoading(false);
+  };
+
+  const handleResend = async () => {
+    if (resending) return;
+
+    setResending(true);
+    await sendEmail();
+    setResending(false);
+  };
+
+  const sendEmail = async () => {
     try {
       const createUserResponse = await fetch('/api/services/user', {
         method: 'POST',
@@ -73,8 +87,6 @@ const Login = () => {
     } catch (error) {
       setError('Ocurrió un error inesperado. Por favor, intenta nuevamente.');
       console.error('Error en el proceso de login:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -94,26 +106,40 @@ const Login = () => {
         <div className="w-1/2 flex items-center justify-center">
           <div className="bg-white p-10 rounded-[25px] shadow-md w-full max-w-[700px] h-[700px] flex flex-col items-center justify-center">
             {loading ? (
-              <>
+              <div className="flex flex-col items-center justify-center">
                 <HouseLoader />
-                <p className="mt-6 text-lg text-center text-black">Enviando correo de autenticación...</p>
-              </>
+              </div>
             ) : success ? (
-              <div className="text-center">
-                <p className="text-lg text-black">
-                  ¡Correo de autenticación enviado! Revisa tu bandeja de entrada.
-                </p>
-                <p className="text-lg text-black mt-4">
-                  Puedes cerrar esta pestaña.
-                </p>
+              <div className="text-center flex flex-col items-center">
+                {resending ? (
+                  <div className="flex flex-col items-center">
+                    <HouseLoader />
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-lg text-black">
+                      ¡Correo de autenticación enviado! Revisa tu bandeja de entrada.
+                    </p>
+                    <p className="text-lg text-black mt-4">Puedes cerrar esta pestaña.</p>
+                    <button
+                      onClick={handleResend}
+                      disabled={resending}
+                      className="mt-8"
+                    >
+                      <span className="text-lg text-white px-4 py-2 rounded-full bg-gradient-to-r from-[rgb(159,4,13)] to-[rgb(227,6,19)] hover:from-[#B01E0D] hover:to-[#B01E0D]">
+                        Enviar de nuevo
+                      </span>
+                    </button>
+                  </>
+                )}
               </div>
             ) : (
               <>
-                <h1 className="text-3xl text-black font-bold text-left">
+                <h1 className="w-full text-3xl text-black font-bold text-left">
                   Bienvenido al
                 </h1>
-                <h1 className="text-3xl text-[#E30613] font-bold text-left mb-6">
-                  Sistema de control de Tickets
+                <h1 className="w-full text-3xl text-[#E30613] font-bold text-left mb-6">
+                  Sistema de Control de Tickets
                 </h1>
                 <form onSubmit={handleSubmit} className="flex flex-col space-y-4 w-full items-start">
                   <label htmlFor="email" className="text-lg text-left text-black">
@@ -135,7 +161,7 @@ const Login = () => {
                       className={`ml-2 w-[200px] py-3 text-white text-lg rounded-full border ${
                         loading || !email
                           ? 'bg-gray-300'
-                          : 'bg-gradient-to-r from-[rgb(159,4,13)] to-[rgb(227,6,19)]'
+                          : 'bg-gradient-to-r from-[rgb(159,4,13)] to-[rgb(227,6,19)] hover:from-[#B01E0D] hover:to-[#B01E0D]'
                       }`}
                     >
                       Entrar

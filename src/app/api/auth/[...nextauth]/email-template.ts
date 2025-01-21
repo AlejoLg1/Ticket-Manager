@@ -46,7 +46,7 @@ export function createMagicLinkEmail({ url }: { url: string }) {
           display: inline-block;
           margin-top: 20px;
           padding: 15px 30px;
-          background-color: #e30613;
+          background: linear-gradient(to right, rgb(159, 4, 13), rgb(227, 6, 19)); /* Gradiente */
           color: #fff !important; /* Fuerza texto blanco en todos los estados */
           text-decoration: none;
           border-radius: 24px;
@@ -64,7 +64,7 @@ export function createMagicLinkEmail({ url }: { url: string }) {
         }
 
         .button:hover {
-          background-color: #c20511;
+          background: linear-gradient(to right, #b01e0d, #b01e0d); /* Cambia gradiente al pasar el cursor */
         }
 
         .footer {

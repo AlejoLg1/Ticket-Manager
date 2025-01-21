@@ -1,5 +1,7 @@
+'use client';
+
 import React from 'react';
-import  Lottie  from "lottie-react";
+import dynamic from 'next/dynamic';
 import animationDataRed from '@public/animations/house.json';
 import animationDataWhite from '@public/animations/house-white.json';
 
@@ -7,6 +9,8 @@ interface Props {
   tiny?: boolean;
   white?: boolean;
 }
+
+const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 
 function HouseLoader({ tiny, white }: Props) {
   const animationData = white ? animationDataWhite : animationDataRed;

@@ -23,7 +23,6 @@ const authOptions: AuthOptions = {
       },
       from: process.env.EMAIL_FROM,
       sendVerificationRequest: async ({ identifier, url, provider }) => {
-        const { host } = new URL(url);
       
         const userRole = identifier.endsWith('@finaersa.com.ar') ? 'support' : 'user';
       
@@ -36,7 +35,7 @@ const authOptions: AuthOptions = {
         await transport.sendMail({
           to: identifier,
           from: provider.from,
-          subject: `Tu enlace de inicio de sesión para ${host}`,
+          subject: `[Finaer] Enlace de acceso al Sistema de control de Tickets`,
           html: emailTemplate,
         });
       },      

@@ -2,6 +2,7 @@
 
 import '@/styles/states.css';
 import React, { useState } from 'react';
+import Toast from '@/components/ui/toasts/toast'; // Asegúrate de que esta ruta sea correcta
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/buttons/button';
 import { Select } from '@/components/ui/selects/comboBox';
@@ -35,6 +36,7 @@ export const Dialog = ({
   const { session } = useAuth();
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [action, setAction] = useState<'assign' | 'unassign' | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const handleAssign = async () => {
     const assignedId = Number(session?.user?.id);
@@ -120,6 +122,7 @@ export const Dialog = ({
                   setSelected={(option) => {
                     if (option) {
                       onStateChange(option.value);
+                      setToastMessage(`El estado ha sido cambiado a "${option.label}".`);
                     }
                   }}
                   triggerClassName={`font-bold flex items-center justify-center rounded-full state-${selectedState} || state-nuevo`}
@@ -134,6 +137,15 @@ export const Dialog = ({
                   hideChevronDown={false}
                   textClassName={`text-${selectedState} || text-nuevo`}
                 />
+
+                {toastMessage && (
+                  <Toast
+                    message={toastMessage}
+                    type="info"
+                    duration={3000}
+                    onClose={() => setToastMessage(null)}
+                  />
+                )}
 
                 <Button
                   className={`font-bold p-2 border rounded-[50px] w-[125px] h-[25px] flex items-center justify-center ${

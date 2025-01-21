@@ -7,9 +7,10 @@ interface ToastProps {
   message: string;
   type?: 'success' | 'error' | 'info';
   duration?: number; 
+  onClose?: () => void;
 }
 
-const Toast: React.FC<ToastProps> = ({ message, type = 'info', duration = 3000 }) => {
+const Toast: React.FC<ToastProps> = ({ message, type = 'info', duration = 3000, onClose }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [isFading, setIsFading] = useState(false);
 
@@ -20,13 +21,14 @@ const Toast: React.FC<ToastProps> = ({ message, type = 'info', duration = 3000 }
 
     const hideTimer = setTimeout(() => {
       setIsVisible(false);
+      if (onClose) onClose();
     }, duration);
 
     return () => {
       clearTimeout(fadeOutTimer);
       clearTimeout(hideTimer);
     };
-  }, [duration]);
+  }, [duration, onClose]);
 
   if (!isVisible) return null;
 

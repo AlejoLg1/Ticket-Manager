@@ -1,7 +1,10 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/buttons/button';
 import { copyToClipboard } from '@utils/commonFunctions';
+import Toast from '@/components/ui/toasts/toast';
 
 interface Props {
   text: string;
@@ -11,10 +14,14 @@ interface Props {
 }
 
 function Clipboard({ text, classes, label, className }: Props) {
+  const [showToast, setShowToast] = useState(false);
+
   const handleCopy = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     event.stopPropagation();
     copyToClipboard(text);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
   };
 
   return (
@@ -39,6 +46,7 @@ function Clipboard({ text, classes, label, className }: Props) {
           />
         </div>
       </Button>
+      {showToast && <Toast message="¡Correo copiado con éxito!" type="success" />}
     </div>
   );
 }

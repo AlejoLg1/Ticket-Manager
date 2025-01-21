@@ -11,7 +11,11 @@ export function Input({ className, style, readOnly, ...props }: InputProps) {
       className={`border p-2 rounded-lg focus:outline-none 
         ${readOnly ? 'bg-gray-100 text-gray-500 border-gray-300 cursor-not-allowed' : ''} 
         ${className}`}
-      style={{ borderRadius: '25px', color: 'black', ...style }}
+      style={{
+        borderRadius: '25px',
+        ...(readOnly ? {} : { color: 'black' }),
+        ...style,
+      }}
       readOnly={readOnly}
       {...props}
     />

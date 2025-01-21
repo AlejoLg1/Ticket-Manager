@@ -9,6 +9,7 @@ import { TextArea } from '@components/ui/inputs/textArea';
 import Clipboard from '@components/ui/common/clipboard';
 import Upload from '@components/ui/common/upload';
 import CommentBox from '@components/ui/common/commentBox';
+import ConfirmModal from '@components/ui/modals/confirmModal';
 import { categoryOptions, statesOptions } from '@/constants/selectOptions';
 import EyeToggle from "@components/eye/eyeToggle";
 import { ModalProps } from '@/models/modal/modal';
@@ -39,6 +40,9 @@ export default function BasicModal({
   const [subject, setSubject] = useState<string>(ticket?.subject || '');
   const [files, setFiles] = useState<File[]>([]);
   const setComments = useState<{ id: string; text: string }[]>([])[1];
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<'close' | null>(null);
+
   const isReadOnly = !isCreatingTicket && hasAssignment;
   const isEditable = isCreatingTicket || (!isCreatingTicket && !hasAssignment && !isSupport && status === 'nuevo');
 
@@ -142,6 +146,24 @@ export default function BasicModal({
     }
   };
 
+  const handleCancel = () => {
+    setConfirmAction('close');
+    setIsConfirmModalOpen(true);
+  };
+
+  const confirmModalClose = () => {
+    setIsConfirmModalOpen(false);
+    setConfirmAction(null);
+  };
+
+  const confirmModalAction = async (query: string): Promise<void> => {
+    if (query === "close") {
+      confirmModalClose();
+      onClose();
+    }
+  };
+  
+
   const submitButtonText = isCreatingTicket
     ? 'Crear Ticket'
     : (isSupport || (!hasAssignment && ticket?.status === 'nuevo')) ? 'Guardar' : null;
@@ -153,124 +175,139 @@ export default function BasicModal({
   const isSubmitDisabled = !selectedCategory || !message;
 
   return (
-    <Dialog
-      title={ModalTitle}
-      isOpen={isOpen}
-      onClose={onClose}
-      isSupport={isSupport}
-      hasAssignment={hasAssignment}
-      selectedState={selectedState?.value || 'nuevo'}
-      onStateChange={(newState) => {
-        setSelectedState(statesOptions.find(option => option.value === newState) || null);
-      }}
-      ticketNumber={ticket?.ticketNumber || ''}
-    >
-      <div
-        className="p-4 bg-white rounded-[25px] shadow-lg w-full max-w-4xl mx-auto"
-        style={{
-          maxHeight: '90vh',
-          overflow: 'hidden',
+    <>
+      <Dialog
+        title={ModalTitle}
+        isOpen={isOpen}
+        onClose={handleCancel}
+        isSupport={isSupport}
+        hasAssignment={hasAssignment}
+        selectedState={selectedState?.value || 'nuevo'}
+        onStateChange={(newState) => {
+          setSelectedState(statesOptions.find(option => option.value === newState) || null);
         }}
+        ticketNumber={ticket?.ticketNumber || ''}
       >
         <div
-          className="custom-scrollbar-modal"
+          className="p-4 bg-white rounded-[25px] shadow-lg w-full max-w-4xl mx-auto"
           style={{
-            maxHeight: 'calc(90vh - 64px)',
+            maxHeight: '90vh',
+            overflow: 'hidden',
           }}
         >
-          <form
-            className="space-y-4"
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSubmit();
+          <div
+            className="custom-scrollbar-modal"
+            style={{
+              maxHeight: 'calc(90vh - 64px)',
             }}
           >
-            <Input
-              name="subject"
-              placeholder="Asunto"
-              className="w-full placeholder-gray-500"
-              required
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-              readOnly={isReadOnly || !isEditable}
-            />
+            <form
+              className="space-y-4"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSubmit();
+              }}
+            >
+              <Input
+                name="subject"
+                placeholder="Asunto"
+                className="w-full placeholder-gray-500"
+                required
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                readOnly={isReadOnly || !isEditable}
+              />
 
-            <TextArea
-              name="message"
-              placeholder="Ingrese su consulta o mensaje"
-              value={message}
-              onChange={(value) => setMessage(value)}
-              required
-              readOnly={isReadOnly || !isEditable}
-              className="rounded-[25px]"
-            />
+              <TextArea
+                name="message"
+                placeholder="Ingrese su consulta o mensaje"
+                value={message}
+                onChange={(value) => setMessage(value)}
+                required
+                readOnly={isReadOnly || !isEditable}
+                className="rounded-[25px]"
+              />
 
-            <div className="flex items-center gap-4">
-              <div className="w-1/3">
-                <Select
-                  options={categoryOptions}
-                  placeholder="Categoría"
-                  selected={selectedCategory}
-                  setSelected={setSelectedCategory}
-                  triggerClassName="rounded-[25px] w-full"
-                  hideChevronDown={true}
-                  dropdownStyle={{ borderRadius: '25px' }}
-                  readOnly={isReadOnly || !isEditable}
-                />
-              </div>
-              {isSupport && (
+              <div className="flex items-center gap-4">
                 <div className="w-1/3">
-                  <Clipboard className="!h-[40px] w-full" text={String(ticket?.contact)} label={null} />
+                  <Select
+                    options={categoryOptions}
+                    placeholder="Categoría"
+                    selected={selectedCategory}
+                    setSelected={setSelectedCategory}
+                    triggerClassName="rounded-[25px] w-full"
+                    hideChevronDown={true}
+                    dropdownStyle={{ borderRadius: '25px' }}
+                    readOnly={isReadOnly || !isEditable}
+                  />
                 </div>
-              )}
+                {isSupport && (
+                  <div className="w-1/3">
+                    <Clipboard className="!h-[40px] w-full" text={String(ticket?.contact)} label={null} />
+                  </div>
+                )}
+
+                {!isCreatingTicket ? (
+                  <div className="ml-auto">
+                    <EyeToggle ticketId={String(ticket?.ticketNumber)} fill="red" size={40} />
+                  </div>
+                ) : null}
+              </div>
+
+              {isEditable ? (
+                <>
+                  <h3 className="pt-6 text-black text-xl font-bold mb-2">Documentos</h3>
+                  <Upload onFilesSelected={setFiles} />
+                </>
+              ) : null}
 
               {!isCreatingTicket ? (
-                <div className="ml-auto">
-                  <EyeToggle ticketId={String(ticket?.ticketNumber)} fill="red" size={40} />
+                <div className="mt-4">
+                  <CommentBox
+                    isSupport={isSupport}
+                    ticketId={Number(ticket?.ticketNumber)}
+                    onAddMessage={handleAddComment}
+                    onDeleteMessage={handleDeleteComment}
+                  />
                 </div>
               ) : null}
-            </div>
 
-            {isEditable ? (
-              <>
-                <h3 className="pt-6 text-black text-xl font-bold mb-2">Documentos</h3>
-                <Upload onFilesSelected={setFiles} />
-              </>
-            ) : null}
-
-            {!isCreatingTicket ? (
-              <div className="mt-4">
-                <CommentBox
-                  isSupport={isSupport}
-                  ticketId={Number(ticket?.ticketNumber)}
-                  onAddMessage={handleAddComment}
-                  onDeleteMessage={handleDeleteComment}
-                />
-              </div>
-            ) : null}
-
-            <div className="flex justify-between pt-6">
-              <Button
-                type="button"
-                className="bg-[#504D4F] text-white hover:bg-[#3D3B3C] px-4 !py-2 rounded-full"
-                onClick={onClose}
-              >
-                Cancelar
-              </Button>
-
-              {submitButtonText ? (
+              <div className="flex justify-between pt-6">
                 <Button
-                  type="submit"
-                  className="bg-[#0DBC2D] text-white hover:bg-[#0AA626] px-4 !py-2 rounded-full"
-                  disabled={isSubmitDisabled}
+                  type="button"
+                  className="bg-[#504D4F] text-white hover:bg-[#3D3B3C] px-4 !py-2 rounded-full min-w-[95px]"
+                  onClick={handleCancel}
                 >
-                  {submitButtonText}
+                  Salir
                 </Button>
-              ) : null}
-            </div>
-          </form>
+
+                {submitButtonText ? (
+                  <Button
+                    type="submit"
+                    className="bg-[#0DBC2D] text-white hover:bg-[#0AA626] px-4 !py-2 rounded-full min-w-[95px]"
+                    disabled={isSubmitDisabled}
+                  >
+                    {submitButtonText}
+                  </Button>
+                ) : null}
+              </div>
+            </form>
+          </div>
         </div>
-      </div>
-    </Dialog>
+      </Dialog>
+
+      {isConfirmModalOpen && (
+        <ConfirmModal
+          isOpen={isConfirmModalOpen}
+          onClose={confirmModalClose}
+          onConfirm={confirmModalAction}
+          query="close"
+          title="Salir sin guardar"
+          text="¿Estás seguro de que deseas salir? Perderás todos los cambios no guardados."
+          confirmLabel="Salir"
+          cancelLabel="Cancelar"
+        />
+      )}
+    </>
   );
 }

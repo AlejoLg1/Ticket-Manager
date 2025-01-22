@@ -1,7 +1,7 @@
 "use client";
 
 import { Input } from '@/components/ui/inputs/input';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Select } from '@/components/ui/selects/comboBox';
 import { categoryOptions, statesOptions } from '@/constants/selectOptions';
 
@@ -9,6 +9,26 @@ export function TicketFilters() {
   const [selectedEstado, setSelectedEstado] = useState<{ value: string; label: string } | null>(null);
   const [selectedPersona, setSelectedPersona] = useState<{ value: string; label: string } | null>(null);
   const [selectedCategoria, setSelectedCategoria] = useState<{ value: string; label: string } | null>(null);
+  const [supportOptions, setSupportOptions] = useState<{ value: string; label: string }[]>([]);
+
+  useEffect(() => {
+    const fetchSupportOptions = async () => {
+      try {
+        const res = await fetch('/api/services/support');
+        if (!res.ok) throw new Error('Error fetching support options');
+        const data = await res.json();
+        const formattedOptions = data.map((item: { id: string; text: string }) => ({
+          value: item.id,
+          label: item.text,
+        }));
+        setSupportOptions(formattedOptions);
+      } catch (error) {
+        console.error('Error al cargar las opciones de soporte:', error);
+      }
+    };
+
+    fetchSupportOptions();
+  }, []);
 
   return (
     <div
@@ -32,11 +52,7 @@ export function TicketFilters() {
       />
 
       <Select
-        options={[
-          { value: 'persona1', label: 'Pepe Support' },
-          { value: 'persona2', label: 'Juli Support' },
-          { value: 'persona3', label: 'Ale Support' },
-        ]}
+        options={supportOptions}
         placeholder="Persona Asignada"
         selected={selectedPersona}
         setSelected={setSelectedPersona}

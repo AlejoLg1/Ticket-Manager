@@ -26,7 +26,8 @@ const App = () => {
   useEffect(() => {
     const fetchTickets = async () => {
       try {
-        const res = await fetch('/api/services/ticket');
+        const query = session?.user?.id ? `?userId=${session.user.id}` : '';
+        const res = await fetch(`/api/services/ticket${query}`);
         if (!res.ok) throw new Error('Error fetching tickets');
         const data: Ticket[] = await res.json();
         setTickets(data);
@@ -34,9 +35,10 @@ const App = () => {
         console.error('Error al cargar los tickets:', error);
       }
     };
-
+  
     fetchTickets();
-  }, []);
+  }, [session]);
+  
 
   const handleNewTicketClick = () => {
     setSelectedTicket(null);

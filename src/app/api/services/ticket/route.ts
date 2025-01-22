@@ -4,7 +4,9 @@ import { getTickets, createOrUpdateTicket } from '@api/services/ticket/ticket';
 
 export async function GET(req: NextRequest) {
   try {
-    const tickets = await getTickets(req);
+    const { searchParams } = new URL(req.url);
+    const userId = searchParams.get('userId') || undefined;
+    const tickets = await getTickets(req, userId);
     return NextResponse.json(tickets);
   } catch (e) {
     return NextResponse.json({ error: 'Error fetching tickets', msg: e }, { status: 500 });

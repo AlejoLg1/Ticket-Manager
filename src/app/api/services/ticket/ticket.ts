@@ -5,11 +5,11 @@ import pool from '@/lib/db';
 import { Ticket, TicketPayload } from '@/models/ticket/ticket';
 import { getToken } from 'next-auth/jwt';
 
-export const getTickets = async (req: NextRequest): Promise<Ticket[]> => {
+export const getTickets = async (req: NextRequest, userId?: string): Promise<Ticket[]> => {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   const role = String(token?.role || 'user');
 
-  const res = await pool.query(`
+  const query = `
     SELECT 
       t.id AS ticket_id,
       t.subject,
@@ -26,8 +26,12 @@ export const getTickets = async (req: NextRequest): Promise<Ticket[]> => {
     INNER JOIN categories c ON t.categoryid = c.id
     LEFT JOIN users us ON t.assignedtoid = us.id
     INNER JOIN users u ON t.creatorid = u.id
+    ${userId ? 'WHERE t.creatorid = $1' : ''}
     ORDER BY t.updatedat DESC;
-  `);
+  `;
+
+  const values = userId ? [userId] : [];
+  const res = await pool.query(query, values);
 
   return res.rows.map(row => ({
     status: row.status_name,

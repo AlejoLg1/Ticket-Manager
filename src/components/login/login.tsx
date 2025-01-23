@@ -37,7 +37,7 @@ const Login = () => {
     e.preventDefault();
 
     // if (!email.endsWith('@finaersa.com.ar')) {
-    //   setError('Por favor, utiliza un correo con el dominio @finaersa.com.ar.');
+    //   setError('Por favor, verifique sus credenciales.');
     //   return;
     // }
 

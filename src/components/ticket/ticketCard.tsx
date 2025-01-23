@@ -40,7 +40,6 @@ export function TicketCard({
   const categoryLabel = categoryOptions.find(option => option.value === category)?.label || category;
   const { session } = useAuth();
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [action, setAction] = useState<'assign' | 'unassign' | null>(null);
 
   const handleAssign = async () => {
     const assignedId = Number(session?.user?.id);
@@ -81,7 +80,6 @@ export function TicketCard({
           className="bg-[#0DBC2D] hover:bg-[#0B9E26] text-white font-bold p-2 border rounded-[50px] absolute right-4 w-full sm:w-[125px] h-[25px] flex items-center justify-center"
           onClick={(e) => {
             e.stopPropagation();
-            setAction('assign');
             openConfirmModal();
           }}
         >
@@ -91,8 +89,6 @@ export function TicketCard({
     }
     return <AssignedLabel assignedUser={assignedUser} />;
   };
-  
-  
 
   return (
     <>

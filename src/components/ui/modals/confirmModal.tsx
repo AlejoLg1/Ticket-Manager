@@ -27,18 +27,15 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   confirmLabel = 'Confirmar',
   cancelLabel = 'Cancelar',
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
   const [isContentVisible, setIsContentVisible] = useState(true);
 
   const handleConfirm = async () => {
-    setIsLoading(true);
     setIsContentVisible(false);
     try {
       await onConfirm(query);
     } catch (error) {
       console.error('Error ejecutando la acción:', error);
     } finally {
-      setIsLoading(false);
       onClose();
     }
   };

@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Header from "@components/header/header";
 import { TicketFilters } from "@/components/ticket/ticketFilters";
 import { TicketCard } from "@/components/ticket/ticketCard";
@@ -41,7 +41,7 @@ const Support = () => {
     }
   }, [session, router]);
 
-  const fetchTickets = async (filtersToUse: Filters, pageOverride?: number) => {
+  const fetchTickets = useCallback(async (filtersToUse: Filters, pageOverride?: number) => {
     setIsFetching(true);
 
     try {
@@ -75,13 +75,13 @@ const Support = () => {
     } finally {
       setIsFetching(false);
     }
-  };
+  }, [currentPage, itemsPerPage]);
 
   useEffect(() => {
     if (session) {
       fetchTickets(filters);
     }
-  }, [session, filters, currentPage]);
+  }, [session, filters, currentPage, fetchTickets]);
 
   const handleFilterApply = (newFilters: Filters) => {
     setCurrentPage(1);

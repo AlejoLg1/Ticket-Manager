@@ -56,7 +56,7 @@ export const Dialog = ({
       addToast('¡Ticket asignado con éxito!', 'success');
       setTimeout(() => {
         window.location.reload();
-      }, 1500)
+      }, 500)
     } catch (error) {
       console.error('Error al asignar el ticket', error);
       addToast('Hubo un error al asignar el ticket.', 'error');
@@ -80,7 +80,7 @@ export const Dialog = ({
       addToast('¡Ticket desasignado con éxito!', 'success');
       setTimeout(() => {
         window.location.reload();
-      }, 1500)
+      }, 500)
     } catch (error) {
       console.error('Error al desasignar el ticket', error);
       addToast('Hubo un error al desasignar el ticket.', 'error');
@@ -97,7 +97,7 @@ export const Dialog = ({
     setAction(null);
   };
 
-  const confirmModalAction = async (query: string) => {
+  const confirmModalAction = async () => {
     if (action === 'assign') {
       await handleAssign();
     } else if (action === 'unassign') {

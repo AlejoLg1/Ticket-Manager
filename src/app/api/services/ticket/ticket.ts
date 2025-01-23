@@ -2,7 +2,7 @@
 
 import { NextRequest } from 'next/server';
 import pool from '@/lib/db';
-import { Ticket, TicketPayload } from '@/models/ticket/ticket';
+import { TicketPayload } from '@/models/ticket/ticket';
 import { getToken } from 'next-auth/jwt';
 
 interface Filters {
@@ -40,7 +40,7 @@ export const getTickets = async (req: NextRequest, filters: Filters) => {
   `;
 
   const conditions: string[] = [];
-  const values: any[] = [];
+  const values: (string | number | null)[] = [];
 
   if (filters.userId) {
     conditions.push(`t.creatorid = $${values.length + 1}`);

@@ -43,7 +43,6 @@ export default function BasicModal({
   const [files, setFiles] = useState<File[]>([]);
   const setComments = useState<{ id: string; text: string }[]>([])[1];
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [confirmAction, setConfirmAction] = useState<'close' | null>(null);
 
   const isReadOnly = !isCreatingTicket && hasAssignment;
   const isEditable = isCreatingTicket || (!isCreatingTicket && !hasAssignment && !isSupport && status === 'nuevo');
@@ -144,7 +143,7 @@ export default function BasicModal({
       onClose();
       setTimeout(() => {
         window.location.reload();
-      }, 1500);
+      }, 500);
     } catch (error) {
       console.error(error);
       addToast('Ocurrió un error al guardar el ticket.', 'error');
@@ -153,13 +152,11 @@ export default function BasicModal({
   };
 
   const handleCancel = () => {
-    setConfirmAction('close');
     setIsConfirmModalOpen(true);
   };
 
   const confirmModalClose = () => {
     setIsConfirmModalOpen(false);
-    setConfirmAction(null);
   };
 
   const confirmModalAction = async (query: string): Promise<void> => {

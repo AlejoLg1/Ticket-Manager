@@ -8,6 +8,7 @@ import { TicketFilters } from "@/components/ticket/ticketFilters";
 import { TicketCard } from "@/components/ticket/ticketCard";
 import BasicModal from '@components/ticket/ticketModal';
 import HouseLoader from '@/components/loader/houseLoader';
+import Pagination from '@/components/pagination/pagination';
 import { Ticket } from '@/models/ticket/ticket';
 import useAuth from '@/hooks/useAuth';
 
@@ -25,6 +26,9 @@ const App = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [isFetching, setIsFetching] = useState(false);
   const { session } = useAuth();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+  const [totalItems, setTotalItems] = useState(0);
   const [filters, setFilters] = useState<Filters>({
     status: null,
     ticketNumber: '',
@@ -42,7 +46,7 @@ const App = () => {
     setIsFetching(true);
     try {
       const queryParams = new URLSearchParams();
-
+  
       if (session?.user?.id) {
         queryParams.append('userId', session.user.id);
       }
@@ -58,17 +62,22 @@ const App = () => {
       if (filtersToUse.category) {
         queryParams.append('category', filtersToUse.category.value);
       }
-
+  
+      queryParams.append('page', currentPage.toString());
+      queryParams.append('itemsPerPage', itemsPerPage.toString());
+  
       const res = await fetch(`/api/services/ticket?${queryParams.toString()}`);
       if (!res.ok) throw new Error('Error fetching tickets');
-      const data: Ticket[] = await res.json();
-      setTickets(data);
+      const data = await res.json();
+      setTickets(data.tickets);
+      setTotalItems(data.totalItems);
     } catch (error) {
       console.error('Error al cargar los tickets:', error);
     } finally {
       setIsFetching(false);
     }
   };
+  
 
   useEffect(() => {
     if (session) {
@@ -140,17 +149,33 @@ const App = () => {
             <p className="text-gray-500 mt-4">No hay tickets disponibles.</p>
           )}
         </div>
-
-        <BasicModal
-          ticket={selectedTicket}
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          isSupport={false}
-          isCreatingTicket={!selectedTicket}
-          hasAssignment={!!selectedTicket?.assignedUser}
-          status={String(selectedTicket?.status)}
-        />
       </div>
+
+      {!isFetching && tickets.length > 0 && (
+        <div className="flex justify-center items-center w-full">
+          <Pagination
+            currentPage={currentPage}
+            onNextClick={() => setCurrentPage(prev => prev + 1)}
+            onPreviousClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+            onPageClick={page => setCurrentPage(page)}
+            hasNext={currentPage < Math.ceil(totalItems / itemsPerPage)}
+            hasPrevious={currentPage > 1}
+            totalItems={totalItems}
+            itemsPerPage={itemsPerPage}
+          />
+        </div>
+      )}
+
+
+      <BasicModal
+        ticket={selectedTicket}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        isSupport={false}
+        isCreatingTicket={!selectedTicket}
+        hasAssignment={!!selectedTicket?.assignedUser}
+        status={String(selectedTicket?.status)}
+      />
     </div>
   );
 };

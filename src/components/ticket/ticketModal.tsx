@@ -221,6 +221,7 @@ export default function BasicModal({
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 readOnly={isReadOnly || !isEditable}
+                maxLength={80}
               />
 
               <TextArea

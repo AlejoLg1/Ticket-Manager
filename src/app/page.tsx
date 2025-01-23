@@ -42,56 +42,65 @@ const App = () => {
     }
   }, [session, router]);
 
-  const fetchTickets = async (filtersToUse: Filters) => {
-    setIsFetching(true);
-    try {
-      const queryParams = new URLSearchParams();
-  
-      if (session?.user?.id) {
-        queryParams.append('userId', session.user.id);
-      }
-      if (filtersToUse.status) {
-        queryParams.append('status', filtersToUse.status.value);
-      }
-      if (filtersToUse.ticketNumber) {
-        queryParams.append('ticketNumber', filtersToUse.ticketNumber);
-      }
-      if (filtersToUse.assignedUser) {
-        queryParams.append('assignedUser', filtersToUse.assignedUser.value);
-      }
-      if (filtersToUse.category) {
-        queryParams.append('category', filtersToUse.category.value);
-      }
-  
-      queryParams.append('page', currentPage.toString());
-      queryParams.append('itemsPerPage', itemsPerPage.toString());
-  
-      const res = await fetch(`/api/services/ticket?${queryParams.toString()}`);
-      if (!res.ok) throw new Error('Error fetching tickets');
-      const data = await res.json();
-      setTickets(data.tickets);
-      setTotalItems(data.totalItems);
-    } catch (error) {
-      console.error('Error al cargar los tickets:', error);
-    } finally {
-      setIsFetching(false);
+  const fetchTickets = async (filtersToUse: Filters, pageOverride?: number) => {
+  setIsFetching(true);
+
+  try {
+
+    const queryParams = new URLSearchParams();
+
+    if (session?.user?.id) {
+      queryParams.append('userId', session.user.id);
     }
-  };
-  
+    if (filtersToUse.status) {
+      queryParams.append('status', filtersToUse.status.value);
+    }
+    if (filtersToUse.ticketNumber) {
+      queryParams.append('ticketNumber', filtersToUse.ticketNumber);
+    }
+    if (filtersToUse.assignedUser) {
+      queryParams.append('assignedUser', filtersToUse.assignedUser.value);
+    }
+    if (filtersToUse.category) {
+      queryParams.append('category', filtersToUse.category.value);
+    }
+
+    const pageToUse = pageOverride || currentPage;
+    queryParams.append('page', pageToUse.toString());
+
+    const res = await fetch(`/api/services/ticket?${queryParams.toString()}`);
+
+    if (!res.ok) throw new Error('Error fetching tickets');
+    const data = await res.json();
+
+    setTickets(data.tickets);
+    setTotalItems(data.totalItems);
+  } catch (error) {
+    console.error('Error al cargar los tickets:', error);
+  } finally {
+    setIsFetching(false);
+  }
+};
+
 
   useEffect(() => {
     if (session) {
       fetchTickets(filters);
     }
-  }, [session]);
+  }, [session, filters, currentPage]);
 
   const handleFilterApply = (newFilters: Filters) => {
-    setFilters((prevFilters) => {
-      const updatedFilters = { ...prevFilters, ...newFilters };
-      fetchTickets(updatedFilters);
-      return updatedFilters;
-    });
+  
+    setCurrentPage(1);
+  
+    const updatedFilters = { ...filters, ...newFilters };
+    setFilters(updatedFilters);
+  
+    fetchTickets({ ...updatedFilters }, 1);
+  
   };
+  
+  
 
   const handleNewTicketClick = () => {
     setSelectedTicket(null);
@@ -123,33 +132,40 @@ const App = () => {
       </div>
 
       <div className="flex justify-center mt-6">
-        <div className="bg-[#EBEBEB] w-[90%] flex flex-col items-center justify-start rounded-[25px] shadow-md mb-6">
+        <div className="bg-[#EBEBEB] w-[90%] flex flex-col items-center justify-center rounded-[25px] shadow-md shadow-[#212E5F] mb-6">
           {isFetching ? (
             <div className="flex justify-center items-center py-16">
               <HouseLoader />
             </div>
           ) : tickets.length > 0 ? (
-            tickets.map(ticket => (
-              <div key={ticket.ticketNumber} className="w-[90%] p-6 pb-0">
-                <TicketCard
-                  status={ticket.status}
-                  ticketNumber={ticket.ticketNumber}
-                  contact={ticket.contact}
-                  category={ticket.category}
-                  message={ticket.message}
-                  subject={ticket.subject}
-                  role={ticket.role}
-                  assignedUser={ticket.assignedUser}
-                  onAssign={() => console.log('Asignar ticket', ticket.ticketNumber)}
-                  onClick={() => handleTicketCardClick(ticket)}
-                />
-              </div>
-            ))
+            tickets.map(ticket => {
+              const component = (
+                <div
+                  key={ticket.ticketNumber}
+                  className="w-full flex justify-center p-6 pb-0"
+                >
+                  <TicketCard
+                    status={ticket.status}
+                    ticketNumber={ticket.ticketNumber}
+                    contact={ticket.contact}
+                    category={ticket.category}
+                    message={ticket.message}
+                    subject={ticket.subject}
+                    role={ticket.role}
+                    assignedUser={ticket.assignedUser}
+                    onAssign={() => console.log('Asignar ticket', ticket.ticketNumber)}
+                    onClick={() => handleTicketCardClick(ticket)}
+                  />
+                </div>
+              );
+              return component;
+            })
           ) : (
             <p className="text-gray-500 mt-4">No hay tickets disponibles.</p>
           )}
         </div>
       </div>
+
 
       {!isFetching && tickets.length > 0 && (
         <div className="flex justify-center items-center w-full">
@@ -165,7 +181,6 @@ const App = () => {
           />
         </div>
       )}
-
 
       <BasicModal
         ticket={selectedTicket}

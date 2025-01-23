@@ -5,8 +5,16 @@ import { getTickets, createOrUpdateTicket } from '@api/services/ticket/ticket';
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const userId = searchParams.get('userId') || undefined;
-    const tickets = await getTickets(req, userId);
+
+    const filters = {
+      userId: searchParams.get('userId') || undefined,
+      status: searchParams.get('status') || undefined,
+      ticketNumber: searchParams.get('ticketNumber') || undefined,
+      assignedUser: searchParams.get('assignedUser') || undefined,
+      category: searchParams.get('category') || undefined,
+    };
+
+    const tickets = await getTickets(req, filters);
     return NextResponse.json(tickets);
   } catch (e) {
     return NextResponse.json({ error: 'Error fetching tickets', msg: e }, { status: 500 });

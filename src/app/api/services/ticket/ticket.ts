@@ -5,11 +5,19 @@ import pool from '@/lib/db';
 import { Ticket, TicketPayload } from '@/models/ticket/ticket';
 import { getToken } from 'next-auth/jwt';
 
-export const getTickets = async (req: NextRequest, userId?: string): Promise<Ticket[]> => {
+interface Filters {
+  userId?: string;
+  status?: string;
+  ticketNumber?: string;
+  assignedUser?: string;
+  category?: string;
+}
+
+export const getTickets = async (req: NextRequest, filters: Filters) => {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   const role = String(token?.role || 'user');
 
-  const query = `
+  let query = `
     SELECT 
       t.id AS ticket_id,
       t.subject,
@@ -26,11 +34,42 @@ export const getTickets = async (req: NextRequest, userId?: string): Promise<Tic
     INNER JOIN categories c ON t.categoryid = c.id
     LEFT JOIN users us ON t.assignedtoid = us.id
     INNER JOIN users u ON t.creatorid = u.id
-    ${userId ? 'WHERE t.creatorid = $1' : ''}
-    ORDER BY t.updatedat DESC;
   `;
 
-  const values = userId ? [userId] : [];
+  const conditions: string[] = [];
+  const values: any[] = [];
+
+  if (filters.userId) {
+    conditions.push(`t.creatorid = $${values.length + 1}`);
+    values.push(filters.userId);
+  }
+
+  if (filters.status) {
+    conditions.push(`s.name = $${values.length + 1}`);
+    values.push(filters.status);
+  }
+
+  if (filters.ticketNumber) {
+    conditions.push(`t.id::text = $${values.length + 1}`);
+    values.push(filters.ticketNumber);
+  }
+
+  if (filters.assignedUser) {
+    conditions.push(`t.assignedtoid = $${values.length + 1}`);
+    values.push(filters.assignedUser);
+  }
+
+  if (filters.category) {
+    conditions.push(`c.name = $${values.length + 1}`);
+    values.push(filters.category);
+  }
+
+  if (conditions.length > 0) {
+    query += ` WHERE ${conditions.join(' AND ')}`;
+  }
+
+  query += ` ORDER BY t.updatedat DESC`;
+
   const res = await pool.query(query, values);
 
   return res.rows.map(row => ({
@@ -46,6 +85,7 @@ export const getTickets = async (req: NextRequest, userId?: string): Promise<Tic
       : null,
   }));
 };
+
 
 
 export const createOrUpdateTicket = async (data: TicketPayload) => {

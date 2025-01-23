@@ -10,6 +10,7 @@ import HouseLoader from '@/components/loader/houseLoader';
 import Pagination from '@/components/pagination/pagination';
 import { Ticket } from '@/models/ticket/ticket';
 import useAuth from '@/hooks/useAuth';
+import Footer from '@/components/footer/footer';
 
 interface Filters {
   status: { value: string; label: string } | null;
@@ -102,66 +103,68 @@ const Support = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F2F2F2]">
+    <div className="flex flex-col min-h-screen bg-[#F2F2F2]">
       <Header companyLogo="/images/finaer-logo-short.svg" />
 
-      <div className="p-24 pt-16 pb-0">
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-[35px] font-bold text-black">Centro de Control de Tickets</h1>
+      <main className="flex-grow">
+        <div className="p-24 pt-16 pb-0">
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-[35px] font-bold text-black">Centro de Control de Tickets</h1>
+          </div>
         </div>
-      </div>
 
-      <div className="flex justify-center">
-        <TicketFilters onFilterApply={handleFilterApply} />
-      </div>
+        <div className="flex justify-center">
+          <TicketFilters onFilterApply={handleFilterApply} />
+        </div>
 
-      <div className="flex justify-center mt-6">
-        <div className="bg-[#EBEBEB] w-[90%] flex flex-col items-center justify-center rounded-[25px] shadow-md shadow-[#212E5F] mb-6">
-          {isFetching ? (
-            <div className="flex justify-center items-center py-16">
-              <HouseLoader />
-            </div>
-          ) : tickets.length > 0 ? (
-            tickets.map(ticket => (
-              <div
-                key={ticket.ticketNumber}
-                className="w-full flex justify-center p-6 pb-0"
-              >
-                <TicketCard
-                  status={ticket.status}
-                  ticketNumber={ticket.ticketNumber}
-                  contact={ticket.contact}
-                  category={ticket.category}
-                  message={ticket.message}
-                  subject={ticket.subject}
-                  role={ticket.role}
-                  assignedUser={ticket.assignedUser}
-                  onAssign={() => console.log('Asignar ticket', ticket.ticketNumber)}
-                  onClick={() => handleTicketCardClick(ticket)}
-                />
+        <div className="flex justify-center mt-6">
+          <div className="bg-[#EBEBEB] w-[90%] flex flex-col items-center justify-center rounded-[25px] shadow-md shadow-[#212E5F] mb-6">
+            {isFetching ? (
+              <div className="flex justify-center items-center py-16">
+                <HouseLoader />
               </div>
-            ))
-          ) : (
-            <p className="text-gray-500 mt-4">No hay tickets disponibles.</p>
-          )}
+            ) : tickets.length > 0 ? (
+              tickets.map(ticket => (
+                <div
+                  key={ticket.ticketNumber}
+                  className="w-full flex justify-center p-6 pb-0"
+                >
+                  <TicketCard
+                    status={ticket.status}
+                    ticketNumber={ticket.ticketNumber}
+                    contact={ticket.contact}
+                    category={ticket.category}
+                    message={ticket.message}
+                    subject={ticket.subject}
+                    role={ticket.role}
+                    assignedUser={ticket.assignedUser}
+                    onAssign={() => console.log('Asignar ticket', ticket.ticketNumber)}
+                    onClick={() => handleTicketCardClick(ticket)}
+                  />
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-500 mt-4">No hay tickets disponibles.</p>
+            )}
+          </div>
         </div>
-      </div>
 
-      {!isFetching && tickets.length > 0 && (
-        <div className="flex justify-center items-center w-full">
-          <Pagination
-            currentPage={currentPage}
-            onNextClick={() => setCurrentPage(prev => prev + 1)}
-            onPreviousClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-            onPageClick={page => setCurrentPage(page)}
-            hasNext={currentPage < Math.ceil(totalItems / itemsPerPage)}
-            hasPrevious={currentPage > 1}
-            totalItems={totalItems}
-            itemsPerPage={itemsPerPage}
-          />
-        </div>
-      )}
-
+        {!isFetching && tickets.length > 0 && (
+          <div className="flex justify-center items-center w-full">
+            <Pagination
+              currentPage={currentPage}
+              onNextClick={() => setCurrentPage(prev => prev + 1)}
+              onPreviousClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              onPageClick={page => setCurrentPage(page)}
+              hasNext={currentPage < Math.ceil(totalItems / itemsPerPage)}
+              hasPrevious={currentPage > 1}
+              totalItems={totalItems}
+              itemsPerPage={itemsPerPage}
+            />
+          </div>
+        )}
+      </main>
+      
       <BasicModal
         ticket={selectedTicket}
         isOpen={isModalOpen}
@@ -171,6 +174,8 @@ const Support = () => {
         hasAssignment={!!selectedTicket?.assignedUser}
         status={String(selectedTicket?.status)}
       />
+
+      <Footer />
     </div>
   );
 };

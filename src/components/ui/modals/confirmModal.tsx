@@ -78,7 +78,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                   {cancelLabel}
                 </Button>
                 <Button
-                  className="bg-[#1A2F63] rounded-full text-white font-bold py-2 px-4 hover:bg-[#264591] w-1/3"
+                  className="bg-[#1A2F63] rounded-full text-white font-bold py-2 px-4 hover:bg-[#7A8DBB] w-1/3"
                   onClick={handleConfirm}
                 >
                   {confirmLabel}

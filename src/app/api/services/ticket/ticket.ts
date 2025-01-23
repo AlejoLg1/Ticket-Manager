@@ -11,11 +11,14 @@ interface Filters {
   ticketNumber?: string;
   assignedUser?: string;
   category?: string;
+  page: number;
+  itemsPerPage: number;
 }
 
 export const getTickets = async (req: NextRequest, filters: Filters) => {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   const role = String(token?.role || 'user');
+  const offset = (filters.page - 1) * filters.itemsPerPage;
 
   let query = `
     SELECT 
@@ -68,24 +71,39 @@ export const getTickets = async (req: NextRequest, filters: Filters) => {
     query += ` WHERE ${conditions.join(' AND ')}`;
   }
 
-  query += ` ORDER BY t.updatedat DESC`;
+  query += ` ORDER BY t.updatedat DESC LIMIT $${values.length + 1} OFFSET $${values.length + 2}`;
+  values.push(filters.itemsPerPage, offset);
 
   const res = await pool.query(query, values);
 
-  return res.rows.map(row => ({
-    status: row.status_name,
-    ticketNumber: row.ticket_id.toString(),
-    contact: row.creator_email,
-    category: row.category_name,
-    message: row.message,
-    subject: row.subject,
-    role: role,
-    assignedUser: row.assignedtoid
-      ? { id: row.assignedtoid.toString(), email: row.assigned_email }
-      : null,
-  }));
-};
+  const totalQuery = `
+    SELECT COUNT(*) AS total
+    FROM tickets t
+    INNER JOIN statuses s ON t.statusid = s.id
+    INNER JOIN categories c ON t.categoryid = c.id
+    LEFT JOIN users us ON t.assignedtoid = us.id
+    INNER JOIN users u ON t.creatorid = u.id
+    ${conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : ''}
+  `;
 
+  const totalRes = await pool.query(totalQuery, values.slice(0, values.length - 2));
+
+  return {
+    tickets: res.rows.map(row => ({
+      status: row.status_name,
+      ticketNumber: row.ticket_id.toString(),
+      contact: row.creator_email,
+      category: row.category_name,
+      message: row.message,
+      subject: row.subject,
+      role: role,
+      assignedUser: row.assignedtoid
+        ? { id: row.assignedtoid.toString(), email: row.assigned_email }
+        : null,
+    })),
+    totalItems: parseInt(totalRes.rows[0].total, 10),
+  };
+};
 
 
 export const createOrUpdateTicket = async (data: TicketPayload) => {

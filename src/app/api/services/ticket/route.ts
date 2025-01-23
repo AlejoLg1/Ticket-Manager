@@ -12,10 +12,12 @@ export async function GET(req: NextRequest) {
       ticketNumber: searchParams.get('ticketNumber') || undefined,
       assignedUser: searchParams.get('assignedUser') || undefined,
       category: searchParams.get('category') || undefined,
+      page: parseInt(searchParams.get('page') || '1'),
+      itemsPerPage: parseInt(searchParams.get('itemsPerPage') || '10'),
     };
 
-    const tickets = await getTickets(req, filters);
-    return NextResponse.json(tickets);
+    const { tickets, totalItems } = await getTickets(req, filters);
+    return NextResponse.json({ tickets, totalItems });
   } catch (e) {
     return NextResponse.json({ error: 'Error fetching tickets', msg: e }, { status: 500 });
   }

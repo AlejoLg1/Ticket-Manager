@@ -155,6 +155,7 @@ export function TicketFilters({ onFilterApply }: TicketFiltersProps) {
           onChange={(e) => handleTicketNumberChange(e.target.value)}
           className="text-base h-8.5 w-full"
           style={{ borderRadius: '25px', color: 'black' }}
+          maxLength={30}
         />
       </div>
 

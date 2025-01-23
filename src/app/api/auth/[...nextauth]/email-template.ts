@@ -1,4 +1,6 @@
 export function createMagicLinkEmail({ url }: { url: string }) {
+  const currentYear = new Date().getFullYear();
+
   return `
     <!DOCTYPE html>
     <html>
@@ -117,7 +119,7 @@ export function createMagicLinkEmail({ url }: { url: string }) {
             <p>Ponte en contacto con <a href="mailto:lucasa@finaer.es">lucasa@finaer.es</a> </p>
 
             <br>
-            <p>Copyright © 2025 Finaer</p>
+            <p>Copyright © ${currentYear} Finaer</p>
             <p style="font-size: 10px;">
               Este correo es estrictamente confidencial. Si no eres el destinatario, comunícalo al remitente y elimínalo.
             </p>

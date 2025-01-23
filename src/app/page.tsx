@@ -23,7 +23,7 @@ const App = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [tickets, setTickets] = useState<Ticket[]>([]);
-  const [isFetching, setIsFetching] = useState(false); // Loader control
+  const [isFetching, setIsFetching] = useState(false);
   const { session } = useAuth();
   const [filters, setFilters] = useState<Filters>({
     status: null,

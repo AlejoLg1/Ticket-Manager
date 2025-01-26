@@ -44,6 +44,10 @@ export default function BasicModal({
   const setComments = useState<{ id: string; text: string }[]>([])[1];
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
+  const [subjectError, setSubjectError] = useState(false);
+  const [messageError, setMessageError] = useState(false);
+  const [categoryError, setCategoryError] = useState(false);
+
   const isReadOnly = !isCreatingTicket && hasAssignment;
   const isEditable = isCreatingTicket || (!isCreatingTicket && !hasAssignment && !isSupport && status === 'nuevo');
 
@@ -57,6 +61,9 @@ export default function BasicModal({
       );
       setMessage(ticket?.message || '');
       setSubject(ticket?.subject || '');
+      setSubjectError(false);
+      setMessageError(false);
+      setCategoryError(false);
     } else {
       setSelectedCategory(null);
       setSelectedState(null);
@@ -89,12 +96,38 @@ export default function BasicModal({
   };
 
   const handleSubmit = async () => {
-    if (!selectedCategory) return;
+    let hasError = false;
+
+    if (!subject.trim()) {
+      setSubjectError(true);
+      hasError = true;
+    } else {
+      setSubjectError(false);
+    }
+
+    if (!message.trim()) {
+      setMessageError(true);
+      hasError = true;
+    } else {
+      setMessageError(false);
+    }
+
+    if (!selectedCategory) {
+      setCategoryError(true);
+      hasError = true;
+    } else {
+      setCategoryError(false);
+    }
+
+    if (hasError) {
+      addToast('Por favor completa los campos requeridos.', 'error');
+      return;
+    }
 
     const payload = {
       subject,
       message,
-      category: selectedCategory.value,
+      category: selectedCategory?.value,
       status: selectedState?.value || 'nuevo',
       creatorId: Number(session?.user?.id),
       ticketNumber: ticket?.ticketNumber,
@@ -174,8 +207,6 @@ export default function BasicModal({
     ? 'Creando Nuevo Ticket'
     : `Ticket-${ticket?.ticketNumber}`;
 
-  const isSubmitDisabled = !selectedCategory || !message;
-
   return (
     <>
       <Dialog
@@ -213,8 +244,9 @@ export default function BasicModal({
               <Input
                 name="subject"
                 placeholder="Asunto"
-                className="w-full placeholder-gray-500"
-                required
+                className={`w-full placeholder-gray-500 ${
+                  subjectError ? 'border-2 border-[#CF230F]' : ''
+                }`}
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 readOnly={isReadOnly || !isEditable}
@@ -226,9 +258,10 @@ export default function BasicModal({
                 placeholder="Ingrese su consulta o mensaje"
                 value={message}
                 onChange={(value) => setMessage(value)}
-                required
+                className={`rounded-[25px] ${
+                  messageError ? 'border-2 !border-[#CF230F]' : ''
+                }`}
                 readOnly={isReadOnly || !isEditable}
-                className="rounded-[25px]"
               />
 
               <div className="flex items-center gap-4">
@@ -238,9 +271,10 @@ export default function BasicModal({
                     placeholder="Categoría"
                     selected={selectedCategory}
                     setSelected={setSelectedCategory}
-                    triggerClassName="rounded-[25px] w-full"
+                    triggerClassName={`rounded-[25px] w-full ${
+                      categoryError ? 'border-2 border-[#CF230F]' : ''
+                    }`}
                     hideChevronDown={true}
-                    dropdownStyle={{ borderRadius: '25px' }}
                     readOnly={isReadOnly || !isEditable}
                   />
                 </div>
@@ -288,7 +322,6 @@ export default function BasicModal({
                   <Button
                     type="submit"
                     className="bg-[#0DBC2D] text-white hover:bg-[#0AA626] px-4 !py-2 rounded-full min-w-[95px]"
-                    disabled={isSubmitDisabled}
                   >
                     {submitButtonText}
                   </Button>

@@ -180,7 +180,7 @@ const App = () => {
         ticket={selectedTicket}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        isSupport={true}
+        isSupport={false}
         isCreatingTicket={!selectedTicket}
         hasAssignment={!!selectedTicket?.assignedUser}
         status={String(selectedTicket?.status)}

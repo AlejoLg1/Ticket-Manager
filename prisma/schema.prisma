@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model categories {
+  id      BigInt    @id @default(autoincrement())
+  name    String
+  tickets tickets[]
+}
+
+model comments {
+  id        BigInt    @id @default(autoincrement())
+  ticketid  BigInt?
+  supportid BigInt?
+  comment   String
+  createdat DateTime? @default(now()) @db.Timestamp(6)
+  updatedat DateTime? @default(now()) @db.Timestamp(6)
+  tickets   tickets?  @relation(fields: [ticketid], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users     users?    @relation(fields: [supportid], references: [id], onUpdate: NoAction, map: "comments_userid_fkey")
+}
+
+model images {
+  id       BigInt   @id @default(autoincrement())
+  ticketid BigInt?
+  imageurl String
+  tickets  tickets? @relation(fields: [ticketid], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model sessions {
+  id        BigInt    @id @default(autoincrement())
+  userid    BigInt?
+  token     String    @unique
+  expiresat DateTime  @db.Timestamp(6)
+  createdat DateTime? @default(now()) @db.Timestamp(6)
+  users     users?    @relation(fields: [userid], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("sessions")
+}
+
+model statuses {
+  id      BigInt    @id @default(autoincrement())
+  name    String
+  tickets tickets[]
+}
+
+model supportwhitelist {
+  id      BigInt    @id @default(autoincrement())
+  user_id BigInt    @unique(map: "unique_user_id")
+  users   users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user_id")
+  tickets tickets[]
+}
+
+model tickets {
+  id               BigInt            @id @default(autoincrement())
+  subject          String
+  categoryid       BigInt?
+  statusid         BigInt?           @default(1)
+  creatorid        BigInt?
+  assignedtoid     BigInt?
+  createdat        DateTime?         @default(now()) @db.Timestamp(6)
+  updatedat        DateTime?         @default(now()) @db.Timestamp(6)
+  message          String?
+  comments         comments[]
+  images           images[]
+  supportwhitelist supportwhitelist? @relation(fields: [assignedtoid], references: [user_id], onUpdate: NoAction, map: "tickets_assignedtoid_dkey")
+  categories       categories?       @relation(fields: [categoryid], references: [id], onUpdate: NoAction)
+  users            users?            @relation(fields: [creatorid], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  statuses         statuses?         @relation(fields: [statusid], references: [id], onUpdate: NoAction)
+}
+
+model users {
+  id               BigInt            @id @default(autoincrement())
+  email            String            @unique
+  role             String?           @default("user")
+  createdat        DateTime?         @default(now()) @db.Timestamp(6)
+  updatedat        DateTime?         @default(now()) @db.Timestamp(6)
+  first_name       String?
+  last_name        String?
+  emailVerified    DateTime?         @db.Timestamp(6)
+  comments         comments[]
+  sessions         sessions[]
+  supportwhitelist supportwhitelist?
+  tickets          tickets[]
+
+  @@map("users")
+}
+
+model verification_tokens {
+  identifier String
+  token      String   @unique
+  expires    DateTime @db.Timestamp(6)
+
+  @@id([identifier, token])
+  @@map("verification_tokens")
+}

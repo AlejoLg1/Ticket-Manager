@@ -1,0 +1,56 @@
+/* styles/states.css */
+.state-nuevo {
+    background-color: #c7f9cc;
+    color: #376339;
+    width: 140px;
+    height: 25px;
+  }
+  
+  .state-curso {
+    background-color: #bfdbfe;
+    color: #2A3FA8;
+    width: 140px;
+    height: 25px;
+  }
+  
+  .state-desarrollo {
+    background-color: #e9d5ff;
+    color: #4E435C;
+    width: 155px;
+    height: 25px;
+  }
+  
+  .state-contactado {
+    background-color: #fed7aa;
+    color: #8C3B1F;
+    width: 155px;
+    height: 25px;
+  }
+  
+  .state-finalizado {
+    background-color: #d1d5db;
+    color: #222936;
+    width: 155px;
+    height: 25px;
+  }
+  
+  .text-nuevo {
+    color: #376339;
+  }
+  
+  .text-curso {
+    color: #2A3FA8;
+  }
+  
+  .text-contactado {
+    color: #8C3B1F;
+  }
+
+  .text-desarrollo {
+    color: #4E435C;
+  }
+  
+  .text-finalizado {
+    color: #222936;
+  }
+  

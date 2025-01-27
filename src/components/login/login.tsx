@@ -89,7 +89,6 @@ const Login = () => {
       console.error('Error en el proceso de login:', error);
     }
   };
-
   return (
     <div className="flex items-center justify-center min-h-screen bg-[#F2F2F2]">
       <div className="flex flex-col lg:flex-row w-full max-w-7xl px-6 sm:px-8 md:px-12 gap-6">

@@ -77,8 +77,8 @@ export function TicketCard({
         <AssignedLabel assignedUser={assignedUser} />
       ) : (
         <Button
-          className="bg-[#0DBC2D] hover:bg-[#0B9E26] text-white font-bold p-2 border rounded-[50px] absolute right-4 w-full sm:w-[125px] h-[25px] flex items-center justify-center"
-          onClick={(e) => {
+        className="bg-[#0DBC2D] hover:bg-[#0B9E26] text-white font-bold border rounded-[50px] ml-auto right-4 w-[125px] h-[25px] flex items-center justify-center lg:w-[125px] lg:h-[25px] sm:w-[100px] sm:h-[20px] sm:p-1"
+        onClick={(e) => {
             e.stopPropagation();
             openConfirmModal();
           }}
@@ -100,17 +100,18 @@ export function TicketCard({
       >
         <CardContent className="pt-5">
           <div className="flex flex-col h-full">
-            <div className="flex justify-between items-start mb-4">
+            <div className="flex flex-wrap items-start mb-4">
               <h2 className="text-xl font-bold text-black">{subject}</h2>
               <Badge
                 variant="secondary"
-                className={`state-${status} !w-[125px] !h-[25px] flex items-center justify-center !font-bold !text-base`}
+                className={`state-${status} !w-[125px] !h-[25px] flex items-center justify-center !font-bold !text-base ml-auto`}
               >
                 {statusText[status]}
               </Badge>
             </div>
 
-            <div className="mb-4">{renderAssignedSection()}</div>
+
+            <div className="mb-4 w-full">{renderAssignedSection()}</div>
 
             <div className="flex flex-wrap mb-4 mt-4">
               <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 space-y-6 mr-8">
@@ -124,8 +125,8 @@ export function TicketCard({
                     <p className="font-medium text-black ml-2">{contact}</p>
                   </li>
                 </ul>
-                <ul className="list-disc ml-4">
-                  <li className="flex items-center">
+                <ul className="list-disc ml-4 mb-4">
+                  <li className="flex items-center mb-4">
                     <p className="text-sm font-bold text-black mt-4">Categoría:</p>
                     <Badge
                       variant="secondary"
@@ -137,24 +138,27 @@ export function TicketCard({
                 </ul>
               </div>
 
-              <div className="w-full sm:w-1/2 md:w-2/3 flex ml-4">
+              <div className="w-full sm:w-1/2 md:w-2/3 flex gap-4 ml-4">
                 <TextArea
                   name="message"
                   placeholder="Escribe un mensaje..."
                   value={message}
                   onChange={() => {}}
                   readOnly={true}
-                  className="border-gray-300 rounded-[15px] p-2 text-sm !h-[120px] w-full max-w-[700px]"
+                  className="border-gray-300 rounded-[15px] p-2 text-sm w-full max-w-[700px]"
                 />
+                <div
+                  className="flex items-end justify-end"
+                  style={{
+                    marginLeft: "auto",
+                    marginTop: "24px",
+                  }}
+                  role="button"
+                  aria-label="Toggle eye visibility"
+                >
+                  <EyeToggle ticketId={ticketNumber} fill="red" size={40} />
+                </div>
               </div>
-            </div>
-
-            <div
-              className="absolute bottom-6 right-14 flex flex-col items-start space-y-4"
-              role="button"
-              aria-label="Toggle eye visibility"
-            >
-              <EyeToggle ticketId={ticketNumber} fill="red" size={40} />
             </div>
           </div>
         </CardContent>

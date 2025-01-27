@@ -113,14 +113,18 @@ const App = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#F2F2F2]">
+    <div className="flex flex-col min-h-screen bg-[#F2F2F2] overflow-x-hidden">
       <Header companyLogo="/images/finaer-logo-short.svg" />
 
       <main className="flex-grow">
-        <div className="p-24 pt-16 pb-0">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-[35px] font-bold text-black">Centro de Control de Tickets</h1>
-            <NewTicketButton onClick={handleNewTicketClick} />
+        <div className="p-6 sm:p-8 md:p-16 lg:p-24 pt-8 !pb-0">
+          <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 mb-4">
+            <h1 className="text-[24px] sm:text-[28px] md:text-[35px] font-bold text-black">
+              Centro de Control de Tickets
+            </h1>
+            <div className="w-full sm:w-auto">
+              <NewTicketButton onClick={handleNewTicketClick} />
+            </div>
           </div>
         </div>
 
@@ -129,7 +133,7 @@ const App = () => {
         </div>
 
         <div className="flex justify-center mt-6">
-          <div className="bg-[#EBEBEB] w-[90%] flex flex-col items-center justify-center rounded-[25px] shadow-md shadow-[#212E5F] mb-6">
+          <div className="bg-[#EBEBEB] max-w-[90%] sm:w-[90%] w-[90%] flex flex-col items-center justify-center rounded-[25px] shadow-md shadow-[#212E5F] mb-6">
             {isFetching ? (
               <div className="flex justify-center items-center py-16">
                 <HouseLoader />

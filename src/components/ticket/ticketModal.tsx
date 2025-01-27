@@ -265,7 +265,7 @@ export default function BasicModal({
               />
 
               <div className="flex items-center gap-4">
-                <div className="w-1/3">
+                <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/3">
                   <Select
                     options={categoryOptions}
                     placeholder="Categoría"
@@ -278,6 +278,7 @@ export default function BasicModal({
                     readOnly={isReadOnly || !isEditable}
                   />
                 </div>
+
                 {isSupport && (
                   <div className="w-1/3">
                     <Clipboard className="!h-[40px] w-full" text={String(ticket?.contact)} label={null} />

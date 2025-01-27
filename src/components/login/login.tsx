@@ -92,8 +92,8 @@ const Login = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-[#F2F2F2]">
-      <div className="flex w-full max-w-7xl">
-        <div className="w-1/2 flex items-center justify-start pl-1">
+      <div className="flex flex-col lg:flex-row w-full max-w-7xl px-6 sm:px-8 md:px-12 gap-6">
+        <div className="lg:w-1/2 flex items-center justify-center lg:justify-start">
           <Image
             src="/images/finaer-logo.svg"
             alt="Finaer Logo"
@@ -103,8 +103,8 @@ const Login = () => {
           />
         </div>
 
-        <div className="w-1/2 flex items-center justify-center">
-          <div className="bg-white p-10 rounded-[25px] shadow-md w-full max-w-[700px] h-[700px] flex flex-col items-center justify-center">
+        <div className="lg:w-1/2 w-full flex items-center justify-center">
+          <div className="bg-white p-6 sm:p-8 md:p-10 rounded-[25px] shadow-md w-full max-w-[700px] h-auto sm:h-[400px] lg:h-[700px] flex flex-col items-center justify-center">
             {loading ? (
               <div className="flex flex-col items-center justify-center">
                 <HouseLoader />
@@ -141,7 +141,10 @@ const Login = () => {
                 <h1 className="w-full text-3xl text-[#E30613] font-bold text-left mb-6">
                   Sistema de Control de Tickets
                 </h1>
-                <form onSubmit={handleSubmit} className="flex flex-col space-y-4 w-full items-start">
+                <form
+                  onSubmit={handleSubmit}
+                  className="flex flex-col space-y-4 w-full items-start"
+                >
                   <label htmlFor="email" className="text-lg text-left text-black">
                     Correo electrónico
                   </label>
@@ -151,9 +154,11 @@ const Login = () => {
                     placeholder="Correo"
                     value={email}
                     onChange={handleEmailChange}
-                    className="w-3/5 py-3 px-4 text-base border border-black ml-2"
+                    className="lg:w-3/5 sm:w-full py-3 px-4 text-base border border-black ml-2"
                   />
-                  {error && <p className="text-red-500 text-sm text-left">{error}</p>}
+                  {error && (
+                    <p className="text-red-500 text-sm text-left">{error}</p>
+                  )}
                   <div className="pt-4">
                     <Button
                       type="submit"

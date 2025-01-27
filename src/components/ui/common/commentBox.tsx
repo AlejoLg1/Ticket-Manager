@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { getCurrentDateTime } from '@utils/commonFunctions';
+import ConfirmModal from '@/components/ui/modals/confirmModal';
 import { CommentBoxProps } from '@/models/comment/comment';
 import useAuth from '@/hooks/useAuth';
 
@@ -11,6 +12,9 @@ export default function CommentBox({ isSupport, ticketId, onAddMessage, onDelete
   const [messages, setMessages] = useState<{ id: string; text: string }[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [action, setAction] = useState<'add' | 'delete' | null>(null);
+  const [selectedCommentId, setSelectedCommentId] = useState<string | null>(null);
   const { session } = useAuth();
 
   useEffect(() => {
@@ -43,8 +47,21 @@ export default function CommentBox({ isSupport, ticketId, onAddMessage, onDelete
     setNewMessage(event.target.value);
   };
 
-  const handleAddMessage = async (event: React.MouseEvent) => {
+  const openConfirmModal = (event: React.MouseEvent, actionType: 'add' | 'delete', commentId?: string) => {
+    event.stopPropagation();
     event.preventDefault();
+    setAction(actionType);
+    if (commentId) setSelectedCommentId(commentId);
+    setIsConfirmModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsConfirmModalOpen(false);
+    setAction(null);
+    setSelectedCommentId(null);
+  };
+
+  const handleAddMessage = async () => {
     if (newMessage.trim() === '') return;
 
     const messageWithDate = `[${getCurrentDateTime()}] ${newMessage}`;
@@ -83,26 +100,37 @@ export default function CommentBox({ isSupport, ticketId, onAddMessage, onDelete
       alert('Hubo un error al agregar el comentario. Inténtalo nuevamente.');
     } finally {
       setIsSubmitting(false);
+      handleCloseModal();
     }
   };
 
-  const handleDeleteMessage = async (commentId: string) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este comentario?')) {
-      try {
-        const response = await fetch(`/api/services/comment?commentid=${commentId}`, {
-          method: 'DELETE',
-        });
+  const handleDeleteMessage = async () => {
+    if (!selectedCommentId) return;
 
-        if (!response.ok) {
-          throw new Error('Error al eliminar el comentario');
-        }
+    try {
+      const response = await fetch(`/api/services/comment?commentid=${selectedCommentId}`, {
+        method: 'DELETE',
+      });
 
-        setMessages((prevMessages) => prevMessages.filter((message) => message.id !== commentId));
-        onDeleteMessage(commentId);
-      } catch (error) {
-        console.error('Error al eliminar el comentario:', error);
-        alert('Hubo un error al eliminar el comentario. Inténtalo nuevamente.');
+      if (!response.ok) {
+        throw new Error('Error al eliminar el comentario');
       }
+
+      setMessages((prevMessages) => prevMessages.filter((message) => message.id !== selectedCommentId));
+      onDeleteMessage(selectedCommentId);
+    } catch (error) {
+      console.error('Error al eliminar el comentario:', error);
+      alert('Hubo un error al eliminar el comentario. Inténtalo nuevamente.');
+    } finally {
+      handleCloseModal();
+    }
+  };
+
+  const confirmAction = async () => {
+    if (action === 'add') {
+      await handleAddMessage();
+    } else if (action === 'delete') {
+      await handleDeleteMessage();
     }
   };
 
@@ -112,7 +140,7 @@ export default function CommentBox({ isSupport, ticketId, onAddMessage, onDelete
         <h3 className="text-xl font-semibold text-gray-800">Comentarios</h3>
       </div>
 
-      <div className="flex-grow mb-4 max-h-40 overflow-y-auto custom-scrollbar">
+      <div className="flex-grow mb-4 max-h-40 overflow-y-auto custom-scrollbar-left-spacing">
         {isLoading ? (
           <p className="text-gray-500">Cargando comentarios...</p>
         ) : messages.length === 0 ? (
@@ -128,7 +156,7 @@ export default function CommentBox({ isSupport, ticketId, onAddMessage, onDelete
                   width={30}
                   alt="Eliminar comentario"
                   className="cursor-pointer ml-4"
-                  onClick={() => handleDeleteMessage(id)}
+                  onClick={(event) => openConfirmModal(event, 'delete', id)}
                 />
               )}
             </div>
@@ -150,12 +178,29 @@ export default function CommentBox({ isSupport, ticketId, onAddMessage, onDelete
             className={`mt-2 bg-[#CF230F] hover:bg-[#B01E0D] text-white px-4 py-2 rounded-full ${
               isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
             }`}
-            onClick={handleAddMessage}
+            onClick={(event) => openConfirmModal(event, 'add')}
             disabled={isSubmitting}
           >
             {isSubmitting ? 'Enviando...' : 'Agregar Comentario'}
           </button>
         </div>
+      )}
+
+      {isConfirmModalOpen && (
+        <ConfirmModal
+          isOpen={isConfirmModalOpen}
+          onClose={handleCloseModal}
+          onConfirm={confirmAction}
+          query=""
+          title={action === 'add' ? 'Agregar comentario' : 'Eliminar comentario'}
+          text={
+            action === 'add'
+              ? '¿Estás seguro de que deseas agregar este comentario?'
+              : '¿Estás seguro de que deseas eliminar este comentario?'
+          }
+          confirmLabel={action === 'add' ? 'Agregar' : 'Eliminar'}
+          cancelLabel="Cancelar"
+        />
       )}
     </div>
   );

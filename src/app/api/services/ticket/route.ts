@@ -4,8 +4,20 @@ import { getTickets, createOrUpdateTicket } from '@api/services/ticket/ticket';
 
 export async function GET(req: NextRequest) {
   try {
-    const tickets = await getTickets(req);
-    return NextResponse.json(tickets);
+    const { searchParams } = new URL(req.url);
+
+    const filters = {
+      userId: searchParams.get('userId') || undefined,
+      status: searchParams.get('status') || undefined,
+      ticketNumber: searchParams.get('ticketNumber') || undefined,
+      assignedUser: searchParams.get('assignedUser') || undefined,
+      category: searchParams.get('category') || undefined,
+      page: parseInt(searchParams.get('page') || '1'),
+      itemsPerPage: parseInt(searchParams.get('itemsPerPage') || '10'),
+    };
+
+    const { tickets, totalItems } = await getTickets(req, filters);
+    return NextResponse.json({ tickets, totalItems });
   } catch (e) {
     return NextResponse.json({ error: 'Error fetching tickets', msg: e }, { status: 500 });
   }

@@ -73,7 +73,7 @@ const EyeToggle: React.FC<EyeToggleProps> = ({ ticketId, fill = "black", size = 
           setIsOpen(true);
         }}
       >
-        {isOpen ? <EyeOpen fill={fill} size={size} /> : <EyeClose fill={fill} size={size} /> }
+        {isOpen ? <EyeOpen fill={fill} size={size} /> : <EyeClose fill={fill} size={size} fileCount={files.length}/> }
       </div>
 
       {isOpen && (
@@ -192,7 +192,6 @@ const EyeToggle: React.FC<EyeToggleProps> = ({ ticketId, fill = "black", size = 
             <Image src="/images/chevron-right.svg" alt="next" width={30} height={120} />
           </button>
 
-          {/* Botón de cierre */}
           <button
             type="button"
             onClick={closeModal}

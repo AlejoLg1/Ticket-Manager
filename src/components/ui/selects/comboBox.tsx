@@ -80,21 +80,27 @@ export function Select({
   return (
     <div className="relative" ref={selectRef}>
       <div
-        className={`flex items-center justify-between p-2 border cursor-pointer rounded-[25px] ${triggerClassName}`}
+        className={`flex items-center justify-between p-2 border rounded-[25px] 
+        ${readOnly ? 'cursor-not-allowed bg-gray-100 border-gray-300' : 'cursor-pointer'}
+        ${triggerClassName}`}
         onClick={() => !readOnly && setIsOpen(!isOpen)}
       >
-        <span className={`${selected ? 'text-black' : 'text-gray-400'} ${textClassName}`}>
+        <span
+          className={`${selected ? 'text-black' : 'text-gray-400'} 
+          ${readOnly ? 'text-gray-500' : ''} 
+          ${textClassName}`}
+        >
           {selected ? selected.label : placeholder}
         </span>
         <div className="flex items-center">
           {!hideXCircle && selected && (
             <XCircle
-              className="ml-2 h-5 w-5 text-gray-500 cursor-pointer"
+              className={`ml-2 h-5 w-5 text-gray-500 ${readOnly ? 'cursor-not-allowed' : 'cursor-pointer'}`}
               onClick={clearSelection}
             />
           )}
-          {!hideSearchIcon && <Search className="ml-2 h-5 w-5" />}
-          {!hideChevronDown && <ChevronDown className="ml-2 h-5 w-5" />}
+          {!hideSearchIcon && <Search className={`ml-2 h-5 w-5 ${readOnly ? 'text-gray-400' : ''}`} />}
+          {!hideChevronDown && <ChevronDown className={`ml-2 h-5 w-5 ${readOnly ? 'text-gray-400' : ''}`} />}
         </div>
       </div>
       {isOpen && !readOnly && (
@@ -114,3 +120,4 @@ export function Select({
     </div>
   );
 }
+

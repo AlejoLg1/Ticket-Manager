@@ -1,31 +1,30 @@
-import { NextResponse } from 'next/server';
-import { getUserByEmailAndPassword } from '@api/services/user/user';
+import { NextResponse, NextRequest } from 'next/server';
+import { createUser } from '@api/services/user/user';
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const { email, password } = await req.json();
+    const { email } = await req.json();
 
-    if (!email || !password) {
+    if (!email) {
       return NextResponse.json(
-        { error: 'Email and password are required.' },
+        { success: false, message: 'El campo email es obligatorio.' },
         { status: 400 }
       );
     }
 
-    const user = await getUserByEmailAndPassword(email, password);
+    const user = await createUser(email);
 
-    if (!user) {
-      return NextResponse.json(
-        { error: 'Invalid email or password.' },
-        { status: 401 }
-      );
+    if (!user.success) {
+      return NextResponse.json(user, { status: user.status || 500 });
     }
 
-    return NextResponse.json(user);
-  } catch (e) {
+    return NextResponse.json({ success: true, user: user.data });
+  } catch (error) {
+    console.error('Error en el endpoint POST /api/services/user:', error);
     return NextResponse.json(
-      { error: 'Error fetching user information.', msg: e },
+      { success: false, message: 'Error interno del servidor.' },
       { status: 500 }
     );
   }
 }
+

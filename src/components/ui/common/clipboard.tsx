@@ -1,7 +1,10 @@
+'use client';
+
 import React from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/buttons/button';
 import { copyToClipboard } from '@utils/commonFunctions';
+import { useToast } from '@/hooks/useToast';
 
 interface Props {
   text: string;
@@ -11,10 +14,13 @@ interface Props {
 }
 
 function Clipboard({ text, classes, label, className }: Props) {
+  const { addToast } = useToast();
+
   const handleCopy = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     event.stopPropagation();
     copyToClipboard(text);
+    addToast('¡Correo copiado con éxito!', 'success');
   };
 
   return (

@@ -129,6 +129,14 @@ const Login = () => {
                         Enviar de nuevo
                       </span>
                     </button>
+                    <button
+                      onClick={() => window.location.reload()}
+                      className="mt-4"
+                    >
+                      <span className="text-lg text-white px-4 py-2 rounded-full bg-gradient-to-r from-[rgb(34,34,34)] to-[rgb(85,85,85)] hover:from-[#3a3a3a] hover:to-[#3a3a3a]">
+                        Volver
+                      </span>
+                    </button>
                   </>
                 )}
               </div>

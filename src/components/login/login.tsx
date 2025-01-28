@@ -36,10 +36,15 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // if (!email.endsWith('@finaersa.com.ar')) {
-    //   setError('Por favor, verifique sus credenciales.');
-    //   return;
-    // }
+    if (
+      !email.endsWith('@finaersa.com.ar') &&
+      email !== 'legname.alejo@gmail.com' &&
+      email !== 'alejol@finaer.es'
+    ) {
+      setError('Por favor, verifique sus credenciales.');
+      return;
+    }
+    
 
     if (loading) return;
 

@@ -19,14 +19,10 @@ export const getCurrentDateTime = (): string => {
   };
 
 
-export const getVariableByEnv = (variable: string): string | undefined => {
-  const isProduction = process.env.NODE_ENV === 'production';
-  const prefix = isProduction ? 'PRD_' : 'DEV_';
-  const envVariable = process.env[`${prefix}${variable}`];
+  export const getVariableByEnv = (key: string): string | undefined => {
+    const vercelEnv = process.env.VERCEL_ENV;
+    const envPrefix = vercelEnv === 'production' ? 'PRD' : 'DEV';
+    const variableKey = `${envPrefix}_${key}`;
 
-  if (!envVariable) {
-    console.warn(`Environment variable ${prefix}${variable} is not defined`);
-  }
-
-  return envVariable;
+    return process.env[variableKey];
 };

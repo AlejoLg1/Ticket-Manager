@@ -21,6 +21,8 @@ If you are new to this project, follow these steps to get started:
    ```bash
    npm install -g pnpm
    pnpm install
+   pnpm prisma generate
+   pnpm build
    pnpm run dev
    ```
 4. Make sure your environment is running at [http://localhost:3000/](http://localhost:3000/).

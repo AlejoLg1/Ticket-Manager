@@ -93,7 +93,7 @@ export function TicketCard({
   return (
     <>
       <Card
-        className="mb-4 w-full max-w-[1500px] !rounded-[25px] relative cursor-pointer hover:border-2 hover:border-[#CF230F]"
+        className="mb-4 w-full max-w-[1500px] !rounded-[25px] relative cursor-pointer hover:outline hover:outline-2 hover:outline-[#CF230F]"
         onClick={() =>
           onClick({ status, ticketNumber, contact, category, message, subject, role, assignedUser, onAssign })
         }

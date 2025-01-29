@@ -133,10 +133,10 @@ export function TicketFilters({ onFilterApply }: TicketFiltersProps) {
 
   return (
     <div
-      className="flex flex-wrap items-center gap-4 mb-6 bg-white p-4 shadow-md"
+      className="flex flex-col md:flex-row  items-center flex-wrap gap-4 mb-6 bg-white p-4 shadow-md"
       style={{ borderRadius: '15px', maxWidth: '90%', width: '100%' }}
     >
-      <div className="flex-1">
+      <div className="w-full md:flex-1">
         <Select
           options={statesOptions}
           placeholder="Estado"
@@ -147,7 +147,7 @@ export function TicketFilters({ onFilterApply }: TicketFiltersProps) {
         />
       </div>
 
-      <div className="flex-1">
+      <div className="w-full md:flex-1">
         <Input
           type="text"
           placeholder="Número de Ticket"
@@ -159,7 +159,7 @@ export function TicketFilters({ onFilterApply }: TicketFiltersProps) {
         />
       </div>
 
-      <div className="flex-1">
+      <div className="w-full md:flex-1">
         <Select
           options={supportOptions}
           placeholder="Persona Asignada"
@@ -170,7 +170,7 @@ export function TicketFilters({ onFilterApply }: TicketFiltersProps) {
         />
       </div>
 
-      <div className="flex-1">
+      <div className="w-full md:flex-1">
         <Select
           options={categoryOptions}
           placeholder="Categoría"
@@ -181,7 +181,7 @@ export function TicketFilters({ onFilterApply }: TicketFiltersProps) {
         />
       </div>
 
-      <div className="ml-auto">
+      <div className="w-full md:w-auto ml-auto">
         <ResetButton onReset={handleClearFilters} />
       </div>
     </div>

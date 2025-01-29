@@ -36,10 +36,15 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // if (!email.endsWith('@finaersa.com.ar')) {
-    //   setError('Por favor, verifique sus credenciales.');
-    //   return;
-    // }
+    if (
+      !email.endsWith('@finaersa.com.ar') &&
+      email !== 'legname.alejo@gmail.com' &&
+      email !== 'alejol@finaer.es'
+    ) {
+      setError('Por favor, verifique sus credenciales.');
+      return;
+    }
+    
 
     if (loading) return;
 
@@ -127,6 +132,14 @@ const Login = () => {
                     >
                       <span className="text-lg text-white px-4 py-2 rounded-full bg-gradient-to-r from-[rgb(159,4,13)] to-[rgb(227,6,19)] hover:from-[#B01E0D] hover:to-[#B01E0D]">
                         Enviar de nuevo
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => window.location.reload()}
+                      className="mt-4"
+                    >
+                      <span className="text-lg text-white px-4 py-2 rounded-full bg-gradient-to-r from-[rgb(34,34,34)] to-[rgb(85,85,85)] hover:from-[#3a3a3a] hover:to-[#3a3a3a]">
+                        Volver
                       </span>
                     </button>
                   </>

@@ -116,7 +116,7 @@ export function createMagicLinkEmail({ url }: { url: string }) {
         <tr>
           <td class="footer">
             <p>¿Tienes alguna duda?</p>
-            <p>Ponte en contacto con <a href="mailto:lucasa@finaer.es">lucasa@finaer.es</a> </p>
+            <p>Ponte en contacto con <a href="mailto:soporte@finaersa.com.ar">soporte@finaersa.com.ar</a> </p>
 
             <br>
             <p>Copyright © ${currentYear} Finaer</p>

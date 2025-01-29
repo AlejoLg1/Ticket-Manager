@@ -7,7 +7,6 @@ export const copyToClipboard = async (text: string) => {
 };
 
 
-
 export const getCurrentDateTime = (): string => {
     const now = new Date();
     const hours = now.getHours().toString().padStart(2, '0');
@@ -18,3 +17,12 @@ export const getCurrentDateTime = (): string => {
   
     return `${day}/${month}/${year} ${hours}:${minutes}`;
   };
+
+
+  export const getVariableByEnv = (key: string): string | undefined => {
+    const vercelEnv = process.env.VERCEL_ENV;
+    const envPrefix = vercelEnv === 'production' ? 'PRD' : 'DEV';
+    const variableKey = `${envPrefix}_${key}`;
+
+    return process.env[variableKey];
+};

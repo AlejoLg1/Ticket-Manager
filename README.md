@@ -4,7 +4,7 @@
   <img src="/images/redsys-logo.svg" width="200" alt="Redsys Control Logo" />
 </p>
 
---- 
+---
 
 ## How to Start on the Project
 

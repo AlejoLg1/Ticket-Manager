@@ -21,8 +21,16 @@ export const getCurrentDateTime = (): string => {
 
   export const getVariableByEnv = (key: string): string | undefined => {
     const vercelEnv = process.env.VERCEL_ENV;
-    const envPrefix = vercelEnv === 'production' ? 'PRD' : 'DEV';
+  
+    let envPrefix = 'DEV';
+  
+    if (vercelEnv === 'production') {
+      envPrefix = 'PRD';
+    } else if (vercelEnv === 'preview') {
+      envPrefix = 'PREVIEW';
+    }
+  
     const variableKey = `${envPrefix}_${key}`;
-
     return process.env[variableKey];
-};
+  };
+  

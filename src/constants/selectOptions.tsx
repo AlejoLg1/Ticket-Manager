@@ -1,7 +1,5 @@
 
 export const categoryOptions = [
-    { value: 'soporte-inmobiliaria', label: 'Soporte con Inmobiliaria' },
-    { value: 'soporte-botmaker', label: 'Soporte Botmaker' },
     { value: 'soporte-telefonico', label: 'Soporte Telefónico IP' },
     { value: 'solicitud-general', label: 'Solicitud General' },
     { value: 'soporte-emails', label: 'Soporte Emails' },

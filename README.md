@@ -1,9 +1,7 @@
 # Finaer - SAI
 
 <p align="center">
-  <a href="https://staging.ticketera.finaersa.com.ar/" target="_blank">
-    <img src="/images/finaer-logo.svg" width="200" alt="Finaer Logo" />
-  </a>
+  <img src="/images/redsys-logo.svg" width="200" alt="Redsys Control Logo" />
 </p>
 
 ---

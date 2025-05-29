@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Image from "next/image";
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/buttons/button';
-import HouseLoader from '@/components/loader/houseLoader';
+import GearLoader from '@/components/loader/gearLoader';
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -84,7 +84,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             </>
           ) : (
             <div className="w-full h-full flex items-center justify-center">
-              <HouseLoader tiny />
+              <GearLoader tiny />
             </div>
           )}
         </div>

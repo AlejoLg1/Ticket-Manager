@@ -13,7 +13,7 @@ function Footer() {
     >
       <div className="flex flex-wrap md:flex-nowrap items-center justify-between py-8 md:py-3 px-6 gap-4 md:gap-0">
         <p className="text-body-m leading-m text-center w-full md:w-auto">
-          Copyright &copy; {getCurrentYear()} Finaer
+          Copyright &copy; {getCurrentYear()} Redsys Control
         </p>
 
         <div className="flex flex-col md:flex-row gap-4 md:gap-6 w-full md:w-auto items-center md:items-end text-center">

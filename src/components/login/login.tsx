@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { Button } from '@ui/buttons/button';
 import { Input } from '@ui/inputs/input';
 import { signIn } from 'next-auth/react';
-import HouseLoader from '@/components/loader/houseLoader';
+import GearLoader from '@/components/loader/gearLoader';
 
 const Login = () => {
   const { session } = useAuth();
@@ -36,10 +36,15 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // if (!email.endsWith('@finaersa.com.ar')) {
+    // if (
+    //   !email.endsWith('@finaersa.com.ar') &&
+    //   email !== 'legname.alejo@gmail.com' &&
+    //   email !== 'alejol@finaer.es'
+    // ) {
     //   setError('Por favor, verifique sus credenciales.');
     //   return;
     // }
+    
 
     if (loading) return;
 
@@ -89,16 +94,15 @@ const Login = () => {
       console.error('Error en el proceso de login:', error);
     }
   };
-
   return (
     <div className="flex items-center justify-center min-h-screen bg-[#F2F2F2]">
       <div className="flex flex-col lg:flex-row w-full max-w-7xl px-6 sm:px-8 md:px-12 gap-6">
         <div className="lg:w-1/2 flex items-center justify-center lg:justify-start">
           <Image
-            src="/images/finaer-logo.svg"
-            alt="Finaer Logo"
-            width={370}
-            height={123}
+            src="/images/redsys-logo.svg"
+            alt="RedSys Control Logo"
+            width={420}
+            height={173}
             priority
           />
         </div>
@@ -107,13 +111,13 @@ const Login = () => {
           <div className="bg-white p-6 sm:p-8 md:p-10 rounded-[25px] shadow-md w-full max-w-[700px] h-auto sm:h-[400px] lg:h-[700px] flex flex-col items-center justify-center">
             {loading ? (
               <div className="flex flex-col items-center justify-center">
-                <HouseLoader />
+                <GearLoader />
               </div>
             ) : success ? (
               <div className="text-center flex flex-col items-center">
                 {resending ? (
                   <div className="flex flex-col items-center">
-                    <HouseLoader />
+                    <GearLoader />
                   </div>
                 ) : (
                   <>
@@ -128,6 +132,14 @@ const Login = () => {
                     >
                       <span className="text-lg text-white px-4 py-2 rounded-full bg-gradient-to-r from-[rgb(159,4,13)] to-[rgb(227,6,19)] hover:from-[#B01E0D] hover:to-[#B01E0D]">
                         Enviar de nuevo
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => window.location.reload()}
+                      className="mt-4"
+                    >
+                      <span className="text-lg text-white px-4 py-2 rounded-full bg-gradient-to-r from-[rgb(34,34,34)] to-[rgb(85,85,85)] hover:from-[#3a3a3a] hover:to-[#3a3a3a]">
+                        Volver
                       </span>
                     </button>
                   </>

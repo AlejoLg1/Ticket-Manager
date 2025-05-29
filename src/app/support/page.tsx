@@ -6,7 +6,7 @@ import Header from "@components/header/header";
 import { TicketFilters } from "@/components/ticket/ticketFilters";
 import { TicketCard } from "@/components/ticket/ticketCard";
 import BasicModal from '@components/ticket/ticketModal';
-import HouseLoader from '@/components/loader/houseLoader';
+import GearLoader from '@/components/loader/gearLoader';
 import Pagination from '@/components/pagination/pagination';
 import { Ticket } from '@/models/ticket/ticket';
 import useAuth from '@/hooks/useAuth';
@@ -104,7 +104,7 @@ const Support = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#F2F2F2] overflow-x-hidden">
-      <Header companyLogo="/images/finaer-logo-short.svg" />
+      <Header companyLogo="/images/redsys-logo.svg" />
 
       <main className="flex-grow">
         <div className="p-6 sm:p-8 md:p-16 lg:p-24 pt-8 !pb-0">
@@ -123,7 +123,7 @@ const Support = () => {
           <div className="bg-[#EBEBEB] max-w-[90%] sm:w-[90%] w-[90%] flex flex-col items-center justify-center rounded-[25px] shadow-md shadow-[#212E5F] mb-6">
             {isFetching ? (
               <div className="flex justify-center items-center py-16">
-                <HouseLoader />
+                <GearLoader />
               </div>
             ) : tickets.length > 0 ? (
               tickets.map(ticket => (

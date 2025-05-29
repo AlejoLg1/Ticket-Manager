@@ -102,7 +102,7 @@ export function createMagicLinkEmail({ url }: { url: string }) {
       <table>
         <tr>
           <td style="text-align: center; padding: 10px;">
-            <img src="https://public-assets-finaeresp.s3.eu-west-3.amazonaws.com/finaer.png" alt="Logo" style="max-width: 150px; margin: auto;">
+            <img src="https://jehskix4eyb3bg1v.public.blob.vercel-storage.com/redsys-logo-8V5Npv24LURA4ytbkcy3xxmeIFGITO.png" alt="Logo" style="max-width: 150px; margin: auto;">
           </td>
         </tr>
         <tr>
@@ -116,10 +116,10 @@ export function createMagicLinkEmail({ url }: { url: string }) {
         <tr>
           <td class="footer">
             <p>¿Tienes alguna duda?</p>
-            <p>Ponte en contacto con <a href="mailto:lucasa@finaer.es">lucasa@finaer.es</a> </p>
+            <p>Ponte en contacto con <a href="mailto:legname.alejo@gmail.com">legname.alejo@gmail.com</a> </p>
 
             <br>
-            <p>Copyright © ${currentYear} Finaer</p>
+            <p>Copyright © ${currentYear} RedSys Control</p>
             <p style="font-size: 10px;">
               Este correo es estrictamente confidencial. Si no eres el destinatario, comunícalo al remitente y elimínalo.
             </p>

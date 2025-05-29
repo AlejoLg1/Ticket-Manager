@@ -43,6 +43,7 @@ export default function BasicModal({
   const [files, setFiles] = useState<File[]>([]);
   const setComments = useState<{ id: string; text: string }[]>([])[1];
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [subjectError, setSubjectError] = useState(false);
   const [messageError, setMessageError] = useState(false);
@@ -124,6 +125,8 @@ export default function BasicModal({
       return;
     }
 
+    setIsLoading(true);
+
     const payload = {
       subject,
       message,
@@ -152,7 +155,6 @@ export default function BasicModal({
 
       const createdTicket = await ticketResponse.json();
 
-      const uploadedFiles = [];
       for (const file of files) {
         const formData = new FormData();
         formData.append('fileName', file.name);
@@ -168,8 +170,6 @@ export default function BasicModal({
         if (!data.success) {
           throw new Error(`Error al subir el archivo: ${file.name}`);
         }
-
-        uploadedFiles.push({ name: file.name, url: data.url });
       }
 
       addToast(ticket ? 'Ticket guardado correctamente.' : 'Ticket creado correctamente.', 'success');
@@ -181,6 +181,8 @@ export default function BasicModal({
       console.error(error);
       addToast('Ocurrió un error al guardar el ticket.', 'error');
       onClose();
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -323,6 +325,7 @@ export default function BasicModal({
                   <Button
                     type="submit"
                     className="bg-[#0DBC2D] text-white hover:bg-[#0AA626] px-4 !py-2 rounded-full min-w-[95px]"
+                    disabled={isLoading}
                   >
                     {submitButtonText}
                   </Button>

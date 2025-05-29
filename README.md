@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Finaer - SAI
 
-## Getting Started
+<p align="center">
+  <a href="https://staging.ticketera.finaersa.com.ar/" target="_blank">
+    <img src="/images/finaer-logo.svg" width="200" alt="Finaer Logo" />
+  </a>
+</p>
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## How to Start on the Project
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+If you are new to this project, follow these steps to get started:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Pull the latest changes from the `develop` branch:
+   ```bash
+   git pull origin develop
+   ```
+2. Ask a teammate for the `.env` file and place it in your project's root directory.
+3. Install dependencies and start the development server:
+   ```bash
+   npm install -g pnpm
+   pnpm install
+   pnpm prisma generate
+   pnpm build
+   pnpm run dev
+   ```
+4. Make sure your environment is running at [http://localhost:3000/](http://localhost:3000/).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## How to Manage Git (Git Flow)
 
-To learn more about Next.js, take a look at the following resources:
+Follow these steps to work with Git effectively:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Switch to the `develop` branch:
+   ```bash
+   git checkout develop
+   ```
+2. Always pull the latest changes from `develop` with the `--rebase` flag before coding:
+   ```bash
+   git pull origin develop --rebase
+   ```
+3. Create a new branch from `develop`:
+   ```bash
+   git checkout -b your_new_branch
+   ```
+   > **Note**: Always pull from `develop` before creating a new branch to ensure it's up-to-date.
+4. Add the files you worked on:
+   ```bash
+   git add .
+   ```
+5. Commit your changes with a clear and descriptive message:
+   ```bash
+   git commit -m 'Feature(nameOfFeature): Description of the feature'
+   ```
+   - Follow [Conventional Commits](https://mokkapps.de/blog/how-to-automatically-generate-a-helpful-changelog-from-your-git-commit-messages/#conventional-commits) for better commit messages.
+6. Push your changes to your branch:
+   ```bash
+   git push origin your_new_branch
+   ```
+7. Verify that your changes are correctly reflected in the deployment on Vercel.
+8. Go to GitHub and create a **Pull Request (PR)** to be reviewed and approved by your Team Lead.
+9. Before merging your branch into `develop`, test the production build locally:
+   ```bash
+   pnpm build
+   ```
+10. Once approved, merge your branch into `develop` or ask your Team Lead to merge it.
+11. Continue working on the same branch if it's related to the same feature/fix, or create a new branch for new features.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## Technical Specifications
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Images**: Using Next.js Images with SVG format.
+- **Routing**: Next.js Routing.
+- **Next.js Version**: 15.0.4.
+- **Styles**: Tailwind CSS.
+- **Package Manager**: pnpm.
+- **Releases**: Tags created for production (PRD) releases.
+- **API**: REST API.
+- **Authentication**: NextAuth.js.
+- **Database**: PostgreSQL.
+- **File Storage**: Vercel Blob.

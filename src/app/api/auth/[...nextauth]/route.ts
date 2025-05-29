@@ -35,7 +35,7 @@ const authOptions: AuthOptions = {
         await transport.sendMail({
           to: identifier,
           from: provider.from,
-          subject: `[Finaer] Enlace de acceso al Sistema de control de Tickets`,
+          subject: `[RedSys Control] Enlace de acceso al Sistema de control de Tickets`,
           html: emailTemplate,
         });
       },      

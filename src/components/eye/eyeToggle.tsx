@@ -11,6 +11,7 @@ const EyeToggle: React.FC<EyeToggleProps> = ({ ticketId, fill = "black", size = 
   const [isOpen, setIsOpen] = useState(false);
   const [files, setFiles] = useState<FileDetails[]>([]);
   const [currentFileIndex, setCurrentFileIndex] = useState(0);
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
   useEffect(() => {
     const fetchFiles = async () => {
@@ -113,8 +114,8 @@ const EyeToggle: React.FC<EyeToggleProps> = ({ ticketId, fill = "black", size = 
                 src={files[currentFileIndex].url}
                 alt={files[currentFileIndex].name}
                 style={{
-                  maxWidth: "100%",
-                  maxHeight: "80vh",
+                  maxWidth: isMobile ? "60vw" : "100%",
+                  maxHeight: isMobile ? "35vh" : "80vh",
                   borderRadius: "10px",
                   objectFit: "contain",
                 }}

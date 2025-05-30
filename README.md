@@ -1,12 +1,25 @@
 # RedSys Control - Ticket Manager
 
 <p align="center">
-  <img src="https://jehskix4eyb3bg1v.public.blob.vercel-storage.com/redsys-logo-8V5Npv24LURA4ytbkcy3xxmeIFGITO.png" width="200" alt="Redsys Control Logo" />
+  <img src="https://jehskix4eyb3bg1v.public.blob.vercel-storage.com/redsys-logo-8V5Npv24LURA4ytbkcy3xxmeIFGITO.png" width="200" alt="Centro de Control de Tickets Logo" />
 </p>
 
 ---
 
-## How to Start on the Project
+## 🛡️ Personal Project Disclaimer
+
+This project is a personal application developed solely for educational and demonstrative purposes.  
+All rights are reserved by the author.  
+**Commercial use, redistribution, or modification is strictly prohibited without explicit permission.**
+
+- 📄 [Privacy Policy](https://your-url.com/politica_de_privacidad.pdf)
+- 📄 [Terms and Conditions](https://your-url.com/terminos_y_condiciones.pdf)
+
+> *Replace the above links with your actual hosted files on Vercel Blob or another storage provider.*
+
+---
+
+## 🚀 How to Start on the Project
 
 If you are new to this project, follow these steps to get started:
 
@@ -27,7 +40,7 @@ If you are new to this project, follow these steps to get started:
 
 ---
 
-## How to Manage Git (Git Flow)
+## 📃 How to Manage Git (Git Flow)
 
 Follow these steps to work with Git effectively:
 
@@ -57,26 +70,27 @@ Follow these steps to work with Git effectively:
    ```bash
    git push origin your_new_branch
    ```
-7. Verify that your changes are correctly reflected in the deployment on Vercel.
-8. Go to GitHub and create a **Pull Request (PR)** to be reviewed and approved by your Team Lead.
-9. Before merging your branch into `develop`, test the production build locally:
+7. Go to GitHub and create a **Pull Request (PR)** to be reviewed.
+8. Before merging your branch into `develop`, test the production build locally:
    ```bash
    pnpm build
    ```
-10. Once approved, merge your branch into `develop` or ask your Team Lead to merge it.
-11. Continue working on the same branch if it's related to the same feature/fix, or create a new branch for new features.
+9. Once approved, merge your branch into `develop`.
+10. Continue working on the same branch if it's related to the same feature/fix, or create a new branch for new features.
+
+> ⚠️ Note: The `main` and `develop` branches are protected. All changes must go through PRs.
 
 ---
 
-## Technical Specifications
+## 💡 Technical Specifications
 
-- **Images**: Using Next.js Images with SVG format.
-- **Routing**: Next.js Routing.
-- **Next.js Version**: 15.0.4.
-- **Styles**: Tailwind CSS.
-- **Package Manager**: pnpm.
-- **Releases**: Tags created for production (PRD) releases.
-- **API**: REST API.
-- **Authentication**: NextAuth.js.
-- **Database**: PostgreSQL.
-- **File Storage**: Vercel Blob.
+- **Images**: Next.js Image component + SVGs
+- **Routing**: Next.js Routing
+- **Next.js Version**: 15.0.4
+- **Styles**: Tailwind CSS
+- **Package Manager**: pnpm
+- **Releases**: Tagged releases for production (PRD)
+- **API**: REST API
+- **Authentication**: NextAuth.js
+- **Database**: PostgreSQL
+- **File Storage**: Vercel Blob

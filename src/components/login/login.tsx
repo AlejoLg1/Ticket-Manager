@@ -37,7 +37,6 @@ const Login = () => {
     e.preventDefault();
 
     // if (
-    //   !email.endsWith('@finaersa.com.ar') &&
     //   email !== 'legname.alejo@gmail.com' &&
     //   email !== 'alejol@finaer.es'
     // ) {

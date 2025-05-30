@@ -17,15 +17,26 @@ function Footer() {
         </p>
 
         <div className="flex flex-col md:flex-row gap-4 md:gap-6 w-full md:w-auto items-center md:items-end text-center">
-          <p className="px-6 py-3 font-bold text-body-m leading-m">
-            Política de cookies
-          </p>
-          <p className="px-6 py-3 font-bold text-body-m leading-m">
-            Política de privacidad
-          </p>
-          <p className="px-6 py-3 font-bold text-body-m leading-m">
-            Términos y condiciones
-          </p>
+          <a
+            href="https://jehskix4eyb3bg1v.public.blob.vercel-storage.com/politica_de_privacidad-ZpenOhFbljZ5fEPUfSbf8Vv5kq7kZs.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <p className="px-6 py-3 font-bold text-body-m leading-m">
+              Política de privacidad
+            </p>
+          </a>
+
+          <a
+            href="https://jehskix4eyb3bg1v.public.blob.vercel-storage.com/terminos_y_condiciones-qMaVEtVqVkXVZC7tNDwHFwSBfLmyrw.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <p className="px-6 py-3 font-bold text-body-m leading-m">
+              Términos y condiciones
+            </p>
+          </a>
+
         </div>
       </div>
     </footer>

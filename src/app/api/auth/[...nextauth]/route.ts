@@ -24,7 +24,7 @@ const authOptions: AuthOptions = {
       from: process.env.EMAIL_FROM,
       sendVerificationRequest: async ({ identifier, url, provider }) => {
       
-        const userRole = identifier.endsWith('@finaersa.com.ar') ? 'support' : 'user';
+        const userRole = 'user';
       
         const modifiedUrl = `${url}&role=${userRole}`;
       

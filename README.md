@@ -1,7 +1,7 @@
-# Finaer - SAI
+# RedSys Control - Ticket Manager
 
 <p align="center">
-  <img src="/images/redsys-logo.svg" width="200" alt="Redsys Control Logo" />
+  <img src="https://jehskix4eyb3bg1v.public.blob.vercel-storage.com/redsys-logo-8V5Npv24LURA4ytbkcy3xxmeIFGITO.png" width="200" alt="Redsys Control Logo" />
 </p>
 
 ---

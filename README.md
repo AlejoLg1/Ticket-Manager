@@ -15,7 +15,7 @@ If you are new to this project, follow these steps to get started:
    git pull origin develop
    ```
 2. Ask a teammate for the `.env` file and place it in your project's root directory.
-3. Install dependencies and start the development server: 
+3. Install dependencies and start the development server:
    ```bash
    npm install -g pnpm
    pnpm install
